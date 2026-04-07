@@ -18,6 +18,7 @@ RUN chown -R www-data:www-data /var/www/html/
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
-EXPOSE 80
-
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+# Важно: меняем порт на $PORT
+CMD bash -c "sed -i \"s/Listen 80/Listen \${PORT}/g\" /etc/apache2/ports.conf && \
+    sed -i \"s/:80>/:${PORT}>/g\" /etc/apache2/sites-enabled/000-default.conf && \
+    apache2ctl -D FOREGROUND"
