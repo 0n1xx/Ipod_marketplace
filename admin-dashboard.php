@@ -109,7 +109,7 @@
             <?php foreach ($products as $product): ?>
             <div>
                 <div class="product-card">
-                    <img src="./<?= htmlspecialchars($product['imagePath']) ?>"
+                    <img src="<?= htmlspecialchars($product['imagePath']) ?>"
                          alt="<?= htmlspecialchars($product['name']) ?>">
                     <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
                     <p class="product-description">

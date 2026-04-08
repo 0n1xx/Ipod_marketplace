@@ -32,7 +32,7 @@
         <?php foreach ($products as $product): ?>
         <div class="product-card">
             <a href="product.php?id=<?= $product['product_id'] ?>">
-                <img src="./<?= htmlspecialchars($product['imagePath']) ?>"
+                <img src="<?= htmlspecialchars($product['imagePath']) ?>"
                      alt="<?= htmlspecialchars($product['name']) ?>">
                 <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
             </a>
