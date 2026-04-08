@@ -1048,6 +1048,15 @@ footer{
     text-decoration: none;
 }
 
+.product-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    min-height: calc(1.4em * 5); 
+}
+
 @media (max-width: 1024px) {
     /* Changing the size of the h1 element, too big for the mobile devices */
     .intro-shop h1{
