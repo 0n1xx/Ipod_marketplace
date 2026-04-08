@@ -45,7 +45,7 @@
     <section class="product-detail">
         <!-- Displaying a product image -->
         <div class="product-image">
-            <img src="./<?= htmlspecialchars($product['imagePath']) ?>"
+            <img src="<?= htmlspecialchars($product['imagePath']) ?>"
                  alt="<?= htmlspecialchars($product['name']) ?>">
         </div>
         <!-- Displaying the main content of the product -->
