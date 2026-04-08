@@ -17,6 +17,7 @@ RUN chown -R www-data:www-data /var/www/html/
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+RUN rm -f /var/www/html/index.html
 
 # Важно: меняем порт на $PORT
 CMD bash -c "sed -i \"s/Listen 80/Listen \${PORT}/g\" /etc/apache2/ports.conf && \
