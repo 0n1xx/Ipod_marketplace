@@ -1,109 +1,137 @@
 # iPod Marketplace
 
-Hey! This is my biggest and most complete project so far – a full-featured online marketplace dedicated to vintage iPods. It's a dynamic web application where users can browse products, view details, and admins can fully manage the inventory through a dedicated panel.
+A full-stack e-commerce web application dedicated to vintage iPods. This project demonstrates end-to-end development using PHP and MySQL, including authentication, admin CRUD functionality, image uploads, and multilingual support.
 
-Built entirely with vanilla **HTML**, **CSS**, **JavaScript**, and **PHP** (with MySQL for the backend), this project brings together everything I've learned: responsive design, server-side logic, secure database interactions, user authentication, file uploads, and even multilingual support.
+**Live Demo:** [https://ipod-marketplace.up.railway.app](https://ipod-marketplace.up.railway.app)
 
-### Key Features
-- **Product Catalog**: Responsive grid of product cards with images, names, prices, and quick details.
-- **Individual Product Pages**: Dynamic pages pulling data from the database to show full descriptions, specs, multiple images if available, and pricing.
-- **Search & Filtering**: Basic search functionality to find iPods by name, model, or keywords.
-- **User System**: Registration, login/logout with session management for secure access (admins have elevated privileges).
-- **Admin Dashboard**: Complete CRUD operations – add new products, edit existing ones, update details/images, and delete items safely.
-- **Image Uploads**: Secure handling of product images with validation and storage on the server.
-- **Multilingual Support**: English and French versions (language switcher toggles content dynamically).
-- **Responsive Design**: Looks great on desktop, tablet, and mobile using Flexbox/Grid and media queries.
+---
 
-This project feels like a real e-commerce site and was a huge step up for me in organizing code, handling security (prepared statements, input validation), and building reusable components.
+## Overview
 
-### Project Structure
+This project simulates a real-world online store where users can browse products and view details, while administrators manage inventory through a secure dashboard.
+
+Built using vanilla **HTML**, **CSS**, **JavaScript**, and **PHP**, the application focuses on clean architecture, responsive design, and secure backend practices.
+
+---
+
+## Features
+
+### User
+
+* Responsive product catalog with dynamic data
+* Individual product pages with detailed descriptions
+* Search functionality by keywords and product names
+* User authentication (register/login/logout)
+* Multilingual support (English / French)
+
+### Admin
+
+* Full CRUD operations for products
+* Image upload with validation
+* Secure session-based authentication
+* Admin dashboard for managing inventory
+
+### UI
+
+* Fully responsive layout (Flexbox & Grid)
+* Clean and modern interface
+* Optimized for desktop, tablet, and mobile
+
+---
+
+## Tech Stack
+
+* **Frontend:** HTML, CSS, JavaScript
+* **Backend:** PHP (Vanilla)
+* **Database:** MySQL (PDO, prepared statements)
+* **Deployment:** Railway
+* **Media Storage:** Cloudinary
+
+---
+
+## Project Structure
+
 ```
 /project
 │
 ├── /uploads
-│
 ├── /css
-│   └── style.css
-│
-│
-│── /templates
-│   ├── header.php
-│   ├── additional_info.php
-│   └── footer.php
-│
-│── /images
-│  
-│── /js
-│   └── custom-js.js
-│
-│── /lang
-│   ├── en.php
-│   ├── fr.php
-│
+├── /templates
+├── /images
+├── /js
+├── /lang
 ├── /includes
-│   ├── Database.php
-│   ├── Session.php
-│   ├── config.php
-│   └── lang.php
-│
 ├── /admin
-│   ├── CrudProducts.php
-│   └── User.php
-│   
 │
-├── README.MD  
-├── about.php
-├── admin-dashboard.php
-├── home.php
-├── login.php
-├── logout.php
+├── index.php
 ├── shop.php
 ├── product.php
-├── personal-account.php
-├── contact.php
-└── register.php
+├── login.php
+├── register.php
+└── ...
 ```
 
-### Database Schema
-Simple and effective MySQL setup with security in mind.
+---
 
-**Table: `products`**
+## Database
 
-| Column            | Type             | Description                                      |
-|-------------------|------------------|--------------------------------------------------|
-| `id`              | INT AUTO_INCREMENT PRIMARY KEY | Unique product ID                          |
-| `name`            | VARCHAR(255)     | Product title (e.g., "iPod Classic 5th Gen")     |
-| `model`           | VARCHAR(100)     | Model specifications                             |
-| `price`           | DECIMAL(10,2)    | Price                                            |
-| `description`     | TEXT             | Full product description                         |
-| `short_desc`      | TEXT             | Short summary for listings                       |
-| `image`           | VARCHAR(255)     | Path to uploaded image                           |
-| `stock`           | INT              | Quantity (if tracked)                            |
-| `created_at`      | TIMESTAMP        | Date added                                       |
+### products
 
-**Table: `users`**
+* id (PK)
+* name
+* model
+* price
+* description
+* image
+* stock
+* created_at
 
-| Column            | Type             | Description                                      |
-|-------------------|------------------|--------------------------------------------------|
-| `id`              | INT AUTO_INCREMENT PRIMARY KEY | Unique user ID                             |
-| `username`        | VARCHAR(50)      | Login name                                       |
-| `email`           | VARCHAR(100)     | User email                                       |
-| `password`        | VARCHAR(255)     | Hashed password                                  |
-| `role`            | ENUM('user','admin') | Access level                                 |
-| `created_at`      | TIMESTAMP        | Registration date                                |
+### users
 
-All queries use PDO prepared statements and password hashing for security.
+* id (PK)
+* username
+* email
+* password (hashed)
+* role (user/admin)
+* created_at
 
-### How to Run Locally
-1. Set up a local PHP + MySQL environment (XAMPP, Laragon, MAMP, etc.)
-2. Create the database and tables (use the schema above or any provided dump)
-3. Update credentials in `includes/db.php`
-4. Place the `Ipod_marketplace` folder in your web server root
-5. Open `http://localhost/Ipod_marketplace/index.php` in your browser
+All database interactions use **PDO prepared statements** to prevent SQL injection.
 
-I'm really proud of this project – it started as a simple listing page and evolved into a proper full-stack application. Future ideas include adding a cart, pagination, categories, and maybe user reviews.
+---
 
-Thanks for checking it out! Feedback is always appreciated.
+## Local Setup
 
-— Vlad Sakharov  
+1. Install XAMPP / MAMP / Laragon
+2. Create MySQL database
+3. Import schema
+4. Configure DB credentials in `/includes/config.php`
+5. Run project via `localhost`
+
+---
+
+## Ongoing Improvements
+
+* Improving navigation bar responsiveness
+* Fixing full name vs username inconsistencies
+* Enhancing product description layout
+* Refining admin panel UI/UX
+
+---
+
+## Future Enhancements
+
+* Shopping cart & checkout system
+* Product categories and filtering
+* Pagination
+* User reviews & ratings
+
+---
+
+## Author
+
+**Vlad Sakharov**
 Aspiring Full-Stack Developer
+
+---
+
+If you found this project interesting, feel free to give it a star.
