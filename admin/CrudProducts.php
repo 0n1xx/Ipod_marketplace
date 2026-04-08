@@ -23,7 +23,7 @@ class CrudProducts{
         $folder     = 'ipod_marketplace';
 
         // Cloudinary requires a signature: sha256 of sorted params + api_secret
-        $paramsToSign = "folder={$folder}&timestamp={$timestamp}{$apiSecret}";
+        $paramsToSign = "folder={$folder}&timestamp={$timestamp}" . $apiSecret;
         $signature    = hash('sha256', $paramsToSign);
 
         $url = "https://api.cloudinary.com/v1_1/{$cloudName}/image/upload";
