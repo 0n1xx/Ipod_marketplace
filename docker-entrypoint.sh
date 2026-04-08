@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
 
+# Use PORT from env, fallback to 80
+APP_PORT="${PORT:-80}"
+
 # Fix Apache port
-sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf
-sed -i "s/:80>/:${PORT}>/g" /etc/apache2/sites-enabled/000-default.conf
+sed -i "s/Listen 80/Listen ${APP_PORT}/g" /etc/apache2/ports.conf
+sed -i "s/:80>/:${APP_PORT}>/g" /etc/apache2/sites-enabled/000-default.conf
 
 # PHP settings
 echo "variables_order = EGPCS" >> /etc/php/8.1/apache2/php.ini
