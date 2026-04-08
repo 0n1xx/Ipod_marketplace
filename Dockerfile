@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     && rm -f /var/www/html/index.html
 
 RUN a2enmod rewrite php8.1
+RUN sed -i 's/DirectoryIndex index.html index.cgi index.pl index.php/DirectoryIndex index.php index.html/g' /etc/apache2/mods-enabled/dir.conf
 
 COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html/
