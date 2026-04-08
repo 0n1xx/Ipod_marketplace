@@ -19,18 +19,8 @@ RUN chown -R www-data:www-data /var/www/html/
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
-RUN echo "PassEnv MYSQLHOST MYSQLPORT MYSQLDATABASE MYSQLUSER MYSQLPASSWORD CLOUDINARY_CLOUD_NAME CLOUDINARY_API_KEY CLOUDINARY_API_SECRET" >> /etc/apache2/apache2.conf
 
-CMD bash -c "\
-    sed -i \"s/Listen 80/Listen \${PORT}/g\" /etc/apache2/ports.conf && \
-    sed -i \"s/:80>/:\${PORT}>/g\" /etc/apache2/sites-enabled/000-default.conf && \
-    echo \"variables_order = EGPCS\" >> /etc/php/8.1/apache2/php.ini && \
-    echo \"SetEnv MYSQLHOST \${MYSQLHOST}\" >> /etc/apache2/apache2.conf && \
-    echo \"SetEnv MYSQLPORT \${MYSQLPORT}\" >> /etc/apache2/apache2.conf && \
-    echo \"SetEnv MYSQLDATABASE \${MYSQLDATABASE}\" >> /etc/apache2/apache2.conf && \
-    echo \"SetEnv MYSQLUSER \${MYSQLUSER}\" >> /etc/apache2/apache2.conf && \
-    echo \"SetEnv MYSQLPASSWORD \${MYSQLPASSWORD}\" >> /etc/apache2/apache2.conf && \
-    echo \"SetEnv CLOUDINARY_CLOUD_NAME \${CLOUDINARY_CLOUD_NAME}\" >> /etc/apache2/apache2.conf && \
-    echo \"SetEnv CLOUDINARY_API_KEY \${CLOUDINARY_API_KEY}\" >> /etc/apache2/apache2.conf && \
-    echo \"SetEnv CLOUDINARY_API_SECRET \${CLOUDINARY_API_SECRET}\" >> /etc/apache2/apache2.conf && \
-    apache2ctl -D FOREGROUND"
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+CMD ["/docker-entrypoint.sh"]
