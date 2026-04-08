@@ -12,6 +12,8 @@ class Database {
         try {
             $this->connection = new PDO(
                 dsn: "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->database . ";charset=utf8mb4",
+                username: $this->username,
+                password: $this->password
             );
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
