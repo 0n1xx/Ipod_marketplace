@@ -4,15 +4,11 @@ A full-stack e-commerce web application dedicated to vintage iPods. This project
 
 **Live Demo:** [https://ipod-marketplace.up.railway.app](https://ipod-marketplace.up.railway.app)
 
----
-
 ## Overview
 
 This project simulates a real-world online store where users can browse products and view details, while administrators manage inventory through a secure dashboard.
 
 Built using vanilla **HTML**, **CSS**, **JavaScript**, and **PHP**, the application focuses on clean architecture, responsive design, and secure backend practices.
-
----
 
 ## Features
 
@@ -37,7 +33,6 @@ Built using vanilla **HTML**, **CSS**, **JavaScript**, and **PHP**, the applicat
 * Clean and modern interface
 * Optimized for desktop, tablet, and mobile
 
----
 
 ## Tech Stack
 
@@ -47,7 +42,6 @@ Built using vanilla **HTML**, **CSS**, **JavaScript**, and **PHP**, the applicat
 * **Deployment:** Railway
 * **Media Storage:** Cloudinary
 
----
 
 ## Project Structure
 
@@ -70,8 +64,6 @@ Built using vanilla **HTML**, **CSS**, **JavaScript**, and **PHP**, the applicat
 ├── register.php
 └── ...
 ```
-
----
 
 ## Database
 
@@ -97,8 +89,6 @@ Built using vanilla **HTML**, **CSS**, **JavaScript**, and **PHP**, the applicat
 
 All database interactions use **PDO prepared statements** to prevent SQL injection.
 
----
-
 ## Local Setup
 
 1. Install XAMPP / MAMP / Laragon
@@ -107,8 +97,6 @@ All database interactions use **PDO prepared statements** to prevent SQL injecti
 4. Configure DB credentials in `/includes/config.php`
 5. Run project via `localhost`
 
----
-
 ## Ongoing Improvements
 
 * Improving navigation bar responsiveness
@@ -116,22 +104,9 @@ All database interactions use **PDO prepared statements** to prevent SQL injecti
 * Enhancing product description layout
 * Refining admin panel UI/UX
 
----
-
-## Future Enhancements
-
-* Shopping cart & checkout system
-* Product categories and filtering
-* Pagination
-* User reviews & ratings
-
----
-
 ## Author
 
 **Vlad Sakharov**
 Aspiring Full-Stack Developer
-
----
 
 If you found this project interesting, feel free to give it a star.
