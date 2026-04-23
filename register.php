@@ -69,9 +69,9 @@
         <div class="form-details">
             <form action="" method="post">
                 <fieldset>
-                    <label for="name"><?= $L['fullName']; ?>:</label>
+                    <label for="name"><?= $L['userName']; ?>:</label>
                     <input type="text" id="name" name="name"
-                           placeholder="<?= $L['fullNamePlaceholder']; ?>" required>
+                           placeholder="<?= $L['userNamePlaceholder']; ?>" required>
                     <label for="email"><?= $L['emailLabelReg']; ?>:</label>
                     <input type="email" id="email" name="email"
                            placeholder="<?= $L['emailPlaceholderReg']; ?>" required>
