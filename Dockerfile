@@ -1,8 +1,10 @@
 # Resolving Composer dependencies in a separate stage keeps Composer itself
-# (and the PHP CLI it needs) out of the final image entirely.
+# (and the PHP CLI it needs) out of the final image entirely. The classmap
+# autoloader needs to scan includes/ and admin/, so the whole app is copied
+# in here (not just composer.json) before running composer install.
 FROM composer:2 AS vendor
 WORKDIR /app
-COPY composer.json composer.lock* ./
+COPY . .
 RUN composer install --no-dev --no-interaction --optimize-autoloader --no-scripts
 
 FROM ubuntu:22.04
