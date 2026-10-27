@@ -143,7 +143,8 @@
                         <span class="sold-badge"><?= $L['soldBadge'] ?></span>
                     <?php endif; ?>
                     <img src="<?= htmlspecialchars($product['imagePath']) ?>"
-                         alt="<?= htmlspecialchars($product['name']) ?>">
+                         alt="<?= htmlspecialchars($product['name']) ?>"
+                         loading="lazy" decoding="async">
                     <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
                     <p class="product-description">
                         <?= nl2br(htmlspecialchars($product['description'])) ?>
