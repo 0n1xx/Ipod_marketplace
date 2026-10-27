@@ -4,9 +4,22 @@
     // Requiring all needed files for this page
     require_once __DIR__ . '/includes/config.php';
     require_once __DIR__ . '/includes/lang.php';
-    require_once __DIR__ . '/templates/header.php';
+    require_once __DIR__ . '/includes/Session.php';
     require_once __DIR__ . '/includes/Database.php';
     require_once __DIR__ . '/admin/CrudProducts.php';
+
+    // Only logged-in admins may reach this page; anyone else is redirected away
+    Session::start();
+    if (!Session::isLoggedIn()) {
+        header("Location: login.php");
+        exit();
+    }
+    if (Session::get("is_admin") != 1) {
+        header("Location: personal-account.php");
+        exit();
+    }
+
+    require_once __DIR__ . '/templates/header.php';
     $pageTitle = $L['shopTitle'];
     $pageDesc  = $L['shopDesc'];
     $success = null;
