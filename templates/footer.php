@@ -1,7 +1,7 @@
 <footer>
     <section class="footer-logo">
         <div>
-            <a href="home.php?lang=<?php echo $lang; ?>" class="logo">
+            <a href="index.php?lang=<?php echo $lang; ?>" class="logo">
                 <img src="images/logo.png" alt="QuébecIpod logo">
             </a>
             <p>QuébecIpod</p>
@@ -14,7 +14,7 @@
     <section class="footer-links">
         <nav>
             <menu>
-                <li class="nav_menu"><a href="home.php?lang=<?php echo $lang; ?>"><?php echo $L['navHome']; ?></a></li>
+                <li class="nav_menu"><a href="index.php?lang=<?php echo $lang; ?>"><?php echo $L['navHome']; ?></a></li>
                 <li class="nav_menu"><a href="about.php?lang=<?php echo $lang; ?>"><?php echo $L['navAbout']; ?></a></li>
                 <li class="nav_menu"><a href="shop.php?lang=<?php echo $lang; ?>"><?php echo $L['navShop']; ?></a></li>
                 <li class="nav_menu"><a href="contact.php?lang=<?php echo $lang; ?>"><?php echo $L['navContact']; ?></a></li>
