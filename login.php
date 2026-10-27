@@ -1,12 +1,8 @@
 <?php
     // Requiring all needed files
+    require_once __DIR__ . '/includes/bootstrap.php';
     require __DIR__ . '/includes/lang.php';
     require __DIR__ . "/templates/header.php";
-    require_once __DIR__ . '/includes/config.php';
-    require_once __DIR__ . "/includes/Session.php";
-    require_once __DIR__ . '/includes/Database.php';
-    require_once __DIR__ . "/admin/User.php";
-    require_once __DIR__ . '/includes/Csrf.php';
 
     $pageTitle = $L['loginTitle'];
     $pageDesc  = $L['loginDesc'];

@@ -1,12 +1,8 @@
 <?php
     // Require needed files for this page
+    require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
     require_once __DIR__ . "/templates/header.php";
-    require_once __DIR__ . '/includes/config.php';
-    require_once __DIR__ . "/includes/Session.php";
-    require_once __DIR__ . '/includes/Database.php';
-    require_once __DIR__ . "/admin/User.php";
-    require_once __DIR__ . '/includes/Csrf.php';
 
     $pageTitle = $L['registerTitle'];
     $pageDesc  = $L['registerDesc'];

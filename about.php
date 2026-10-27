@@ -1,5 +1,6 @@
 <?php
     // Added language file which will translate every en english or in french
+    require_once __DIR__ . '/includes/bootstrap.php';
     require __DIR__ . '/includes/lang.php';
     $pageTitle = $lang === 'fr' ? 'À propos' : 'About';
     $pageDesc  = $lang === 'fr' ? 'Découvrez l\'histoire de QuébecIpod.' : 'Learn about QuébecIpod\'s story.';

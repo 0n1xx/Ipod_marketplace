@@ -1,10 +1,8 @@
 <?php
     // Require all files that needed for this page
+    require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
     require_once __DIR__ . '/templates/header.php';
-    require_once __DIR__ . '/includes/Database.php';
-    require_once __DIR__ . '/includes/config.php';
-    require_once __DIR__ . '/admin/CrudProducts.php';
 
     $pageTitle = $L['shopTitle'];
     $pageDesc  = $L['shopDesc'];

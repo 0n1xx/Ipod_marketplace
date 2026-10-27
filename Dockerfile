@@ -1,3 +1,10 @@
+# Resolving Composer dependencies in a separate stage keeps Composer itself
+# (and the PHP CLI it needs) out of the final image entirely.
+FROM composer:2 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock* ./
+RUN composer install --no-dev --no-interaction --optimize-autoloader --no-scripts
+
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,6 +22,7 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite php8.1
 RUN sed -i 's/DirectoryIndex index.html index.cgi index.pl index.php/DirectoryIndex index.php index.html/g' /etc/apache2/mods-enabled/dir.conf
 COPY . /var/www/html/
+COPY --from=vendor /app/vendor /var/www/html/vendor
 RUN chown -R www-data:www-data /var/www/html/
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf

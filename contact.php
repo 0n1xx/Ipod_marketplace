@@ -1,5 +1,6 @@
 <?php
     // Requiring the file with the languages
+    require_once __DIR__ . '/includes/bootstrap.php';
     require __DIR__ . '/includes/lang.php';
     $pageTitle = $L['contactTitle'];
     $pageDesc  = $L['contactDesc'];

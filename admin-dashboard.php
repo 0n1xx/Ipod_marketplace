@@ -2,12 +2,8 @@
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
     // Requiring all needed files for this page
-    require_once __DIR__ . '/includes/config.php';
+    require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
-    require_once __DIR__ . '/includes/Session.php';
-    require_once __DIR__ . '/includes/Database.php';
-    require_once __DIR__ . '/admin/CrudProducts.php';
-    require_once __DIR__ . '/includes/Csrf.php';
 
     // Only logged-in admins may reach this page; anyone else is redirected away
     Session::start();

@@ -2,7 +2,9 @@
 // Including the language file and starting the session so the nav
 // can tell whether a visitor is logged in
 require __DIR__ . '/../includes/lang.php';
-require_once __DIR__ . '/../includes/Session.php';
+// Session class is autoloaded via Composer (bootstrap.php, required by
+// every page before this template); callers that skip bootstrap.php
+// would need to require it explicitly
 Session::start();
 ?>
 <!doctype html>

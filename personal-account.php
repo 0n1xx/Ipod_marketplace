@@ -1,8 +1,8 @@
 <?php
     // Requiring files needed for this page
+    require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
     require_once __DIR__ . '/templates/header.php';
-    require_once __DIR__ . '/includes/Session.php';
     $pageTitle = $L['contactTitle'];
     $pageDesc  = $L['contactDesc'];
 
