@@ -37,6 +37,13 @@ Session::start();
             <li class="nav_menu"><a href="contact.php?lang=<?php echo $lang; ?>"><?php echo $L['navContact']; ?></a></li>
             <?php if (Session::isLoggedIn()): ?>
                 <?php $accountPage = Session::get('is_admin') == 1 ? 'admin-dashboard.php' : 'personal-account.php'; ?>
+                <?php if (Session::get('is_admin') != 1): ?>
+                    <li class="nav_menu">
+                        <a href="cart.php?lang=<?php echo $lang; ?>">
+                            <?= $L['navCart'] ?><?php if (Cart::count() > 0): ?> (<?= Cart::count() ?>)<?php endif; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="nav_menu"><a href="<?= $accountPage ?>?lang=<?php echo $lang; ?>"><?= htmlspecialchars(Session::get('username')) ?></a></li>
                 <li class="nav_menu"><a href="logout.php?lang=<?php echo $lang; ?>"><?php echo $L['logOut']; ?></a></li>
             <?php else: ?>

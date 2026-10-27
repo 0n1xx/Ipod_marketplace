@@ -172,8 +172,29 @@ return [
 
     // Individual product page
     "addToCartButtonSoon"     => "Add to Cart (Coming Soon)",
+    "addToCartButton"         => "Add to Cart",
+    "viewCart"                => "View Cart",
     "backToShopButton"       => "Back to Shop",
     "productNotFound"         => "Product not found.",
+
+    // Cart & checkout
+    "navCart"                 => "Cart",
+    "cartTitle"               => "Your Cart",
+    "cartDesc"                => "Review the iPods in your cart before checking out.",
+    "cartHeadline"            => "Your Cart",
+    "cartEmpty"               => "Your cart is empty.",
+    "removeFromCart"          => "Remove",
+    "cartTotal"               => "Total",
+    "proceedToCheckout"       => "Proceed to Checkout",
+    "checkoutCancelled"       => "Checkout was cancelled — your cart is still saved.",
+    "checkoutError"           => "We couldn't start checkout. Please try again in a moment.",
+    "checkoutSuccessTitle"    => "Thank You!",
+    "checkoutSuccessText"     => "Your payment was successful and your order has been recorded.",
+    "checkoutNoSession"       => "We couldn't find your checkout session.",
+    "checkoutNotPaid"         => "This payment could not be verified.",
+    "checkoutOrderSaveFailed" => "Payment succeeded, but we couldn't save your order. Please contact us.",
+    "orderHistoryTitle"       => "Order History",
+    "orderHistoryEmpty"       => "You haven't placed any orders yet.",
 
     // Individual personal page
     "personalGreeting" => "Hi ! You're officially logged in",

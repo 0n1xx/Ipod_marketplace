@@ -171,8 +171,29 @@ return [
 
     // Individual product page
     "addToCartButtonSoon"     => "Ajouter au panier (Bientôt disponible)",
+    "addToCartButton"         => "Ajouter au panier",
+    "viewCart"                => "Voir le panier",
     "backToShopButton"       => "Retourner à la boutique",
     "productNotFound"         => "Produit not disponible.",
+
+    // Cart & checkout
+    "navCart"                 => "Panier",
+    "cartTitle"               => "Votre panier",
+    "cartDesc"                => "Passez en revue les iPods de votre panier avant de payer.",
+    "cartHeadline"            => "Votre panier",
+    "cartEmpty"               => "Votre panier est vide.",
+    "removeFromCart"          => "Retirer",
+    "cartTotal"               => "Total",
+    "proceedToCheckout"       => "Procéder au paiement",
+    "checkoutCancelled"       => "Le paiement a été annulé — votre panier est toujours sauvegardé.",
+    "checkoutError"           => "Impossible de démarrer le paiement. Veuillez réessayer dans un instant.",
+    "checkoutSuccessTitle"    => "Merci !",
+    "checkoutSuccessText"     => "Votre paiement a été effectué avec succès et votre commande a été enregistrée.",
+    "checkoutNoSession"       => "Nous n'avons pas trouvé votre session de paiement.",
+    "checkoutNotPaid"         => "Ce paiement n'a pas pu être vérifié.",
+    "checkoutOrderSaveFailed" => "Le paiement a réussi, mais nous n'avons pas pu enregistrer votre commande. Veuillez nous contacter.",
+    "orderHistoryTitle"       => "Historique des commandes",
+    "orderHistoryEmpty"       => "Vous n'avez pas encore passé de commande.",
 
     // Individual personal page
     "personalGreeting" => "Salut ! Vous êtes officiellement connecté",

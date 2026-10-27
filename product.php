@@ -75,8 +75,15 @@
             <div class="product-actions">
                 <?php if ($product['is_sold']): ?>
                     <button class="add-to-card" disabled><?php echo $L['soldBadge']; ?></button>
+                <?php elseif (in_array($product['product_id'], Cart::getIds(), true)): ?>
+                    <a href="cart.php" class="add-to-card"><?= $L['viewCart'] ?></a>
                 <?php else: ?>
-                    <button class="add-to-card" disabled><?php echo $L['addToCartButtonSoon']; ?></button>
+                    <form method="post" action="cart-add.php">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                        <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                        <input type="hidden" name="redirect" value="product.php?id=<?= $product['product_id'] ?>">
+                        <button type="submit" class="add-to-card"><?php echo $L['addToCartButton']; ?></button>
+                    </form>
                 <?php endif; ?>
                 <a href="shop.php" class="back-to-shop"><?php echo $L['backToShopButton']; ?></a>
             </div>

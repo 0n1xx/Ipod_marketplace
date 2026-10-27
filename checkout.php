@@ -1,0 +1,61 @@
+<?php
+    require_once __DIR__ . '/includes/bootstrap.php';
+    Session::start();
+
+    if (!Session::isLoggedIn()) {
+        header("Location: login.php");
+        exit();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Csrf::verify($_POST['csrf_token'] ?? null)) {
+        header("Location: cart.php");
+        exit();
+    }
+
+    $database = new Database();
+    $db = new CrudProducts($database->connection);
+
+    // Re-check availability right before charging — a product could have
+    // sold out between being added to the cart and checking out
+    $cartProducts = $db->getProductsByIds(Cart::getIds());
+    $cartProducts = array_values(array_filter($cartProducts, fn($p) => !$p['is_sold']));
+
+    if (empty($cartProducts)) {
+        header("Location: cart.php");
+        exit();
+    }
+
+    $scheme  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $baseUrl = $scheme . '://' . $_SERVER['HTTP_HOST'];
+
+    \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
+
+    $lineItems = array_map(function ($product) {
+        return [
+            'price_data' => [
+                'currency'     => 'cad',
+                'product_data' => ['name' => $product['name']],
+                // Stripe expects the smallest currency unit (cents)
+                'unit_amount'  => (int) round($product['price'] * 100),
+            ],
+            'quantity' => 1,
+        ];
+    }, $cartProducts);
+
+    try {
+        $checkoutSession = \Stripe\Checkout\Session::create([
+            'mode'                => 'payment',
+            'line_items'          => $lineItems,
+            'success_url'         => $baseUrl . '/checkout-success.php?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url'          => $baseUrl . '/cart.php?cancelled=1',
+            'client_reference_id' => (string) Session::get('user_id'),
+        ]);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+        error_log("Stripe checkout session creation failed: " . $e->getMessage());
+        header("Location: cart.php?error=1");
+        exit();
+    }
+
+    header("Location: " . $checkoutSession->url);
+    exit();
+?>

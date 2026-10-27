@@ -275,6 +275,25 @@ class CrudProducts{
         }
     }
 
+    // Fetches several products at once by id, e.g. to resolve a cart's
+    // contents. Unknown ids are silently skipped.
+    public function getProductsByIds(array $ids): array {
+        if (empty($ids)) {
+            return [];
+        }
+        try {
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $stmt = $this->connection->prepare(
+                "SELECT * FROM {$this->table_name} WHERE product_id IN ({$placeholders})"
+            );
+            $stmt->execute(array_map('intval', $ids));
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->error[] = "Error fetching products";
+            return [];
+        }
+    }
+
     // A function that is responsible for getting a single value by its product id
     public function getProductById($id) {
         try {
