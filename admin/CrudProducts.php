@@ -227,7 +227,9 @@ class CrudProducts{
             $stmt->bindParam(':price',       $price);
             $stmt->bindParam(':imagePath',   $imageUrl);
 
-            return $stmt->execute();
+            // Returns the new product's id on success (truthy, since ids
+            // start at 1) so callers can attach gallery images to it
+            return $stmt->execute() ? (int)$this->connection->lastInsertId() : false;
 
         } catch(PDOException $e) {
             $this->error[] = "Database error: " . $e->getMessage();
@@ -343,6 +345,81 @@ class CrudProducts{
             return $stmt->execute();
         } catch (PDOException $e) {
             $this->error[] = "Database update error";
+            return false;
+        }
+    }
+
+    // Gallery photos for a product, in addition to its primary imagePath
+    public function getGalleryImages($productId){
+        try {
+            $stmt = $this->connection->prepare(
+                "SELECT id, image_url FROM product_images WHERE product_id = :id ORDER BY id ASC"
+            );
+            $stmt->bindParam(':id', $productId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->error[] = "Error fetching gallery images";
+            return [];
+        }
+    }
+
+    // Uploading one or more extra gallery photos for a product. $files is a
+    // normalized array of file entries (each like a single $_FILES item).
+    public function addGalleryImages($productId, array $files): bool {
+        $allowed = ["jpg", "jpeg", "png", "gif"];
+        $success = true;
+
+        foreach ($files as $file) {
+            if (empty($file['name']) || $file['error'] !== 0) {
+                continue;
+            }
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowed)) {
+                $this->error[] = "Only JPG, JPEG, PNG & GIF files are allowed.";
+                $success = false;
+                continue;
+            }
+            if ($file['size'] > 2 * 1024 * 1024) {
+                $this->error[] = "File size must be less than or equal to 2 MB";
+                $success = false;
+                continue;
+            }
+
+            $imageUrl = $this->uploadToCloudinary($file['tmp_name']);
+            if (!$imageUrl) {
+                $success = false;
+                continue;
+            }
+
+            try {
+                $stmt = $this->connection->prepare(
+                    "INSERT INTO product_images (product_id, image_url) VALUES (:product_id, :image_url)"
+                );
+                $stmt->bindParam(':product_id', $productId, PDO::PARAM_INT);
+                $stmt->bindParam(':image_url', $imageUrl);
+                $stmt->execute();
+            } catch (PDOException $e) {
+                $this->error[] = "Database error while saving gallery image";
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    // Removes a single gallery image, scoped to its product so one admin
+    // form can't be tricked into deleting another product's image
+    public function deleteGalleryImage($imageId, $productId): bool {
+        try {
+            $stmt = $this->connection->prepare(
+                "DELETE FROM product_images WHERE id = :id AND product_id = :product_id"
+            );
+            $stmt->bindParam(':id', $imageId, PDO::PARAM_INT);
+            $stmt->bindParam(':product_id', $productId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            $this->error[] = "Database error while deleting gallery image";
             return false;
         }
     }

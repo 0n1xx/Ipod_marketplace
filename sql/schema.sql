@@ -19,5 +19,14 @@ CREATE TABLE products_description (
     is_sold TINYINT(1) NOT NULL DEFAULT 0
 );
 
+-- Table: product_images (extra gallery photos; imagePath on
+-- products_description stays the primary/cover image used in listings)
+CREATE TABLE product_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products_description(product_id) ON DELETE CASCADE
+);
+
 -- If a user should become an admin, here is a SQL script for that
 update users set is_admin = 1 where name = 'your_user_name';

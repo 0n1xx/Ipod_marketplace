@@ -166,6 +166,8 @@ return [
     "markSold"               => "Marquer comme vendu",
     "markAvailable"          => "Marquer comme disponible",
     "soldBadge"               => "Vendu",
+    "adminGalleryLabel"       => "Photos supplémentaires",
+    "adminGalleryHelp"        => "Facultatif — ajoutez une ou plusieurs photos supplémentaires de ce produit.",
 
     // Individual product page
     "addToCartButtonSoon"     => "Ajouter au panier (Bientôt disponible)",

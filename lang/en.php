@@ -167,6 +167,8 @@ return [
     "markSold"               => "Mark as Sold",
     "markAvailable"          => "Mark as Available",
     "soldBadge"               => "Sold",
+    "adminGalleryLabel"       => "Additional Photos",
+    "adminGalleryHelp"        => "Optional — add one or more extra photos of this product.",
 
     // Individual product page
     "addToCartButtonSoon"     => "Add to Cart (Coming Soon)",

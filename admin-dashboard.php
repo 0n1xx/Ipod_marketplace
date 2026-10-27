@@ -25,6 +25,21 @@
     $database = new Database();
     $db = new CrudProducts($database->connection);
 
+    // PHP groups a multi-file <input name="x[]"> as $_FILES['x']['name'][0..n],
+    // not as a list of per-file arrays; this reshapes it into the latter.
+    function normalizeMultiFiles(array $filesField): array {
+        $normalized = [];
+        foreach ($filesField['name'] as $i => $name) {
+            $normalized[] = [
+                'name'     => $name,
+                'tmp_name' => $filesField['tmp_name'][$i],
+                'error'    => $filesField['error'][$i],
+                'size'     => $filesField['size'][$i],
+            ];
+        }
+        return $normalized;
+    }
+
     // Any POST request (create/update/delete) must carry a valid CSRF token
     $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
     if ($isPost && !Csrf::verify($_POST['csrf_token'] ?? null)) {
@@ -49,7 +64,17 @@
         if ($db->update($updateId, $data)) {
             $success = "Product updated successfully!";
             $editProduct = null;
+
+            if (!empty($_FILES['extra_images']['name'][0])) {
+                $db->addGalleryImages($updateId, normalizeMultiFiles($_FILES['extra_images']));
+            }
         }
+    }
+
+    // Handling the process when a user deletes one gallery photo
+    // (the form also submits edit_id so the edit view reopens below)
+    elseif ($isPost && isset($_POST['delete_image_id'])) {
+        $db->deleteGalleryImage((int)$_POST['delete_image_id'], (int)$_POST['delete_image_product_id']);
     }
 
     // Handling the process when a user toggles a product's sold status
@@ -89,8 +114,13 @@
             "imagePath" => $imageFile
         ];
 
-        if ($db->create($data)) {
+        $newProductId = $db->create($data);
+        if ($newProductId) {
             $success = "Product created successfully!";
+
+            if (!empty($_FILES['extra_images']['name'][0])) {
+                $db->addGalleryImages($newProductId, normalizeMultiFiles($_FILES['extra_images']));
+            }
         }
     }
 
@@ -199,12 +229,34 @@
                     <input id="product_image" class="file-upload" type="file" name="product_image"
                            accept="image/jpeg,image/png,image/gif">
                     <small><?= $L['adminImageHelp'] ?> <?= $L['adminImageHelpNotRequired'] ?> </small>
+                    <label for="extra_images" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
+                    <input id="extra_images" class="file-upload" type="file" name="extra_images[]"
+                           accept="image/jpeg,image/png,image/gif" multiple>
+                    <small><?= $L['adminGalleryHelp'] ?></small>
                 </fieldset>
                 <div id="submit-button" class="admin-dash">
                     <button type="submit"><?= $L['updateProduct'] ?></button>
                 </div>
             </form>
         </section>
+        <!-- Existing gallery photos, each removable on its own -->
+        <?php $galleryImages = $db->getGalleryImages($editProduct['product_id']); ?>
+        <?php if (!empty($galleryImages)): ?>
+            <section class="gallery-manage">
+                <?php foreach ($galleryImages as $image): ?>
+                    <div class="gallery-manage-item">
+                        <img src="<?= htmlspecialchars($image['image_url']) ?>" alt="<?= htmlspecialchars($editProduct['name']) ?>">
+                        <form method="post">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                            <input type="hidden" name="delete_image_id" value="<?= $image['id'] ?>">
+                            <input type="hidden" name="delete_image_product_id" value="<?= $editProduct['product_id'] ?>">
+                            <input type="hidden" name="edit_id" value="<?= $editProduct['product_id'] ?>">
+                            <button type="submit" class="btn-delete"><?= $L['deleteProduct'] ?></button>
+                        </form>
+                    </div>
+                <?php endforeach; ?>
+            </section>
+        <?php endif; ?>
     <?php endif; ?>
     <div>
         <h2 class="intro-form-admin">
@@ -230,6 +282,10 @@
                 <input id="product_image" class="file-upload" type="file" name="product_image"
                        accept="image/jpeg,image/png,image/gif" required>
                 <small><?= $L['adminImageHelp'] ?></small>
+                <label for="extra_images_create" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
+                <input id="extra_images_create" class="file-upload" type="file" name="extra_images[]"
+                       accept="image/jpeg,image/png,image/gif" multiple>
+                <small><?= $L['adminGalleryHelp'] ?></small>
             </fieldset>
             <div id="submit-button" class="admin-dash">
                 <button type="submit"><?= $L['adminCreateButton'] ?></button>

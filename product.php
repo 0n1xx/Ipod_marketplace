@@ -22,6 +22,9 @@
             break;
         }
     }
+    // The primary image plus any extra gallery photos, for the thumbnail strip
+    $galleryImages = $product ? $db->getGalleryImages($product['product_id']) : [];
+
     // If product not found, then it will display an error message and close with the footer
     if (!$product) {?>
         <main>
@@ -46,8 +49,23 @@
             <?php if ($product['is_sold']): ?>
                 <span class="sold-badge"><?= $L['soldBadge'] ?></span>
             <?php endif; ?>
-            <img src="<?= htmlspecialchars($product['imagePath']) ?>"
+            <img id="main-product-image" src="<?= htmlspecialchars($product['imagePath']) ?>"
                  alt="<?= htmlspecialchars($product['name']) ?>">
+            <?php if (!empty($galleryImages)): ?>
+                <!-- Thumbnail strip: clicking a thumbnail swaps #main-product-image's src (see custom-js.js) -->
+                <div class="product-thumbnails">
+                    <button type="button" class="product-thumbnail active"
+                            data-image="<?= htmlspecialchars($product['imagePath']) ?>">
+                        <img src="<?= htmlspecialchars($product['imagePath']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" loading="lazy">
+                    </button>
+                    <?php foreach ($galleryImages as $image): ?>
+                        <button type="button" class="product-thumbnail"
+                                data-image="<?= htmlspecialchars($image['image_url']) ?>">
+                            <img src="<?= htmlspecialchars($image['image_url']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" loading="lazy">
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
         <!-- Displaying the main content of the product -->
         <div class="product-text">

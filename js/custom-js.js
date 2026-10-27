@@ -16,7 +16,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Live feedback on the register page while the user types their password
     initPasswordValidation();
+
+    // Thumbnail gallery on the product detail page
+    initProductGallery();
 });
+
+function initProductGallery() {
+    const mainImage = document.getElementById("main-product-image");
+    const thumbnails = document.querySelectorAll(".product-thumbnail");
+    if (!mainImage || !thumbnails.length) return;
+
+    thumbnails.forEach((thumb) => {
+        thumb.addEventListener("click", () => {
+            mainImage.src = thumb.dataset.image;
+            thumbnails.forEach((t) => t.classList.remove("active"));
+            thumb.classList.add("active");
+        });
+    });
+}
 
 function initPasswordValidation() {
     const password = document.getElementById("password");
