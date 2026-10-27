@@ -251,6 +251,28 @@ class CrudProducts{
         }
     }
 
+    // Allowed values for the "sort" query param, mapped to their ORDER BY clause
+    private const SORT_OPTIONS = [
+        'newest'     => 'product_id DESC',
+        'price_asc'  => 'price ASC',
+        'price_desc' => 'price DESC',
+    ];
+
+    // Reading products filtered by a name search and sorted by the given option
+    public function search(string $query = '', string $sort = 'newest'){
+        try{
+            $orderBy = self::SORT_OPTIONS[$sort] ?? self::SORT_OPTIONS['newest'];
+            $sql = "SELECT * FROM {$this->table_name} WHERE name LIKE :query ORDER BY {$orderBy}";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bindValue(':query', '%' . $query . '%');
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }catch (PDOException $e){
+            $this->error[] = "Database search error";
+            return false;
+        }
+    }
+
     // A function that is responsible for getting a single value by its product id
     public function getProductById($id) {
         try {

@@ -131,6 +131,13 @@ return [
     "newsletterPlaceholderShop" => "Votre courriel",
     "newsletterButtonShop" => "S’inscrire",
 
+    "searchPlaceholder"  => "Rechercher un produit...",
+    "searchButton"       => "Rechercher",
+    "sortNewest"         => "Plus récents",
+    "sortPriceAsc"       => "Prix : croissant",
+    "sortPriceDesc"      => "Prix : décroissant",
+    "noSearchResults"    => "Aucun produit ne correspond à votre recherche.",
+
     // Admin page variables
     "adminWelcome"            => "Admin – Ajouter un nouveau produit",
     "adminIntro"              => "Remplissez le formulaire ci-dessous pour ajouter un nouveau produit à votre boutique.",

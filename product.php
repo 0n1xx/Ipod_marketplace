@@ -27,7 +27,7 @@
     // If product not found, then it will display an error message and close with the footer
     if (!$product) {?>
         <main>
-            <div class="alert_failure">
+            <div class="empty-state">
                 <p><?php echo $L['productNotFound']; ?></p>
             </div>
         </main>

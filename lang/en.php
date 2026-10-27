@@ -132,6 +132,13 @@ return [
     "newsletterPlaceholderShop" => "Your Email",
     "newsletterButtonShop" => "Subscribe",
 
+    "searchPlaceholder"  => "Search for a product...",
+    "searchButton"       => "Search",
+    "sortNewest"         => "Newest",
+    "sortPriceAsc"       => "Price: Low to High",
+    "sortPriceDesc"      => "Price: High to Low",
+    "noSearchResults"    => "No products match your search.",
+
     // Admin page variables
     "adminWelcome"            => "Admin – Add a New Product",
     "adminIntro"              => "Fill out the form below to add a new product to your store.",

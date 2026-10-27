@@ -12,8 +12,13 @@
     // Creating a connection to the database to read all products
     $database = new Database();
     $db = new CrudProducts($database->connection);
-    // reading all the products
-    $products = $db->read();
+
+    // Reading the search query and sort option from the URL
+    $searchQuery = trim($_GET['q'] ?? '');
+    $allowedSorts = ['newest', 'price_asc', 'price_desc'];
+    $sort = in_array($_GET['sort'] ?? '', $allowedSorts, true) ? $_GET['sort'] : 'newest';
+
+    $products = $db->search($searchQuery, $sort);
 ?>
 <main>
     <section class="intro-shop">
@@ -22,9 +27,23 @@
             <p><?php echo $L['shopHeroSubheadline']; ?></p>
         </div>
     </section>
+    <!-- Search and sort controls for the product catalog -->
+    <section class="shop-controls">
+        <form method="get" class="shop-search-form">
+            <input type="hidden" name="lang" value="<?= htmlspecialchars($lang) ?>">
+            <input type="search" name="q" value="<?= htmlspecialchars($searchQuery) ?>"
+                   placeholder="<?= $L['searchPlaceholder'] ?>">
+            <select name="sort">
+                <option value="newest"    <?= $sort === 'newest'    ? 'selected' : '' ?>><?= $L['sortNewest'] ?></option>
+                <option value="price_asc" <?= $sort === 'price_asc' ? 'selected' : '' ?>><?= $L['sortPriceAsc'] ?></option>
+                <option value="price_desc"<?= $sort === 'price_desc'? 'selected' : '' ?>><?= $L['sortPriceDesc'] ?></option>
+            </select>
+            <button type="submit"><?= $L['searchButton'] ?></button>
+        </form>
+    </section>
     <?php if (empty($products)): ?>
-        <div class="alert_failure">
-            <p><?= $L['productsUnavailable'] ?></p>
+        <div class="empty-state">
+            <p><?= $searchQuery !== '' ? $L['noSearchResults'] : $L['productsUnavailable'] ?></p>
         </div>
     <?php else: ?>
     <!-- Creating a section where I'm displaying all products that are available in my database -->

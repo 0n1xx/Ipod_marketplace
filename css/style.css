@@ -1084,6 +1084,48 @@ footer{
     display: none;
 }
 
+/* Search and sort controls above the product catalog */
+.shop-controls{
+    display: flex;
+    justify-content: center;
+    margin: 2rem auto;
+}
+
+.shop-search-form{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.shop-search-form input[type="search"],
+.shop-search-form select,
+.shop-search-form button{
+    font-size: var(--h4-font-size);
+    padding: 0.8rem 1.2rem;
+    border: 0.15rem solid var(--text);
+    background-color: var(--white);
+    color: var(--text);
+}
+
+.shop-search-form button{
+    cursor: pointer;
+    background-color: var(--text);
+    color: var(--white);
+}
+
+/* Persistent inline messages (e.g. "no products found") are NOT flash
+   messages, so they keep the old visible banner style under their own class */
+.empty-state{
+    font-size: var(--h3-font-size);
+    font-weight: var(--h3-font-weight);
+    width: 50%;
+    margin: 3rem auto;
+    border: 0.2rem solid #0e0e0e;
+    text-align: center;
+    background-color: #e63946;
+}
+
 /* Toast notifications: injected by custom-js.js from .alert_success/.alert_failure */
 .toast-container{
     position: fixed;

@@ -121,7 +121,7 @@
         </div>
     </section>
     <?php if (empty($products)): ?>
-        <div class="alert_failure">
+        <div class="empty-state">
             <p><?= $L['productsUnavailable'] ?></p>
         </div>
     <?php else: ?>
