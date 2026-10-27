@@ -45,6 +45,9 @@
     <section class="product-detail">
         <!-- Displaying a product image -->
         <div class="product-image">
+            <?php if ($product['is_sold']): ?>
+                <span class="sold-badge"><?= $L['soldBadge'] ?></span>
+            <?php endif; ?>
             <img src="<?= htmlspecialchars($product['imagePath']) ?>"
                  alt="<?= htmlspecialchars($product['name']) ?>">
         </div>
@@ -54,7 +57,11 @@
             <p class="product-price-detail">$<?= number_format((float)$product['price'], 2) ?></p>
             <p class="product-description-detail"><?= nl2br(htmlspecialchars($product['description'])) ?></p>
             <div class="product-actions">
-                <button class="add-to-card" disabled><?php echo $L['addToCartButtonSoon']; ?></button>
+                <?php if ($product['is_sold']): ?>
+                    <button class="add-to-card" disabled><?php echo $L['soldBadge']; ?></button>
+                <?php else: ?>
+                    <button class="add-to-card" disabled><?php echo $L['addToCartButtonSoon']; ?></button>
+                <?php endif; ?>
                 <a href="shop.php" class="back-to-shop"><?php echo $L['backToShopButton']; ?></a>
             </div>
         </div>

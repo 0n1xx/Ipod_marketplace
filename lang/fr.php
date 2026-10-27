@@ -156,6 +156,9 @@ return [
     "logOut"                 => "Déconnexion",
     "deleteProduct"          => "Supprimer",
     "updateProduct"          => "Modifier",
+    "markSold"               => "Marquer comme vendu",
+    "markAvailable"          => "Marquer comme disponible",
+    "soldBadge"               => "Vendu",
 
     // Individual product page
     "addToCartButtonSoon"     => "Ajouter au panier (Bientôt disponible)",

@@ -56,6 +56,15 @@
         }
     }
 
+    // Handling the process when a user toggles a product's sold status
+    elseif ($isPost && isset($_POST['toggle_sold_id'])) {
+        $toggleId = (int)$_POST['toggle_sold_id'];
+        $product = $db->getProductById($toggleId);
+        if ($product && $db->setSold($toggleId, !$product['is_sold'])) {
+            $success = $product['is_sold'] ? "Product marked as available!" : "Product marked as sold!";
+        }
+    }
+
     // Handling the process when a user wants to delete products
     elseif ($isPost && isset($_POST['delete_id'])) {
         $deleteId = (int)$_POST['delete_id'];
@@ -130,6 +139,9 @@
             <?php foreach ($products as $product): ?>
             <div>
                 <div class="product-card">
+                    <?php if ($product['is_sold']): ?>
+                        <span class="sold-badge"><?= $L['soldBadge'] ?></span>
+                    <?php endif; ?>
                     <img src="<?= htmlspecialchars($product['imagePath']) ?>"
                          alt="<?= htmlspecialchars($product['name']) ?>">
                     <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>
@@ -141,6 +153,13 @@
                     </p>
                 </div>
                 <div class="update-delete">
+                        <form method="post" class="action-button">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                            <input type="hidden" name="toggle_sold_id" value="<?= $product['product_id'] ?>">
+                            <button type="submit" class="btn-edit">
+                                <?= $product['is_sold'] ? $L['markAvailable'] : $L['markSold'] ?>
+                            </button>
+                        </form>
                         <form method="post" class="action-button">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                             <input type="hidden" name="delete_id" value="<?= $product['product_id'] ?>">

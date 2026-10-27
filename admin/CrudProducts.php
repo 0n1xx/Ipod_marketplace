@@ -332,6 +332,21 @@ class CrudProducts{
         }
     }
 
+    // Marks a product as sold or available again (each iPod is a unique
+    // physical unit, so this is a simple on/off flag rather than a quantity)
+    public function setSold($id, bool $isSold){
+        try {
+            $query = "UPDATE " . $this->table_name . " SET is_sold = :is_sold WHERE product_id = :id";
+            $stmt = $this->connection->prepare($query);
+            $stmt->bindValue(':is_sold', $isSold ? 1 : 0, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            $this->error[] = "Database update error";
+            return false;
+        }
+    }
+
     // A function that deletes a record by its product id
     public function delete($id){
         try {

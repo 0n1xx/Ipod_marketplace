@@ -51,6 +51,9 @@
         <?php foreach ($products as $product): ?>
         <div class="product-card">
             <a href="product.php?id=<?= $product['product_id'] ?>">
+                <?php if ($product['is_sold']): ?>
+                    <span class="sold-badge"><?= $L['soldBadge'] ?></span>
+                <?php endif; ?>
                 <img src="<?= htmlspecialchars($product['imagePath']) ?>"
                      alt="<?= htmlspecialchars($product['name']) ?>">
                 <h3 class="product-name"><?= htmlspecialchars($product['name']) ?></h3>

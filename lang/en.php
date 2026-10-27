@@ -157,6 +157,9 @@ return [
     "logOut"                 => "Log Out",
     "deleteProduct"          => "Delete",
     "updateProduct"          => "Edit",
+    "markSold"               => "Mark as Sold",
+    "markAvailable"          => "Mark as Available",
+    "soldBadge"               => "Sold",
 
     // Individual product page
     "addToCartButtonSoon"     => "Add to Cart (Coming Soon)",
