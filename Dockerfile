@@ -11,17 +11,21 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+# Ubuntu 22.04's own repos only ship PHP 8.1, so the ondrej/php PPA is
+# needed to install 8.3
+RUN apt-get update && apt-get install -y software-properties-common \
+    && add-apt-repository -y ppa:ondrej/php \
+    && apt-get update && apt-get install -y \
     apache2 \
-    php8.1 \
-    php8.1-mysql \
-    php8.1-gd \
-    php8.1-curl \
-    libapache2-mod-php8.1 \
+    php8.3 \
+    php8.3-mysql \
+    php8.3-gd \
+    php8.3-curl \
+    libapache2-mod-php8.3 \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f /var/www/html/index.html
 
-RUN a2enmod rewrite php8.1
+RUN a2enmod rewrite php8.3
 RUN sed -i 's/DirectoryIndex index.html index.cgi index.pl index.php/DirectoryIndex index.php index.html/g' /etc/apache2/mods-enabled/dir.conf
 COPY . /var/www/html/
 COPY --from=vendor /app/vendor /var/www/html/vendor

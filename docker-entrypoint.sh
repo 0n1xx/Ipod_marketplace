@@ -8,7 +8,7 @@ echo "Listen ${APP_PORT}" > /etc/apache2/ports.conf
 sed -i "s/:80>/:${APP_PORT}>/g" /etc/apache2/sites-enabled/000-default.conf
 
 # Pass ALL env vars to PHP via php.ini (avoids SetEnv Apache issues)
-PHP_INI="/etc/php/8.1/apache2/php.ini"
+PHP_INI="/etc/php/8.3/apache2/php.ini"
 echo "variables_order = EGPCS" >> "$PHP_INI"
 echo "env[MYSQLHOST] = \"${MYSQLHOST}\"" >> "$PHP_INI"
 echo "env[MYSQLPORT] = \"${MYSQLPORT}\"" >> "$PHP_INI"
