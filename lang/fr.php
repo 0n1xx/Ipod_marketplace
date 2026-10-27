@@ -192,6 +192,7 @@ return [
     "checkoutNoSession"       => "Nous n'avons pas trouvé votre session de paiement.",
     "checkoutNotPaid"         => "Ce paiement n'a pas pu être vérifié.",
     "checkoutOrderSaveFailed" => "Le paiement a réussi, mais nous n'avons pas pu enregistrer votre commande. Veuillez nous contacter.",
+    "checkoutWrongAccount"    => "Cette session de paiement n'appartient pas à votre compte.",
     "orderHistoryTitle"       => "Historique des commandes",
     "orderHistoryEmpty"       => "Vous n'avez pas encore passé de commande.",
 

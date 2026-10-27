@@ -16,6 +16,14 @@
                 $this->error[] = "Username already exists.";
             }
 
+            // Email is UNIQUE in the database, so check it too, otherwise a
+            // duplicate email only surfaces as a generic "Database error." later
+            $emailExist = $this->db->prepare("SELECT id FROM users WHERE email = ?");
+            $emailExist->execute([$email]);
+            if ($emailExist->fetch()) {
+                $this->error[] = "An account with this email already exists.";
+            }
+
             // Checking name value:
             // Checking if the name is empty
             if (empty($name)) {

@@ -193,6 +193,7 @@ return [
     "checkoutNoSession"       => "We couldn't find your checkout session.",
     "checkoutNotPaid"         => "This payment could not be verified.",
     "checkoutOrderSaveFailed" => "Payment succeeded, but we couldn't save your order. Please contact us.",
+    "checkoutWrongAccount"    => "This checkout session does not belong to your account.",
     "orderHistoryTitle"       => "Order History",
     "orderHistoryEmpty"       => "You haven't placed any orders yet.",
 

@@ -49,6 +49,12 @@
             'success_url'         => $baseUrl . '/checkout-success.php?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url'          => $baseUrl . '/cart.php?cancelled=1',
             'client_reference_id' => (string) Session::get('user_id'),
+            // Recorded here so checkout-success.php can reconstruct exactly what
+            // was paid for, instead of trusting whatever is in the cart by then
+            // (which may have changed since this session was created)
+            'metadata'            => [
+                'product_ids' => implode(',', array_column($cartProducts, 'product_id')),
+            ],
         ]);
     } catch (\Stripe\Exception\ApiErrorException $e) {
         error_log("Stripe checkout session creation failed: " . $e->getMessage());

@@ -34,6 +34,12 @@ RUN chown -R www-data:www-data /var/www/html/
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
+# Apache logs to files by default, which Railway never sees (it only
+# captures the container's stdout/stderr) — symlink them so PHP errors
+# (including our own error_log() calls) actually show up in Railway logs
+RUN ln -sf /dev/stdout /var/log/apache2/access.log \
+    && ln -sf /dev/stderr /var/log/apache2/error.log
+
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 

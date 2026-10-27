@@ -30,6 +30,10 @@
 
         if (!$stripeSession || $stripeSession->payment_status !== 'paid') {
             $errorMessage = $L['checkoutNotPaid'];
+        } elseif ((string) $stripeSession->client_reference_id !== (string) Session::get('user_id')) {
+            // Stop one account from claiming another account's paid session
+            // (e.g. a leaked/shared success URL)
+            $errorMessage = $L['checkoutWrongAccount'];
         } else {
             $orderModel = new Order($database->connection);
 
@@ -37,8 +41,15 @@
             $order = $orderModel->findByStripeSession($sessionId);
 
             if (!$order) {
+                // Use the product IDs Stripe actually charged for (stored as
+                // metadata at checkout time), not whatever is in the cart now —
+                // the cart may have changed since this session was created
                 $db = new CrudProducts($database->connection);
-                $cartProducts = $db->getProductsByIds(Cart::getIds());
+                $productIds = array_filter(array_map(
+                    'intval',
+                    explode(',', $stripeSession->metadata->product_ids ?? '')
+                ));
+                $cartProducts = $db->getProductsByIds($productIds);
                 $cartProducts = array_values(array_filter($cartProducts, fn($p) => !$p['is_sold']));
 
                 $orderId = $orderModel->createFromCart(
