@@ -84,9 +84,20 @@
                     <label for="password"><?= $L['passwordLabelReg']; ?>:</label>
                     <input type="password" id="password" name="password"
                            placeholder="<?= $L['passwordPlaceholderReg']; ?>" required>
+                    <!-- Live checklist updated by custom-js.js as the user types -->
+                    <ul id="password-rules" class="password-rules">
+                        <li data-rule="length"><?= $L['ruleLength'] ?></li>
+                        <li data-rule="upper"><?= $L['ruleUpper'] ?></li>
+                        <li data-rule="lower"><?= $L['ruleLower'] ?></li>
+                        <li data-rule="digit"><?= $L['ruleDigit'] ?></li>
+                        <li data-rule="symbol"><?= $L['ruleSymbol'] ?></li>
+                    </ul>
                     <label for="confirm_password"><?= $L['confirmPassword']; ?>:</label>
                     <input type="password" id="confirm_password" name="confirm_password"
                            placeholder="<?= $L['confirmPasswordPlaceholder']; ?>" required>
+                    <p id="password-match" class="password-match"
+                       data-match-text="<?= htmlspecialchars($L['passwordsMatch']) ?>"
+                       data-mismatch-text="<?= htmlspecialchars($L['passwordsMismatch']) ?>"></p>
                 </fieldset>
                 <div class="submit-button">
                     <button type="submit"><?= $L['registerButton']; ?></button>

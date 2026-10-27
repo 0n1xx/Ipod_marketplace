@@ -120,6 +120,13 @@ return [
     "emailPlaceholderReg"   => "Your email",
     "successfulRegister"   => "Your account has been created!",
     "failRegister"         => "Your account could not be created!",
+    "ruleLength"            => "At least 8 characters",
+    "ruleUpper"             => "One uppercase letter",
+    "ruleLower"             => "One lowercase letter",
+    "ruleDigit"             => "One number",
+    "ruleSymbol"            => "One special character",
+    "passwordsMatch"        => "Passwords match",
+    "passwordsMismatch"     => "Passwords do not match",
 
     // Variables for the shop page
     "shopTitle"          => "Shop",

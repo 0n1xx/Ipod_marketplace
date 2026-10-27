@@ -569,6 +569,47 @@ footer{
     border-radius: 1.2rem;
 }
 
+/* Live password rules checklist on the register page */
+.password-rules{
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    font-size: 1.3rem;
+}
+
+.password-rules li{
+    color: #e63946;
+    position: relative;
+    padding-left: 1.8rem;
+}
+
+.password-rules li::before{
+    content: "✕";
+    position: absolute;
+    left: 0;
+}
+
+.password-rules li.rule-met{
+    color: #2a9d4a;
+}
+
+.password-rules li.rule-met::before{
+    content: "✓";
+}
+
+.password-match{
+    font-size: 1.3rem;
+    margin: 0.5rem 0 0;
+}
+
+.password-match.match-ok{
+    color: #2a9d4a;
+}
+
+.password-match.match-fail{
+    color: #e63946;
+}
+
 .form-details textarea {
     max-height: 8rem;
     padding:  1rem;

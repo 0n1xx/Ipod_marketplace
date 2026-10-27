@@ -119,6 +119,13 @@ return [
     "emailPlaceholderReg"   => "Votre email",
     "successfulRegister"   => "Votre compte a bien créé!",
     "failRegister"         => "Impossible de créer votre compte !",
+    "ruleLength"            => "Au moins 8 caractères",
+    "ruleUpper"             => "Une lettre majuscule",
+    "ruleLower"             => "Une lettre minuscule",
+    "ruleDigit"             => "Un chiffre",
+    "ruleSymbol"            => "Un caractère spécial",
+    "passwordsMatch"        => "Les mots de passe correspondent",
+    "passwordsMismatch"     => "Les mots de passe ne correspondent pas",
 
     // Variables for the shop page
     "shopTitle"          => "Boutique",
