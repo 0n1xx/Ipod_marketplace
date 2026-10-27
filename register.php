@@ -6,6 +6,7 @@
     require_once __DIR__ . "/includes/Session.php";
     require_once __DIR__ . '/includes/Database.php';
     require_once __DIR__ . "/admin/User.php";
+    require_once __DIR__ . '/includes/Csrf.php';
 
     $pageTitle = $L['registerTitle'];
     $pageDesc  = $L['registerDesc'];
@@ -27,14 +28,18 @@
      */
     $errors = [];
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $database = new Database();
-        $user = new User($database->connection);
-        $name = trim($_POST["name"] ?? '');
-        $email = trim($_POST["email"] ?? '');
-        $password = $_POST["password"] ?? '';
-        $confirm_password = $_POST["confirm_password"] ?? '';
-        $result = $user->register($name, $email, $password, $confirm_password);
-        $errors = $user->error;
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            $errors = ["Invalid or expired form submission. Please try again."];
+        } else {
+            $database = new Database();
+            $user = new User($database->connection);
+            $name = trim($_POST["name"] ?? '');
+            $email = trim($_POST["email"] ?? '');
+            $password = $_POST["password"] ?? '';
+            $confirm_password = $_POST["confirm_password"] ?? '';
+            $result = $user->register($name, $email, $password, $confirm_password);
+            $errors = $user->error;
+        }
     }
 ?>
 <main>
@@ -68,6 +73,7 @@
         <!-- The form that collects the data from our user -->
         <div class="form-details">
             <form action="" method="post">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                 <fieldset>
                     <label for="name"><?= $L['userName']; ?>:</label>
                     <input type="text" id="name" name="name"

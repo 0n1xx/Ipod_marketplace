@@ -7,6 +7,7 @@
     require_once __DIR__ . '/includes/Session.php';
     require_once __DIR__ . '/includes/Database.php';
     require_once __DIR__ . '/admin/CrudProducts.php';
+    require_once __DIR__ . '/includes/Csrf.php';
 
     // Only logged-in admins may reach this page; anyone else is redirected away
     Session::start();
@@ -28,8 +29,15 @@
     $database = new Database();
     $db = new CrudProducts($database->connection);
 
+    // Any POST request (create/update/delete) must carry a valid CSRF token
+    $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
+    if ($isPost && !Csrf::verify($_POST['csrf_token'] ?? null)) {
+        $db->error[] = "Invalid or expired form submission. Please try again.";
+        $isPost = false;
+    }
+
     // Handling the update procedure
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
+    if ($isPost && isset($_POST['update_id'])) {
 
         $updateId = (int)$_POST['update_id'];
         $product = $db->getProductById($updateId);
@@ -49,7 +57,7 @@
     }
 
     // Handling the process when a user wants to delete products
-    elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    elseif ($isPost && isset($_POST['delete_id'])) {
         $deleteId = (int)$_POST['delete_id'];
 
         $product = $db->getProductById($deleteId);
@@ -62,7 +70,7 @@
     }
 
     // Handling the creation of new products
-    elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_FILES['product_image']['name'])) {
+    elseif ($isPost && !empty($_FILES['product_image']['name'])) {
 
         $name = trim($_POST["name"]);
         $description = trim($_POST["description"]);
@@ -134,6 +142,7 @@
                 </div>
                 <div class="update-delete">
                         <form method="post" class="action-button">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                             <input type="hidden" name="delete_id" value="<?= $product['product_id'] ?>">
                             <button type="submit" class="btn-delete"><?= $L['deleteProduct'] ?></button>
                         </form>
@@ -157,6 +166,7 @@
         <section class="form-details">
             <form method="post" enctype="multipart/form-data">
                 <fieldset>
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <input type="hidden" name="update_id" value="<?= $editProduct['product_id'] ?>">
                     <input type="hidden" name="oldImage" value="<?= $editProduct['imagePath'] ?>">
                     <label for="name"><?= $L['adminNameLabel'] ?></label>
@@ -189,6 +199,7 @@
     <section class="form-details">
         <form method="post" enctype="multipart/form-data">
             <fieldset>
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                 <label for="name"><?= $L['adminNameLabel'] ?></label>
                 <input type="text" id="name" name="name"
                        placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
