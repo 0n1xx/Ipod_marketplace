@@ -10,7 +10,7 @@
         // Function that checks the input data during the registration
         public function validateUser($name, $email, $password, $confirm_password){
             // First of all, check if the user already exists
-            $userExist = $this->db->prepare("SELECT id FROM admin_users WHERE name = ?");
+            $userExist = $this->db->prepare("SELECT id FROM users WHERE name = ?");
             $userExist->execute([$name]);
             if ($userExist->fetch()) {
                 $this->error[] = "Username already exists.";
@@ -105,7 +105,7 @@
             try{
                 // Hashing the password
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-                $stmt = $this->db->prepare("INSERT INTO admin_users (name, email, password) VALUES (?, ?, ?)");
+                $stmt = $this->db->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
                 $stmt->execute([$name, $email, $hashed_password]);
                 return "User Created";
             }
@@ -117,7 +117,7 @@
 
         public function findByUsername($username){
             try{
-                $stmt = $this->db->prepare("SELECT * FROM admin_users WHERE name = ?");
+                $stmt = $this->db->prepare("SELECT * FROM users WHERE name = ?");
                 $stmt->execute([$username]);
                 return $stmt->fetch(PDO::FETCH_ASSOC);
             }
@@ -134,7 +134,7 @@
                 $this->error[] = "Username or Password is required.";
                 return false;
             }
-            $userExist = $this->db->prepare("SELECT id FROM admin_users WHERE name = ?");
+            $userExist = $this->db->prepare("SELECT id FROM users WHERE name = ?");
             $userExist->execute([$username]);
             if (!$userExist->fetch()) {
                 $this->error[] = "Username or Password is not correct.";

@@ -1,5 +1,5 @@
--- Table: admin_users
-CREATE TABLE admin_users (
+-- Table: users (both regular users and admins; is_admin tells them apart)
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -16,5 +16,5 @@ CREATE TABLE products_description (
     image VARCHAR(255) NOT NULL
 );
 
--- If a user should become an admin, here is a SQL script for that 
-update admin_users set is_admin = 1 where name = 'your_user_name';
+-- If a user should become an admin, here is a SQL script for that
+update users set is_admin = 1 where name = 'your_user_name';
