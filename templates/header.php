@@ -1,5 +1,10 @@
-<!-- Here it's only necessary to include the language php file -->
-<?php require __DIR__ . '/../includes/lang.php'; ?>
+<?php
+// Including the language file and starting the session so the nav
+// can tell whether a visitor is logged in
+require __DIR__ . '/../includes/lang.php';
+require_once __DIR__ . '/../includes/Session.php';
+Session::start();
+?>
 <!doctype html>
 <html lang="<?php echo $lang; ?>">
 <head>
@@ -28,9 +33,14 @@
             <li class="nav_menu"><a href="about.php?lang=<?php echo $lang; ?>"><?php echo $L['navAbout']; ?></a></li>
             <li class="nav_menu"><a href="shop.php?lang=<?php echo $lang; ?>"><?php echo $L['navShop']; ?></a></li>
             <li class="nav_menu"><a href="contact.php?lang=<?php echo $lang; ?>"><?php echo $L['navContact']; ?></a></li>
-            <li class="nav_menu"><a href="personal-account.php?lang=<?php echo $lang; ?>"><?php echo $L['personalAccount']; ?></a></li>
-            <li class="nav_menu"><a href="login.php?lang=<?php echo $lang; ?>"><?php echo $L['navLogin']; ?></a></li>
-            <li class="nav_menu"><a href="register.php?lang=<?php echo $lang; ?>"><?php echo $L['navRegister']; ?></a></li>
+            <?php if (Session::isLoggedIn()): ?>
+                <?php $accountPage = Session::get('is_admin') == 1 ? 'admin-dashboard.php' : 'personal-account.php'; ?>
+                <li class="nav_menu"><a href="<?= $accountPage ?>?lang=<?php echo $lang; ?>"><?= htmlspecialchars(Session::get('username')) ?></a></li>
+                <li class="nav_menu"><a href="logout.php?lang=<?php echo $lang; ?>"><?php echo $L['logOut']; ?></a></li>
+            <?php else: ?>
+                <li class="nav_menu"><a href="login.php?lang=<?php echo $lang; ?>"><?php echo $L['navLogin']; ?></a></li>
+                <li class="nav_menu"><a href="register.php?lang=<?php echo $lang; ?>"><?php echo $L['navRegister']; ?></a></li>
+            <?php endif; ?>
         </menu>
     </nav>
     <div>
