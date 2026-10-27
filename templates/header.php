@@ -6,6 +6,9 @@ require __DIR__ . '/../includes/lang.php';
 // every page before this template); callers that skip bootstrap.php
 // would need to require it explicitly
 Session::start();
+
+// Used to highlight the current page's link in the nav
+$currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <!doctype html>
 <html lang="<?php echo $lang; ?>">
@@ -31,10 +34,10 @@ Session::start();
     <!-- Adding the menu with all of the links to other pages -->
     <nav>
         <menu>
-            <li class="nav_menu"><a href="index.php?lang=<?php echo $lang; ?>"><?php echo $L['navHome']; ?></a></li>
-            <li class="nav_menu"><a href="about.php?lang=<?php echo $lang; ?>"><?php echo $L['navAbout']; ?></a></li>
-            <li class="nav_menu"><a href="shop.php?lang=<?php echo $lang; ?>"><?php echo $L['navShop']; ?></a></li>
-            <li class="nav_menu"><a href="contact.php?lang=<?php echo $lang; ?>"><?php echo $L['navContact']; ?></a></li>
+            <li class="nav_menu"><a href="index.php?lang=<?php echo $lang; ?>" class="<?= $currentPage === 'index.php' ? 'active' : '' ?>"><?php echo $L['navHome']; ?></a></li>
+            <li class="nav_menu"><a href="about.php?lang=<?php echo $lang; ?>" class="<?= $currentPage === 'about.php' ? 'active' : '' ?>"><?php echo $L['navAbout']; ?></a></li>
+            <li class="nav_menu"><a href="shop.php?lang=<?php echo $lang; ?>" class="<?= in_array($currentPage, ['shop.php', 'product.php']) ? 'active' : '' ?>"><?php echo $L['navShop']; ?></a></li>
+            <li class="nav_menu"><a href="contact.php?lang=<?php echo $lang; ?>" class="<?= $currentPage === 'contact.php' ? 'active' : '' ?>"><?php echo $L['navContact']; ?></a></li>
             <?php if (Session::isLoggedIn()): ?>
                 <?php $accountPage = Session::get('is_admin') == 1 ? 'admin-dashboard.php' : 'personal-account.php'; ?>
                 <?php if (Session::get('is_admin') != 1): ?>

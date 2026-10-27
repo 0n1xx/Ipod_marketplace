@@ -8,6 +8,17 @@
     --blue-back: #80B3E5;
     --dark-blue-back: #0f0f1a;
 
+    /* Accent colour reused for highlights, active states and focus rings */
+    --accent: #3575e2;
+    --accent-teal: #0A6B5A;
+
+    /* Shared shadows/radius so every card/button feels like one design system */
+    --radius: 1.2rem;
+    --radius-lg: 2rem;
+    --shadow-sm: 0 0.4rem 1.2rem rgba(28, 26, 34, 0.08);
+    --shadow-md: 0 1.2rem 2.4rem rgba(28, 26, 34, 0.12);
+    --transition: all 0.3s ease;
+
     /* General values to all "h" elements to keep everything consistent */
     --h1-font-size: clamp(3vh, 4vh, 5vh);
     --h1-font-weight: 700;
@@ -17,6 +28,43 @@
     --h3-font-weight: 500;
     --h4-font-size: clamp(1vh, 1.5vh, 2vh);
     --h4-font-weight: 500;
+}
+
+/* Dims and shows a spinner on a submit button once it has been disabled by the submit guard */
+button.is-loading{
+    opacity: 0.7;
+    cursor: not-allowed;
+    position: relative;
+    color: transparent !important;
+}
+
+button.is-loading::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: -0.8rem 0 0 -0.8rem;
+    border: 0.2rem solid rgba(255, 255, 255, 0.5);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin{
+    to { transform: rotate(360deg); }
+}
+
+/* Visible, consistent focus ring for keyboard navigation across the whole site */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 0.2rem solid var(--accent);
+    outline-offset: 0.2rem;
+    border-radius: 0.4rem;
 }
 
 /* Smooth animation of getting elements up for the whole page */
@@ -72,7 +120,9 @@ header{
     position: sticky;
     top: 0;
     z-index: 2;
-    background-color: var(--light-blue-back);
+    background-color: rgba(241, 247, 253, 0.85);
+    backdrop-filter: blur(0.8rem);
+    box-shadow: 0 0.2rem 1rem rgba(28, 26, 34, 0.06);
 }
 
 /* making the first div with the image and the name of the company a flex container */
@@ -136,6 +186,40 @@ header nav a {
     font-weight: 500;
     padding: 0.5rem 0.5rem;
     margin: 0.5rem;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+/* Underline that grows in on hover, and stays on the current page's link */
+header nav a::after{
+    content: "";
+    position: absolute;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: -0.2rem;
+    height: 0.2rem;
+    background-color: var(--accent);
+    border-radius: 0.2rem;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+header nav a:hover{
+    color: var(--accent);
+}
+
+header nav a:hover::after{
+    transform: scaleX(1);
+}
+
+header nav a.active{
+    color: var(--accent);
+    font-weight: 700;
+}
+
+header nav a.active::after{
+    transform: scaleX(1);
 }
 
 header .lang-switch a {
@@ -159,7 +243,7 @@ footer{
     align-items: center;
     justify-content: space-between;
     padding: 1.6rem 4rem;
-    background-color: var(--dark-blue-back);
+    background: linear-gradient(135deg, var(--dark-blue-back) 0%, #1a1a2e 100%);
 }
 
 .footer-logo > div{
@@ -391,6 +475,7 @@ footer{
     font-weight: 600;
     padding: 1.2rem 3.2rem;
     border-radius: 5rem;
+    box-shadow: var(--shadow-sm);
 }
 
 
@@ -487,9 +572,9 @@ footer{
 
 .contact-method{
     padding: 1.2rem 3.2rem;
-    background-color: var(--light-grey);
-    border: 0.3rem solid var(--light-grey);
-    border-radius: 1rem;
+    background-color: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     max-width: 150px;
     display: flex;
     justify-content: center;
@@ -541,7 +626,8 @@ footer{
     margin: 3rem auto;
     padding: 2.5rem;
     background: #fffffb; /* just use it for the form here, so it has some visual differences */
-    border-radius: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
 }
 
 .form-details fieldset{
@@ -684,12 +770,17 @@ footer{
 }
 
 .question-answer{
-    background: var(--light-grey);
-    border: 1px solid var(--light-grey);
-    border-radius: 1.2rem;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 1.5rem;
     min-height: 4rem;
     width: 100%;
+    transition: var(--transition);
+}
+
+.question-answer:hover{
+    box-shadow: var(--shadow-md);
 }
 
 .question-answer summary,
@@ -1073,11 +1164,23 @@ footer{
 
 .product-card{
     position: relative;
+    background-color: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.2rem 1.2rem 1.6rem;
+    transition: var(--transition);
+}
+
+.product-card:hover{
+    transform: translateY(-0.6rem);
+    box-shadow: var(--shadow-md);
 }
 
 .product-card img{
     min-height: 20vh;
     width: 100%;
+    border-radius: var(--radius);
+    object-fit: cover;
 }
 
 /* "Sold" badge shown over the product image once an item is marked sold */
@@ -1184,9 +1287,12 @@ footer{
     font-weight: var(--h3-font-weight);
     width: 50%;
     margin: 3rem auto;
-    border: 0.2rem solid #0e0e0e;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
     text-align: center;
-    background-color: #e63946;
+    color: var(--text);
+    background-color: var(--light-blue-back);
+    box-shadow: var(--shadow-sm);
 }
 
 /* Toast notifications: injected by custom-js.js from .alert_success/.alert_failure */
@@ -1205,10 +1311,9 @@ footer{
     font-size: var(--h3-font-size);
     font-weight: var(--h3-font-weight);
     padding: 1.2rem 1.6rem;
-    border: 0.2rem solid #0e0e0e;
+    border-radius: var(--radius);
     text-align: left;
-    color: var(--text);
-    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md);
     animation: toastIn 0.3s ease-out;
 }
 
@@ -1217,11 +1322,13 @@ footer{
 }
 
 .toast-success{
-    background-color: #BADA55;
+    background-color: #A7E0D7;
+    color: var(--accent-teal);
 }
 
 .toast-error{
-    background-color: #e63946;
+    background-color: #fde3e5;
+    color: #b00020;
 }
 
 @keyframes toastIn{
@@ -1398,9 +1505,15 @@ footer{
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    padding: 1rem;
-    border: 1px solid var(--light-grey);
-    border-radius: 1.2rem;
+    padding: 1.2rem;
+    background-color: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.cart-item:hover{
+    box-shadow: var(--shadow-md);
 }
 
 .cart-item img{
@@ -1438,10 +1551,16 @@ footer{
 }
 
 .order-card{
-    border: 1px solid var(--light-grey);
-    border-radius: 1.2rem;
+    background-color: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
+    transition: var(--transition);
+}
+
+.order-card:hover{
+    box-shadow: var(--shadow-md);
 }
 
 .order-card-header{
@@ -1469,6 +1588,38 @@ footer{
     height: 4rem;
     object-fit: cover;
     border-radius: 0.6rem;
+}
+
+/* Mobile adaptation for cart and order history */
+@media (max-width: 768px) {
+    .cart-items,
+    .cart-summary,
+    .order-history{
+        width: 100%;
+        padding: 0 1.2rem;
+        box-sizing: border-box;
+    }
+
+    .cart-item{
+        flex-wrap: wrap;
+    }
+
+    .cart-item img{
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .cart-summary{
+        flex-direction: column;
+        gap: 1.2rem;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .order-card-header{
+        flex-direction: column;
+        gap: 0.4rem;
+    }
 }
 
 .product-text {
@@ -1592,9 +1743,9 @@ footer{
     width: 80%;
     margin: 2rem auto;
     padding: 1.2rem 3.2rem;
-    background-color: var(--light-grey);
-    border: 0.3rem solid var(--light-grey);
-    border-radius: 1rem;
+    background-color: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     max-width: 200px;
     transition: all .3s ease-in-out;
 }

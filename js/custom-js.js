@@ -19,7 +19,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Thumbnail gallery on the product detail page
     initProductGallery();
+
+    // Disables submit buttons on click so cart/checkout forms can't be double-submitted
+    initSubmitGuard();
 });
+
+function initSubmitGuard() {
+    document.querySelectorAll("form").forEach((form) => {
+        form.addEventListener("submit", () => {
+            const button = form.querySelector('button[type="submit"]');
+            if (!button || button.disabled) return;
+            button.dataset.originalText = button.textContent;
+            button.disabled = true;
+            button.classList.add("is-loading");
+        });
+    });
+}
 
 function initProductGallery() {
     const mainImage = document.getElementById("main-product-image");
