@@ -11,6 +11,10 @@ Session::start();
 $currentPage = basename($_SERVER['PHP_SELF']);
 $isAdminSection = str_contains($_SERVER['PHP_SELF'] ?? '', '/admin/');
 $base = BASE_URL;
+$cartHref = Session::isLoggedIn()
+    ? $base . '/cart.php?lang=' . $lang
+    : $base . '/login.php?lang=' . $lang;
+$cartCount = Session::isLoggedIn() ? Cart::count() : 0;
 ?>
 <!doctype html>
 <html lang="<?php echo $lang; ?>">
@@ -20,9 +24,9 @@ $base = BASE_URL;
     <meta name="description" content="<?php echo $pageDesc ?? ''; ?>">
     <meta name="robots" content="noindex, nofollow">
     <title><?php echo $pageTitle ?? 'QuébecIpod'; ?></title>
-    <link rel="stylesheet" href="<?= $base ?>/css/style.css">
+    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028c">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <script src="<?= $base ?>/js/custom-js.js" defer></script>
+    <script src="<?= $base ?>/js/custom-js.js?v=20261028c" defer></script>
 </head>
 <body<?= $isAdminSection ? ' class="is-admin-page"' : '' ?>>
 <header>
@@ -38,27 +42,6 @@ $base = BASE_URL;
             <li class="nav_menu"><a href="<?= $base ?>/about.php?lang=<?php echo $lang; ?>" class="<?= $currentPage === 'about.php' ? 'active' : '' ?>"><?php echo $L['navAbout']; ?></a></li>
             <li class="nav_menu"><a href="<?= $base ?>/shop.php?lang=<?php echo $lang; ?>" class="<?= in_array($currentPage, ['shop.php', 'product.php']) ? 'active' : '' ?>"><?php echo $L['navShop']; ?></a></li>
             <li class="nav_menu"><a href="<?= $base ?>/contact.php?lang=<?php echo $lang; ?>" class="<?= $currentPage === 'contact.php' ? 'active' : '' ?>"><?php echo $L['navContact']; ?></a></li>
-            <?php
-                $cartHref = Session::isLoggedIn()
-                    ? $base . '/cart.php?lang=' . $lang
-                    : $base . '/login.php?lang=' . $lang;
-                $cartCount = Session::isLoggedIn() ? Cart::count() : 0;
-            ?>
-            <li class="nav_menu">
-                <a href="<?= htmlspecialchars($cartHref) ?>"
-                   class="cart-link <?= $currentPage === 'cart.php' ? 'active' : '' ?>"
-                   aria-label="<?= htmlspecialchars($L['navCart']) ?>">
-                    <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span class="cart-label"><?= $L['navCart'] ?></span>
-                    <?php if ($cartCount > 0): ?>
-                        <span class="cart-count"><?= $cartCount ?></span>
-                    <?php endif; ?>
-                </a>
-            </li>
             <?php if (Session::isLoggedIn()): ?>
                 <?php $accountPage = Session::get('is_admin') == 1 ? $base . '/admin/' : $base . '/personal-account.php'; ?>
                 <li class="nav_menu"><a href="<?= $accountPage ?>?lang=<?php echo $lang; ?>" class="<?= $isAdminSection || $currentPage === 'personal-account.php' ? 'active' : '' ?>"><?= htmlspecialchars(Session::get('username')) ?></a></li>
@@ -69,7 +52,19 @@ $base = BASE_URL;
             <?php endif; ?>
         </menu>
     </nav>
-    <div>
+    <div class="header-actions">
+        <a href="<?= htmlspecialchars($cartHref) ?>"
+           class="cart-link <?= $currentPage === 'cart.php' ? 'active' : '' ?>"
+           aria-label="<?= htmlspecialchars($L['navCart']) ?>">
+            <svg class="cart-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <?php if ($cartCount > 0): ?>
+                <span class="cart-count"><?= $cartCount ?></span>
+            <?php endif; ?>
+        </a>
         <div class="lang-switch">
             <?php
             $newLang = ($lang === 'en') ? 'fr' : 'en';

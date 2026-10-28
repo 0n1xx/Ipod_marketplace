@@ -72,8 +72,8 @@
                     <input type="text" id="name" name="name" placeholder="<?php echo $L['loginIdentifierPlaceholder']; ?>" required>
                     <label for="password"><?php echo $L['passwordLabel']; ?>:</label>
                     <input type="password" id="password" name="password" placeholder="<?php echo $L['passwordPlaceholder']; ?>" required>
-                    <a href="<?= BASE_URL ?>/forgot-password.php" class="forgot-password-link"><?= $L['forgotPasswordLink'] ?></a>
                 </fieldset>
+                <a href="<?= BASE_URL ?>/forgot-password.php" class="forgot-password-link"><?= $L['forgotPasswordLink'] ?></a>
                 <div class="submit-button">
                     <button type="submit"><?php echo $L['signInButton']; ?></button>
                 </div>

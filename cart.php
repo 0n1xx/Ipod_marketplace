@@ -48,30 +48,32 @@
             <a href="<?= BASE_URL ?>/shop.php" class="button-home-primary"><?= $L['backToShopButton'] ?></a>
         </div>
     <?php else: ?>
-        <section class="cart-items">
-            <?php foreach ($cartProducts as $product): ?>
-                <div class="cart-item">
-                    <img src="<?= htmlspecialchars($product['imagePath']) ?>"
-                         alt="<?= htmlspecialchars($product['name']) ?>" loading="lazy">
-                    <div class="cart-item-details">
-                        <h3><?= htmlspecialchars($product['name']) ?></h3>
-                        <p class="product-price">$<?= number_format((float)$product['price'], 2) ?></p>
+        <div class="cart-shell">
+            <section class="cart-items">
+                <?php foreach ($cartProducts as $product): ?>
+                    <div class="cart-item">
+                        <img src="<?= htmlspecialchars($product['imagePath']) ?>"
+                             alt="<?= htmlspecialchars($product['name']) ?>" loading="lazy">
+                        <div class="cart-item-details">
+                            <h3><?= htmlspecialchars($product['name']) ?></h3>
+                            <p class="product-price">$<?= number_format((float)$product['price'], 2) ?></p>
+                        </div>
+                        <form method="post" action="<?= BASE_URL ?>/cart-remove.php">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                            <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                            <button type="submit" class="btn-delete"><?= $L['removeFromCart'] ?></button>
+                        </form>
                     </div>
-                    <form method="post" action="<?= BASE_URL ?>/cart-remove.php">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                        <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
-                        <button type="submit" class="btn-delete"><?= $L['removeFromCart'] ?></button>
-                    </form>
-                </div>
-            <?php endforeach; ?>
-        </section>
-        <section class="cart-summary">
-            <p class="cart-total"><?= $L['cartTotal'] ?>: $<?= number_format((float)$total, 2) ?></p>
-            <form method="post" action="<?= BASE_URL ?>/checkout.php">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                <button type="submit" class="button-home-primary"><?= $L['proceedToCheckout'] ?></button>
-            </form>
-        </section>
+                <?php endforeach; ?>
+            </section>
+            <section class="cart-summary">
+                <p class="cart-total"><?= $L['cartTotal'] ?>: $<?= number_format((float)$total, 2) ?></p>
+                <form method="post" action="<?= BASE_URL ?>/checkout.php">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                    <button type="submit" class="button-home-primary"><?= $L['proceedToCheckout'] ?></button>
+                </form>
+            </section>
+        </div>
     <?php endif; ?>
 </main>
 <?php require_once __DIR__ . '/templates/footer.php'; ?>
