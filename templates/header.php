@@ -42,8 +42,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <?php $accountPage = Session::get('is_admin') == 1 ? 'admin-dashboard.php' : 'personal-account.php'; ?>
                 <?php if (Session::get('is_admin') != 1): ?>
                     <li class="nav_menu">
-                        <a href="cart.php?lang=<?php echo $lang; ?>">
-                            <?= $L['navCart'] ?><?php if (Cart::count() > 0): ?> (<?= Cart::count() ?>)<?php endif; ?>
+                        <a href="cart.php?lang=<?php echo $lang; ?>" class="cart-link <?= $currentPage === 'cart.php' ? 'active' : '' ?>">
+                            <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <?= $L['navCart'] ?><?php if (Cart::count() > 0): ?> <span class="cart-count"><?= Cart::count() ?></span><?php endif; ?>
                         </a>
                     </li>
                 <?php endif; ?>
