@@ -1,17 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.documentElement.classList.add('js');
     initMobileNav();
+    initHeaderScroll();
     initScrollReveal();
     initPasswordToggles();
     initPasswordValidation();
     initToasts();
     initProductGallery();
+    initAddToCart();
+    initSkeletonImages();
     initConfirmForms();
     initDropzones();
     initSubmitGuard();
 });
 
-/* Scroll reveal: elements with [data-reveal] fade in when they enter the viewport */
+function initHeaderScroll() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+    const onScroll = () => {
+        header.classList.toggle('is-scrolled', window.scrollY > 12);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+}
+
 function initScrollReveal() {
     const els = document.querySelectorAll('[data-reveal]');
     if (!els.length) return;
@@ -33,7 +45,6 @@ function initScrollReveal() {
     els.forEach((el) => io.observe(el));
 }
 
-/* Show / hide password for [data-pw-toggle] buttons */
 function initPasswordToggles() {
     document.querySelectorAll('[data-pw-toggle]').forEach((btn) => {
         btn.setAttribute('aria-pressed', 'false');
@@ -48,7 +59,6 @@ function initPasswordToggles() {
     });
 }
 
-/* Custom file picker: show chosen filename(s) inside the dropzone label */
 function initDropzones() {
     document.querySelectorAll('[data-dropzone-input]').forEach((input) => {
         const label = document.querySelector(`label.dropzone[for="${input.id}"]`);
@@ -70,7 +80,6 @@ function initDropzones() {
     });
 }
 
-/* Matches redesign-html: data-menu-toggle + #mobile-menu overlay */
 function initMobileNav() {
     const menuBtn = document.querySelector('[data-menu-toggle]');
     const menu = document.getElementById('mobile-menu');
@@ -101,6 +110,7 @@ function initMobileNav() {
 
 function initSubmitGuard() {
     document.querySelectorAll('form').forEach((form) => {
+        if (form.hasAttribute('data-add-to-cart')) return;
         form.addEventListener('submit', () => {
             const button = form.querySelector('button[type="submit"]');
             if (!button || button.disabled) return;
@@ -203,22 +213,176 @@ function ensureConfirmModal() {
     return modal;
 }
 
+/* Swipe / arrow product gallery */
 function initProductGallery() {
-    const mainImage = document.getElementById('main-product-image');
-    const thumbnails = document.querySelectorAll('.thumb[data-image], [data-thumb]');
-    if (!mainImage || !thumbnails.length) return;
-
-    thumbnails.forEach((thumb) => {
-        thumb.addEventListener('click', () => {
-            const src = thumb.dataset.image || thumb.getAttribute('data-thumb');
-            if (src) mainImage.src = src;
-            thumbnails.forEach((t) => t.setAttribute('aria-pressed', 'false'));
-            thumb.setAttribute('aria-pressed', 'true');
+    const root = document.querySelector('[data-gallery]');
+    if (!root) {
+        // Legacy thumbs fallback
+        const mainImage = document.getElementById('main-product-image');
+        const thumbnails = document.querySelectorAll('.thumb[data-image], [data-thumb]');
+        if (!mainImage || !thumbnails.length) return;
+        thumbnails.forEach((thumb) => {
+            thumb.addEventListener('click', () => {
+                const src = thumb.dataset.image || thumb.getAttribute('data-thumb');
+                if (src) mainImage.src = src;
+                thumbnails.forEach((t) => t.setAttribute('aria-pressed', 'false'));
+                thumb.setAttribute('aria-pressed', 'true');
+            });
         });
+        return;
+    }
+
+    const track = root.querySelector('[data-gallery-track]');
+    const slides = Array.from(root.querySelectorAll('[data-gallery-slide]'));
+    const thumbs = Array.from(root.querySelectorAll('[data-gallery-thumb]'));
+    const prev = root.querySelector('[data-gallery-prev]');
+    const next = root.querySelector('[data-gallery-next]');
+    if (!track || slides.length < 2) return;
+
+    let index = 0;
+    const go = (i) => {
+        index = (i + slides.length) % slides.length;
+        track.scrollTo({ left: slides[index].offsetLeft, behavior: 'smooth' });
+        thumbs.forEach((thumb, t) => thumb.setAttribute('aria-pressed', t === index ? 'true' : 'false'));
+    };
+
+    prev && prev.addEventListener('click', () => go(index - 1));
+    next && next.addEventListener('click', () => go(index + 1));
+    thumbs.forEach((thumb) => {
+        thumb.addEventListener('click', () => go(Number(thumb.getAttribute('data-gallery-thumb')) || 0));
+    });
+
+    let scrollTimer;
+    track.addEventListener('scroll', () => {
+        window.clearTimeout(scrollTimer);
+        scrollTimer = window.setTimeout(() => {
+            const nearest = slides.reduce((best, slide, i) => {
+                const dist = Math.abs(slide.offsetLeft - track.scrollLeft);
+                return dist < best.dist ? { i, dist } : best;
+            }, { i: 0, dist: Infinity });
+            index = nearest.i;
+            thumbs.forEach((thumb, t) => thumb.setAttribute('aria-pressed', t === index ? 'true' : 'false'));
+        }, 60);
+    }, { passive: true });
+}
+
+/* AJAX add-to-cart + fly-to-cart motion */
+function initAddToCart() {
+    const form = document.querySelector('form[data-add-to-cart]');
+    if (!form) return;
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const button = form.querySelector('button[type="submit"]');
+        if (button) {
+            button.disabled = true;
+            button.classList.add('is-loading');
+        }
+
+        const body = new FormData(form);
+        body.set('ajax', '1');
+
+        try {
+            const res = await fetch(form.action, {
+                method: 'POST',
+                body,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+            });
+            const data = await res.json();
+            if (data.redirect) {
+                window.location.href = data.redirect;
+                return;
+            }
+            if (!data.ok) throw new Error('add_failed');
+
+            flyToCart(form.getAttribute('data-product-image'));
+            updateCartBadges(data.count);
+
+            const actions = form.closest('.actions');
+            if (actions) {
+                const cartLink = document.querySelector('a.header-link[href*="cart.php"], a.icon-btn[href*="cart.php"]');
+                const href = cartLink?.getAttribute('href') || ('cart.php?lang=' + (new URLSearchParams(window.location.search).get('lang') || 'en'));
+                const link = document.createElement('a');
+                link.href = href;
+                link.className = 'btn btn--blue btn--lg btn--block';
+                link.textContent = document.documentElement.lang === 'fr' ? 'Voir le panier' : 'View Cart';
+                form.replaceWith(link);
+            }
+        } catch (err) {
+            form.submit();
+        } finally {
+            if (button) {
+                button.disabled = false;
+                button.classList.remove('is-loading');
+            }
+        }
     });
 }
 
-/* Password rules, strength meter, and confirm match */
+function updateCartBadges(count) {
+    document.querySelectorAll('.count-badge, [data-cart-count]').forEach((badge) => {
+        badge.textContent = String(count);
+        badge.hidden = !count;
+        badge.classList.remove('is-pop');
+        void badge.offsetWidth;
+        badge.classList.add('is-pop');
+    });
+    // Create badge if missing on header cart links
+    if (count > 0) {
+        document.querySelectorAll('.header-link[href*="cart.php"], .icon-btn[href*="cart.php"]').forEach((link) => {
+            let badge = link.querySelector('.count-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'count-badge is-pop';
+                link.appendChild(badge);
+            }
+            badge.textContent = String(count);
+            badge.hidden = false;
+        });
+    }
+}
+
+function flyToCart(imageUrl) {
+    if (!imageUrl) return;
+    const cart = document.querySelector('.header-link[href*="cart.php"], .icon-btn[href*="cart.php"]');
+    const source = document.getElementById('main-product-image');
+    if (!cart || !source) return;
+
+    const from = source.getBoundingClientRect();
+    const to = cart.getBoundingClientRect();
+    const ghost = document.createElement('img');
+    ghost.src = imageUrl;
+    ghost.alt = '';
+    ghost.className = 'cart-fly';
+    ghost.style.left = from.left + 'px';
+    ghost.style.top = from.top + 'px';
+    ghost.style.width = Math.min(from.width, 160) + 'px';
+    ghost.style.height = Math.min(from.height, 160) + 'px';
+    document.body.appendChild(ghost);
+
+    requestAnimationFrame(() => {
+        ghost.style.transform = `translate(${to.left - from.left}px, ${to.top - from.top}px) scale(0.15)`;
+        ghost.style.opacity = '0.2';
+    });
+    ghost.addEventListener('transitionend', () => ghost.remove(), { once: true });
+}
+
+function initSkeletonImages() {
+    document.querySelectorAll('[data-skeleton-img]').forEach((img) => {
+        const tile = img.closest('.tile');
+        const done = () => tile && tile.classList.add('is-loaded');
+        if (img.complete) done();
+        else {
+            img.addEventListener('load', done, { once: true });
+            img.addEventListener('error', done, { once: true });
+        }
+    });
+}
+
 function initPasswordValidation() {
     const password = document.querySelector('[data-password]') || document.getElementById('password');
     const rulesList = document.getElementById('password-rules') || document.querySelector('[data-rule]')?.closest('ul');

@@ -41,8 +41,7 @@
         <?php endif; ?>
 
         <?php if (empty($cartProducts)): ?>
-            <div class="empty">
-                <div class="empty-mark" aria-hidden="true"></div>
+            <div class="empty empty--photo" style="--empty-img:url('<?= BASE_URL ?>/images/login-desk.jpg')">
                 <p><?= $L['cartEmpty'] ?></p>
                 <a href="<?= BASE_URL ?>/shop.php?lang=<?= $lang ?>" class="btn btn--dark"><?= $L['backToShopButton'] ?></a>
             </div>

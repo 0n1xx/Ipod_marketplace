@@ -36,7 +36,7 @@
             <section class="orders">
                 <h2><?= $L['orderHistoryTitle'] ?></h2>
                 <?php if (empty($orders)): ?>
-                    <div class="empty">
+                    <div class="empty empty--photo" style="--empty-img:url('<?= BASE_URL ?>/images/register-unbox.jpg')">
                         <p><?= $L['orderHistoryEmpty'] ?></p>
                         <a href="<?= BASE_URL ?>/shop.php?lang=<?= $lang ?>" class="btn btn--dark"><?= $L['backToShopButton'] ?></a>
                     </div>
@@ -46,13 +46,10 @@
                             <?php $status = Order::normalizeStatus($order['status'] ?? 'paid'); ?>
                             <li class="order-card">
                                 <div class="order-card-head">
-                                    <span><?= htmlspecialchars($order['created_at']) ?></span>
+                                    <span>#<?= (int)$order['id'] ?> · <?= htmlspecialchars($order['created_at']) ?></span>
                                     <strong>$<?= number_format((float)$order['total_price'], 2) ?></strong>
                                 </div>
-                                <div class="order-card-status">
-                                    <span class="eyebrow"><?= $L['orderStatusLabel'] ?></span>
-                                    <span class="pill pill--status-<?= htmlspecialchars($status) ?>"><?= $L['orderStatus_' . $status] ?></span>
-                                </div>
+                                <?php require __DIR__ . '/templates/order-timeline.php'; ?>
                                 <ul class="order-items">
                                     <?php foreach ($order['items'] as $item): ?>
                                         <li>

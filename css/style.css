@@ -162,11 +162,19 @@ label:focus-within {
 /* ---------- Header ---------- */
 
 .site-header {
-    background: var(--ground);
-    border-bottom: 1px solid var(--line);
+    background: rgba(238, 238, 238, 0.92);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            backdrop-filter: blur(12px) saturate(1.2);
+    border-bottom: 1px solid transparent;
     position: sticky;
     top: 0;
     z-index: 20;
+    transition: border-color .25s, box-shadow .25s, background-color .25s;
+}
+.site-header.is-scrolled {
+    border-bottom-color: var(--line);
+    box-shadow: 0 10px 28px -22px rgba(18, 19, 22, 0.45);
+    background: rgba(255, 255, 255, 0.9);
 }
 .site-header .header-bar {
     min-height: 76px;
@@ -688,8 +696,17 @@ label:focus-within {
     padding: 96px 24px; border: 1.5px dashed var(--line-2); border-radius: var(--radius-lg);
     text-align: center;
 }
-.empty p { font-stretch: 115%; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; }
+.empty p { font-stretch: 115%; font-weight: 700; font-size: 26px; letter-spacing: -0.02em; max-width: 22ch; }
 .empty-mark { width: 88px; height: 88px; border-radius: 50%; border: 18px solid var(--line); }
+.empty--photo {
+    position: relative; overflow: hidden; border: 0;
+    min-height: 320px; padding: 56px 28px; color: #fff;
+    background: #23252A center / cover no-repeat;
+    background-image: linear-gradient(180deg, rgba(18,19,22,.35), rgba(18,19,22,.72)), var(--empty-img);
+}
+.empty--photo p { color: #fff; text-shadow: 0 8px 24px rgba(0,0,0,.35); }
+.empty--photo .btn--dark { background: #fff; color: var(--ink); }
+.empty--photo .btn--outline { border-color: rgba(255,255,255,.7); color: #fff; }
 
 /* ---------- Product ---------- */
 
@@ -1447,3 +1464,148 @@ html.confirm-open { overflow: hidden; }
 .confirm-modal__actions .btn { min-width: 110px; height: 48px; }
 
 .panel-head .btn-row { gap: 8px; }
+
+/* ---------- UI pack: chips, gallery swipe, timeline, kanban, motion ---------- */
+
+.shop-chips { padding-block: 8px 4px; border-bottom: 1px solid var(--line-soft); background: var(--ground); position: sticky; top: 76px; z-index: 15; }
+.shop-chips .container { display: flex; flex-direction: column; gap: 12px; padding-block: 12px; }
+.chip-row {
+    display: flex; flex-wrap: nowrap; align-items: center; gap: 8px;
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.chip-row::-webkit-scrollbar { display: none; }
+.chip-row .eyebrow { flex: none; margin-right: 4px; }
+.chip {
+    flex: none; display: inline-flex; align-items: center; gap: 8px;
+    height: 40px; padding: 0 16px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: var(--paper);
+    color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600;
+    transition: border-color .2s, background-color .2s, color .2s;
+}
+.chip:hover { border-color: var(--ink); color: var(--ink); }
+.chip.is-active { background: var(--ink); border-color: var(--ink); color: #fff; }
+.chip--swatch i {
+    width: 12px; height: 12px; border-radius: 50%; background: var(--c);
+    box-shadow: inset 0 0 0 1px rgba(18,19,22,.18);
+}
+.chip--swatch.is-active i { box-shadow: inset 0 0 0 1px rgba(255,255,255,.35); }
+
+.gallery-stage {
+    position: relative; border-radius: var(--radius-lg); overflow: hidden;
+    border: 1px solid #DADAD8; background: var(--ground);
+}
+.gallery-track {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.gallery-track::-webkit-scrollbar { display: none; }
+.gallery-slide { margin: 0; flex: 0 0 100%; scroll-snap-align: start; }
+.gallery-slide img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.gallery-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border: 0; border-radius: 50%;
+    background: rgba(255,255,255,.86); color: var(--ink); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 24px -16px rgba(18,19,22,.5); z-index: 2;
+}
+.gallery-nav svg { width: 20px; height: 20px; }
+.gallery-nav--prev { left: 14px; }
+.gallery-nav--next { right: 14px; }
+.gallery-nav:hover { background: #fff; }
+.gallery-stage .sold-badge { position: absolute; top: 14px; left: 14px; z-index: 3; }
+
+.tile .skeleton-shine {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, #E4E4E2 0%, #F4F4F2 45%, #E4E4E2 100%);
+    background-size: 200% 100%;
+    transition: opacity .35s ease;
+}
+.tile.is-loaded .skeleton-shine { opacity: 0; }
+.tile img[data-skeleton-img] { opacity: 0; transition: opacity .35s ease; }
+.tile.is-loaded img[data-skeleton-img] { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+    .tile .skeleton-shine { animation: skeleton 1.2s linear infinite; }
+    @keyframes skeleton { to { background-position: -200% 0; } }
+}
+
+.status-timeline {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px; margin: 4px 0 8px; padding: 0; list-style: none;
+}
+.status-timeline__step {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    position: relative; text-align: center;
+}
+.status-timeline__step:not(:last-child)::after {
+    content: ""; position: absolute; top: 7px; left: calc(50% + 10px); right: calc(-50% + 10px);
+    height: 2px; background: var(--line);
+}
+.status-timeline__step.is-done:not(:last-child)::after,
+.status-timeline__step.is-current:not(:last-child)::after { background: var(--blue); }
+.status-timeline__dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--paper); border: 2px solid var(--line); z-index: 1;
+}
+.status-timeline__step.is-done .status-timeline__dot,
+.status-timeline__step.is-current .status-timeline__dot {
+    background: var(--blue); border-color: var(--blue);
+}
+.status-timeline__step.is-current .status-timeline__dot {
+    box-shadow: 0 0 0 4px rgba(11, 63, 168, 0.18);
+}
+.status-timeline__label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted-2);
+}
+.status-timeline__step.is-done .status-timeline__label,
+.status-timeline__step.is-current .status-timeline__label { color: var(--ink); font-weight: 500; }
+
+.kanban {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px; align-items: start;
+}
+.kanban-col {
+    background: var(--paper); border-radius: var(--radius-lg); padding: 16px;
+    display: flex; flex-direction: column; gap: 12px; min-height: 240px;
+}
+.kanban-col__head {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.kanban-col__head h2 { margin: 0; font-size: 0; }
+.kanban-col__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.kanban-empty {
+    padding: 28px 12px; text-align: center; color: var(--muted-2);
+    font-size: 14px; border: 1.5px dashed var(--line); border-radius: var(--radius);
+}
+.kanban-card {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 14px; border-radius: 16px; background: var(--ground);
+    border: 1px solid var(--line-soft);
+}
+.kanban-card__top { display: flex; justify-content: space-between; gap: 8px; font-weight: 700; }
+.kanban-card__customer { margin: 0; font-weight: 600; }
+.kanban-card__date { margin: 0; font-size: 11px; color: var(--muted-2); }
+
+.cart-fly {
+    position: fixed; z-index: 1300; pointer-events: none; border-radius: 18px;
+    object-fit: cover; box-shadow: 0 18px 40px -18px rgba(18,19,22,.5);
+    transition: transform .7s cubic-bezier(.2,.7,.2,1), opacity .7s ease;
+}
+.count-badge.is-pop { animation: badge-pop .45s ease; }
+@keyframes badge-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 900px) {
+    .shop-chips { top: 64px; }
+    .kanban { grid-template-columns: 1fr; }
+    .kanban-col { min-height: 0; }
+}
+
+@media (max-width: 600px) {
+    .gallery-nav { width: 38px; height: 38px; }
+    .status-timeline__label { font-size: 10px; }
+    .empty--photo { min-height: 260px; border-radius: var(--radius); }
+}
