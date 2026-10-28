@@ -3,27 +3,36 @@
 // Safe to call from a public page — each name is checked before insert.
 class CatalogSeeder {
     public static function ensureExtraProducts(PDO $pdo): int {
-        $sentinel = $pdo->prepare(
-            'SELECT 1 FROM products_description WHERE name = :name LIMIT 1'
-        );
-        $sentinel->execute([':name' => 'Silver iPod Classic']);
-        if ($sentinel->fetchColumn()) {
-            return 0;
-        }
-
         $products = self::products();
         $insert = $pdo->prepare(
             'INSERT INTO products_description (name, description, price, imagePath, is_sold)
              VALUES (:name, :description, :price, :imagePath, 0)'
         );
+        // Per-name check — do not bail early if only some rows already exist
         $exists = $pdo->prepare(
-            'SELECT 1 FROM products_description WHERE name = :name LIMIT 1'
+            'SELECT product_id, is_sold, imagePath FROM products_description WHERE name = :name LIMIT 1'
+        );
+        $revive = $pdo->prepare(
+            'UPDATE products_description
+             SET is_sold = 0, imagePath = :imagePath, description = :description, price = :price
+             WHERE product_id = :id'
         );
 
         $added = 0;
         foreach ($products as $product) {
             $exists->execute([':name' => $product['name']]);
-            if ($exists->fetchColumn()) {
+            $row = $exists->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                // Earlier partial seeds may have left a row sold or with a bad path
+                if ((int) $row['is_sold'] === 1 || (string) $row['imagePath'] !== $product['imagePath']) {
+                    $revive->execute([
+                        ':imagePath'   => $product['imagePath'],
+                        ':description' => $product['description'],
+                        ':price'       => $product['price'],
+                        ':id'          => (int) $row['product_id'],
+                    ]);
+                    $added++;
+                }
                 continue;
             }
             $insert->execute([
