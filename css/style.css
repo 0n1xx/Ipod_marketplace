@@ -705,6 +705,19 @@ footer{
     color: #e63946;
 }
 
+.forgot-password-link{
+    display: block;
+    width: fit-content;
+    margin-top: -0.6rem;
+    font-size: 1.3rem;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.forgot-password-link:hover{
+    text-decoration: underline;
+}
+
 .form-details textarea {
     max-height: 8rem;
     padding:  1rem;

@@ -1,6 +1,4 @@
 <?php
-    ini_set('display_errors', 1);
-    error_reporting(E_ALL);
     // Requiring all needed files for this page
     require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';

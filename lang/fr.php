@@ -88,6 +88,10 @@ return [
     "newsletterTitle"    => "Restez à l’affût des nouveautés exclusives et des retours rétro.",
     "newsletterPlaceholder" => "Votre courriel",
     "newsletterButton"   => "S’inscrire",
+    "newsletterSuccess"  => "Vous êtes inscrit ! Bienvenue dans la liste.",
+    "newsletterError"    => "Impossible d'inscrire ce courriel. Veuillez réessayer.",
+    "newsletterEmailSubject" => "Bienvenue dans l'infolettre QuébecIpod",
+    "newsletterEmailBody"    => "Merci de vous être inscrit ! Nous vous tiendrons au courant des nouvelles restaurations et des offres exclusives.",
 
     // Variables for the login page
     "loginTitle"         => "Connexion",
@@ -99,6 +103,7 @@ return [
     "passwordPlaceholder"=> "Votre mot de passe",
     "signInButton"       => "Se connecter",
     "dontHaveAccount"    => "Vous n'avez pas de compte ? Inscrivez-vous maintenant !",
+    "forgotPasswordLink" => "Mot de passe oublié ?",
 
     // Variables for the register page
     "registerTitle"         => "Inscription",
@@ -126,6 +131,23 @@ return [
     "ruleSymbol"            => "Un caractère spécial",
     "passwordsMatch"        => "Les mots de passe correspondent",
     "passwordsMismatch"     => "Les mots de passe ne correspondent pas",
+
+    // Variables for the forgot/reset password pages
+    "forgotPasswordTitle"    => "Mot de passe oublié",
+    "forgotPasswordDesc"     => "Réinitialisez le mot de passe de votre compte QuébecIpod.",
+    "forgotPasswordHeading"  => "Mot de passe oublié ?",
+    "forgotPasswordSubtitle" => "Entrez votre courriel et nous vous enverrons un lien de réinitialisation.",
+    "forgotPasswordInvalidEmail" => "Veuillez entrer une adresse courriel valide.",
+    "forgotPasswordSuccess"  => "Si un compte existe pour ce courriel, un lien de réinitialisation est en route.",
+    "sendResetLinkButton"    => "Envoyer le lien",
+    "resetEmailSubject"      => "Réinitialisez votre mot de passe QuébecIpod",
+    "resetEmailBody"         => "Nous avons reçu une demande de réinitialisation de votre mot de passe. Ce lien expire dans 1 heure. Si vous n'êtes pas à l'origine de cette demande, ignorez ce courriel.",
+    "resetPasswordTitle"     => "Réinitialiser le mot de passe",
+    "resetPasswordDesc"      => "Choisissez un nouveau mot de passe pour votre compte QuébecIpod.",
+    "resetPasswordHeading"   => "Choisissez un nouveau mot de passe",
+    "resetPasswordButton"    => "Réinitialiser le mot de passe",
+    "resetPasswordSuccess"   => "Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter.",
+    "resetTokenInvalid"      => "Ce lien de réinitialisation est invalide ou a expiré. Veuillez en demander un nouveau.",
 
     // Variables for the shop page
     "shopTitle"          => "Boutique",

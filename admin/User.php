@@ -60,39 +60,8 @@
                 $this->error[] = "Invalid email format.";
             }
 
-            // Checking the password:
-            // Checking if the passwords are the same
-            if (empty($password)) {
-                $this->error[] = "Password is required.";
-            }
-            // Checking if the password is too small. In my opinion, it should be at least 8 characters
-            if (strlen($password) < 8) {
-                $this->error[] = "Password must be at least 8 characters.";
-            }
-            // Checking if the password is too big. In my opinion, it should be at most 50 characters
-            if (strlen($password) > 50) {
-                $this->error[] = "Password too long (max 50 chars).";
-            }
-            // Checking if a password and a confirm password match
-            if ($password !== $confirm_password) {
-                $this->error[] =  "Passwords do not match";
-            }
-            // Verifying that a password has at least one upper case letter
-            if (!preg_match('/[A-Z]/', $password)) {
-                $this->error[] = "Password must contain at least one uppercase letter.";
-            }
-            // Verifying that a password has at least one lower case letter
-            if (!preg_match('/[a-z]/', $password)) {
-                $this->error[] = "Password must contain at least one lowercase letter.";
-            }
-            // Password also should include one number
-            if (!preg_match('/\d/', $password)) {
-                $this->error[] = "Password must contain at least one number.";
-            }
-            // Finally, password should include one special character
-            if (!preg_match('/[^A-Za-z0-9]/', $password)) {
-                $this->error[] = "Password must contain at least one symbol (!@#$ etc.).";
-            }
+            // Checking the password (shared with resetPassword() below)
+            $this->validatePasswordRules($password, $confirm_password);
 
             // Checking if the error variable is empty, then validation is successful
             if (empty($this->error)){
@@ -100,6 +69,35 @@
             }
             else{
                 return false;
+            }
+        }
+
+        // Shared password-strength rules, used by both registration and
+        // password reset — appends to $this->error, doesn't reset it
+        private function validatePasswordRules($password, $confirm_password){
+            if (empty($password)) {
+                $this->error[] = "Password is required.";
+            }
+            if (strlen($password) < 8) {
+                $this->error[] = "Password must be at least 8 characters.";
+            }
+            if (strlen($password) > 50) {
+                $this->error[] = "Password too long (max 50 chars).";
+            }
+            if ($password !== $confirm_password) {
+                $this->error[] =  "Passwords do not match";
+            }
+            if (!preg_match('/[A-Z]/', $password)) {
+                $this->error[] = "Password must contain at least one uppercase letter.";
+            }
+            if (!preg_match('/[a-z]/', $password)) {
+                $this->error[] = "Password must contain at least one lowercase letter.";
+            }
+            if (!preg_match('/\d/', $password)) {
+                $this->error[] = "Password must contain at least one number.";
+            }
+            if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+                $this->error[] = "Password must contain at least one symbol (!@#$ etc.).";
             }
         }
 
@@ -156,6 +154,86 @@
             }
             else{
                 $this->error[] = "Internal issue while logging in.";
+                return false;
+            }
+        }
+
+        public function findByEmail($email){
+            try{
+                $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
+                $stmt->execute([$email]);
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+            catch(PDOException $e){
+                return false;
+            }
+        }
+
+        // Starts a "forgot password" request: stores only a hash of the token
+        // (so a leaked database row can't be replayed) and returns the raw
+        // token to email to the user
+        public function createPasswordReset(int $userId): ?string {
+            try{
+                $token = bin2hex(random_bytes(32));
+                $tokenHash = hash('sha256', $token);
+                $expiresAt = date('Y-m-d H:i:s', time() + 3600); // valid for 1 hour
+
+                $stmt = $this->db->prepare(
+                    "INSERT INTO password_resets (user_id, token_hash, expires_at) VALUES (?, ?, ?)"
+                );
+                $stmt->execute([$userId, $tokenHash, $expiresAt]);
+                return $token;
+            }
+            catch(PDOException $e){
+                return null;
+            }
+        }
+
+        // Looks up a reset request by its raw token — only returns it if it
+        // hasn't been used yet and hasn't expired
+        public function findValidReset(string $token): ?array {
+            $tokenHash = hash('sha256', $token);
+            try{
+                $stmt = $this->db->prepare(
+                    "SELECT pr.id, pr.user_id, u.email
+                     FROM password_resets pr
+                     JOIN users u ON u.id = pr.user_id
+                     WHERE pr.token_hash = ? AND pr.used = 0 AND pr.expires_at > NOW()
+                     LIMIT 1"
+                );
+                $stmt->execute([$tokenHash]);
+                return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+            }
+            catch(PDOException $e){
+                return null;
+            }
+        }
+
+        // Sets a new password for a validated reset request and marks the
+        // token used so it can't be replayed
+        public function resetPassword(int $resetId, int $userId, string $password, string $confirmPassword): bool {
+            $this->error = [];
+            $this->validatePasswordRules($password, $confirmPassword);
+            if (!empty($this->error)) {
+                return false;
+            }
+
+            try{
+                $this->db->beginTransaction();
+
+                $hashed = password_hash($password, PASSWORD_BCRYPT);
+                $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE id = ?");
+                $stmt->execute([$hashed, $userId]);
+
+                $markUsed = $this->db->prepare("UPDATE password_resets SET used = 1 WHERE id = ?");
+                $markUsed->execute([$resetId]);
+
+                $this->db->commit();
+                return true;
+            }
+            catch(PDOException $e){
+                $this->db->rollBack();
+                $this->error[] = "Database error.";
                 return false;
             }
         }

@@ -1,7 +1,5 @@
 <?php
     // Requiring the needed files
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
     require_once __DIR__ . '/includes/bootstrap.php';
     require __DIR__ . '/includes/lang.php';
     require __DIR__ . "/templates/header.php";

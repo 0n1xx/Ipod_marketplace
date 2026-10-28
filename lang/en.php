@@ -89,6 +89,10 @@ return [
     "newsletterTitle"    => "Stay tuned for exclusive drops and retro revivals.",
     "newsletterPlaceholder" => "Your Email",
     "newsletterButton"   => "Subscribe",
+    "newsletterSuccess"  => "You're subscribed! Welcome to the list.",
+    "newsletterError"    => "We couldn't subscribe that email. Please try again.",
+    "newsletterEmailSubject" => "Welcome to the QuébecIpod newsletter",
+    "newsletterEmailBody"    => "Thanks for subscribing! We'll keep you posted on new restorations and exclusive drops.",
 
     // Variables for the login page
     "loginTitle"         => "Login",
@@ -100,6 +104,7 @@ return [
     "passwordPlaceholder"=> "Your password",
     "signInButton"       => "Sign in",
     "dontHaveAccount"    => "Don't have an account? Register now!",
+    "forgotPasswordLink" => "Forgot your password?",
 
     // Variables for the register page
     "registerTitle"         => "Register",
@@ -127,6 +132,23 @@ return [
     "ruleSymbol"            => "One special character",
     "passwordsMatch"        => "Passwords match",
     "passwordsMismatch"     => "Passwords do not match",
+
+    // Variables for the forgot/reset password pages
+    "forgotPasswordTitle"    => "Forgot Password",
+    "forgotPasswordDesc"     => "Reset your QuébecIpod account password.",
+    "forgotPasswordHeading"  => "Forgot your password?",
+    "forgotPasswordSubtitle" => "Enter your email and we'll send you a reset link.",
+    "forgotPasswordInvalidEmail" => "Please enter a valid email address.",
+    "forgotPasswordSuccess"  => "If an account exists for that email, a reset link is on its way.",
+    "sendResetLinkButton"    => "Send Reset Link",
+    "resetEmailSubject"      => "Reset your QuébecIpod password",
+    "resetEmailBody"         => "We received a request to reset your password. This link expires in 1 hour. If you didn't request this, you can ignore this email.",
+    "resetPasswordTitle"     => "Reset Password",
+    "resetPasswordDesc"      => "Choose a new password for your QuébecIpod account.",
+    "resetPasswordHeading"   => "Choose a new password",
+    "resetPasswordButton"    => "Reset Password",
+    "resetPasswordSuccess"   => "Your password has been reset. You can now sign in.",
+    "resetTokenInvalid"      => "This reset link is invalid or has expired. Please request a new one.",
 
     // Variables for the shop page
     "shopTitle"          => "Shop",

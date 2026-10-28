@@ -49,5 +49,24 @@ CREATE TABLE order_items (
     FOREIGN KEY (product_id) REFERENCES products_description(product_id)
 );
 
+-- Table: password_resets (one row per "forgot password" request; a token is
+-- only usable once and expires an hour after it's requested)
+CREATE TABLE password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token_hash VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used TINYINT(1) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Table: newsletter_subscribers
+CREATE TABLE newsletter_subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- If a user should become an admin, here is a SQL script for that
 update users set is_admin = 1 where name = 'your_user_name';
