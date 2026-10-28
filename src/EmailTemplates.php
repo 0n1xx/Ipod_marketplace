@@ -57,4 +57,49 @@ class EmailTemplates {
 
         return Mailer::wrap($L['newsletterEmailSubject'], $body);
     }
+
+    // Receipt email sent once after Stripe payment is recorded
+    public static function orderReceipt(array $order, array $items, array $L, string $customerName = ''): string {
+        $orderId = (int)($order['id'] ?? 0);
+        $total = number_format((float)($order['total_price'] ?? 0), 2);
+        $statusKey = 'orderStatus_' . Order::normalizeStatus($order['status'] ?? 'paid');
+        $statusLabel = $L[$statusKey] ?? 'Paid';
+
+        $rows = '';
+        foreach ($items as $item) {
+            $rows .= '<tr>'
+                . '<td style="padding:10px 0;border-bottom:1px solid #eef2f6;">'
+                . htmlspecialchars($item['name'] ?? '', ENT_QUOTES, 'UTF-8')
+                . '</td>'
+                . '<td style="padding:10px 0;border-bottom:1px solid #eef2f6;text-align:right;font-weight:700;">'
+                . '$' . number_format((float)($item['price'] ?? 0), 2)
+                . '</td></tr>';
+        }
+
+        $greeting = $customerName !== ''
+            ? '<p>' . htmlspecialchars(sprintf($L['receiptEmailHello'], $customerName), ENT_QUOTES, 'UTF-8') . '</p>'
+            : '';
+
+        $body = $greeting
+            . '<p>' . htmlspecialchars($L['receiptEmailIntro'], ENT_QUOTES, 'UTF-8') . '</p>'
+            . '<p><strong>' . htmlspecialchars($L['receiptOrderLabel'], ENT_QUOTES, 'UTF-8') . ':</strong> #'
+            . $orderId
+            . '<br><strong>' . htmlspecialchars($L['orderStatusLabel'], ENT_QUOTES, 'UTF-8') . ':</strong> '
+            . htmlspecialchars($statusLabel, ENT_QUOTES, 'UTF-8')
+            . '</p>'
+            . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:8px;">'
+            . $rows
+            . '<tr>'
+            . '<td style="padding:14px 0 0;font-weight:700;">' . htmlspecialchars($L['cartTotal'], ENT_QUOTES, 'UTF-8') . '</td>'
+            . '<td style="padding:14px 0 0;text-align:right;font-weight:700;">$' . $total . ' CAD</td>'
+            . '</tr></table>'
+            . '<p style="margin-top:22px;">'
+            . '<a href="https://ipod-marketplace.up.railway.app/personal-account.php" '
+            . 'style="display:inline-block;padding:12px 22px;border-radius:999px;background:#3575e2;color:#ffffff;text-decoration:none;font-weight:700;">'
+            . htmlspecialchars($L['receiptEmailCta'], ENT_QUOTES, 'UTF-8')
+            . '</a></p>'
+            . '<p style="margin-top:18px;color:#5c5a66;">' . htmlspecialchars($L['receiptEmailOutro'], ENT_QUOTES, 'UTF-8') . '</p>';
+
+        return Mailer::wrap(sprintf($L['receiptEmailSubject'], $orderId), $body);
+    }
 }

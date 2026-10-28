@@ -34,7 +34,8 @@ CREATE TABLE orders (
     user_id INT NOT NULL,
     stripe_session_id VARCHAR(255) NOT NULL UNIQUE,
     total_price DECIMAL(10,2) NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    -- Fulfilment flow: paid → shipped → delivered
+    status VARCHAR(20) NOT NULL DEFAULT 'paid',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

@@ -43,10 +43,15 @@
                 <?php else: ?>
                     <ul class="order-list">
                         <?php foreach ($orders as $order): ?>
+                            <?php $status = Order::normalizeStatus($order['status'] ?? 'paid'); ?>
                             <li class="order-card">
                                 <div class="order-card-head">
                                     <span><?= htmlspecialchars($order['created_at']) ?></span>
                                     <strong>$<?= number_format((float)$order['total_price'], 2) ?></strong>
+                                </div>
+                                <div class="order-card-status">
+                                    <span class="eyebrow"><?= $L['orderStatusLabel'] ?></span>
+                                    <span class="pill pill--status-<?= htmlspecialchars($status) ?>"><?= $L['orderStatus_' . $status] ?></span>
                                 </div>
                                 <ul class="order-items">
                                     <?php foreach ($order['items'] as $item): ?>

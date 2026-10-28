@@ -13,7 +13,9 @@ E-commerce site for restored classic iPods — bilingual (EN/FR), Stripe Checkou
 - Stripe Checkout (CAD) with mobile sticky checkout bar
 - Auth: login / register / forgot / reset (split layouts, password strength)
 - Contact + newsletter via Resend
-- Admin: inventory, create page, edit page, sold toggle, custom delete modal, Cloudinary uploads
+- Order statuses: paid → shipped → delivered (account + admin `/admin/orders.php`)
+- Receipt email via Resend after successful Stripe payment
+- Admin: inventory, create page, edit page, orders monitor, sold toggle, delete modal, Cloudinary uploads
 - Responsive UI (burger ≤900px) — styles in `css/style.css`, behavior in `js/custom-js.js`
 
 ## Stack

@@ -1,10 +1,16 @@
 <?php
 class Order {
+    public const STATUSES = ['paid', 'shipped', 'delivered'];
+
     private $connection;
     public $error = [];
 
     public function __construct($db) {
         $this->connection = $db;
+    }
+
+    public static function isValidStatus(string $status): bool {
+        return in_array($status, self::STATUSES, true);
     }
 
     // Returns the existing order for a Stripe session, or null if none was
@@ -21,6 +27,38 @@ class Order {
         } catch (PDOException $e) {
             $this->error[] = "Database error while looking up order";
             return null;
+        }
+    }
+
+    public function findById(int $orderId): ?array {
+        try {
+            $stmt = $this->connection->prepare(
+                'SELECT * FROM orders WHERE id = :id LIMIT 1'
+            );
+            $stmt->bindValue(':id', $orderId, PDO::PARAM_INT);
+            $stmt->execute();
+            $order = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $order ?: null;
+        } catch (PDOException $e) {
+            $this->error[] = 'Database error while looking up order';
+            return null;
+        }
+    }
+
+    public function getItemsForOrder(int $orderId): array {
+        try {
+            $stmt = $this->connection->prepare(
+                'SELECT oi.price, pd.name, pd.imagePath
+                 FROM order_items oi
+                 JOIN products_description pd ON pd.product_id = oi.product_id
+                 WHERE oi.order_id = :order_id'
+            );
+            $stmt->bindValue(':order_id', $orderId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->error[] = 'Database error while fetching order items';
+            return [];
         }
     }
 
@@ -67,6 +105,25 @@ class Order {
         }
     }
 
+    public function updateStatus(int $orderId, string $status): bool {
+        if (!self::isValidStatus($status)) {
+            $this->error[] = 'Invalid order status.';
+            return false;
+        }
+        try {
+            $stmt = $this->connection->prepare(
+                'UPDATE orders SET status = :status WHERE id = :id'
+            );
+            $stmt->bindValue(':status', $status);
+            $stmt->bindValue(':id', $orderId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() >= 0;
+        } catch (PDOException $e) {
+            $this->error[] = 'Database error while updating order status';
+            return false;
+        }
+    }
+
     // Order history for a user's account page, each with its line items
     public function getOrdersForUser(int $userId): array {
         try {
@@ -77,15 +134,9 @@ class Order {
             $stmt->execute();
             $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $itemsStmt = $this->connection->prepare(
-                "SELECT oi.price, pd.name, pd.imagePath
-                 FROM order_items oi
-                 JOIN products_description pd ON pd.product_id = oi.product_id
-                 WHERE oi.order_id = :order_id"
-            );
             foreach ($orders as &$order) {
-                $itemsStmt->execute([':order_id' => $order['id']]);
-                $order['items'] = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
+                $order['items'] = $this->getItemsForOrder((int)$order['id']);
+                $order['status'] = self::normalizeStatus($order['status'] ?? 'paid');
             }
             return $orders;
         } catch (PDOException $e) {
@@ -93,5 +144,33 @@ class Order {
             return [];
         }
     }
+
+    // Admin monitor: all orders with customer + items
+    public function getAllOrders(): array {
+        try {
+            $stmt = $this->connection->query(
+                'SELECT o.*, u.name AS customer_name, u.email AS customer_email
+                 FROM orders o
+                 JOIN users u ON u.id = o.user_id
+                 ORDER BY o.created_at DESC'
+            );
+            $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($orders as &$order) {
+                $order['items'] = $this->getItemsForOrder((int)$order['id']);
+                $order['status'] = self::normalizeStatus($order['status'] ?? 'paid');
+            }
+            return $orders;
+        } catch (PDOException $e) {
+            $this->error[] = 'Database error while fetching orders';
+            return [];
+        }
+    }
+
+    public static function normalizeStatus(?string $status): string {
+        $status = strtolower(trim((string)$status));
+        if ($status === 'complete' || $status === 'completed' || $status === 'pending' || $status === '') {
+            return 'paid';
+        }
+        return self::isValidStatus($status) ? $status : 'paid';
+    }
 }
-?>

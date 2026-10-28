@@ -41,6 +41,7 @@
             $orderModel = new Order($database->connection);
             $order = $orderModel->findByStripeSession($sessionId);
 
+            $isNewOrder = false;
             if (!$order) {
                 // Use the product IDs Stripe actually charged for — do NOT
                 // filter out sold items here. Payment already succeeded; a race
@@ -61,19 +62,33 @@
                 if ($orderId) {
                     Cart::clear();
                     $order = $orderModel->findByStripeSession($sessionId);
+                    $isNewOrder = true;
                 } else {
                     $errorMessage = $L['checkoutOrderSaveFailed'];
                 }
             }
 
-            // Pull line items for the receipt UI (findByStripeSession is lean)
             if ($order) {
-                $orders = $orderModel->getOrdersForUser((int) Session::get('user_id'));
-                foreach ($orders as $userOrder) {
-                    if ((int)$userOrder['id'] === (int)$order['id']) {
-                        $orderItems = $userOrder['items'] ?? [];
-                        break;
-                    }
+                $orderItems = $orderModel->getItemsForOrder((int)$order['id']);
+                $order['status'] = Order::normalizeStatus($order['status'] ?? 'paid');
+            }
+
+            // Receipt email only on the first successful save (not on refresh)
+            if ($isNewOrder && $order && !empty($orderItems)) {
+                $userModel = new User($database->connection);
+                $customer = $userModel->findById((int) Session::get('user_id'));
+                $email = $customer['email'] ?? '';
+                if ($email !== '') {
+                    Mailer::send(
+                        $email,
+                        sprintf($L['receiptEmailSubject'], (int)$order['id']),
+                        EmailTemplates::orderReceipt(
+                            $order,
+                            $orderItems,
+                            $L,
+                            (string)($customer['name'] ?? '')
+                        )
+                    );
                 }
             }
         }

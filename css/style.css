@@ -931,6 +931,22 @@ select.input {
 .pill { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: var(--blue-soft); color: var(--blue); }
 .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .pill--sold { background: #ECECEA; color: var(--muted); }
+.pill--status-paid { background: #EEF2FB; color: var(--blue); }
+.pill--status-shipped { background: #FFF4E5; color: #9A6700; }
+.pill--status-delivered { background: #E8F6EE; color: #1F7A4D; }
+
+.order-card-status {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 8px 12px; margin-top: -4px;
+}
+.status-form {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+}
+.select--sm { height: 40px; min-width: 120px; font-size: 14px; padding: 0 12px; }
+.order-items--compact { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.order-items--compact li { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.order-items--compact img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: var(--ground); }
+.table--orders { min-width: 860px; }
 
 .dropzone {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;

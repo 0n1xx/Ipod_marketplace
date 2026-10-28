@@ -92,6 +92,7 @@
                 <h2><?= $L['adminInventoryTitle'] ?></h2>
                 <div class="btn-row">
                     <a href="<?= BASE_URL ?>/admin/create.php?lang=<?= $lang ?>" class="btn btn--blue btn--sm"><?= $L['createNewProduct'] ?></a>
+                    <a href="<?= BASE_URL ?>/admin/orders.php?lang=<?= $lang ?>" class="btn btn--ghost btn--sm"><?= $L['adminOrdersTitle'] ?></a>
                     <a href="<?= BASE_URL ?>/sold.php?lang=<?= $lang ?>" class="btn btn--ghost btn--sm"><?= $L['navSold'] ?></a>
                 </div>
             </div>

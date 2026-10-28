@@ -163,6 +163,16 @@
             }
         }
 
+        public function findById(int $userId) {
+            try {
+                $stmt = $this->db->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+                $stmt->execute([$userId]);
+                return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
+            } catch (PDOException $e) {
+                return false;
+            }
+        }
+
         // Starts a "forgot password" request: stores only a hash of the token
         // (so a leaked database row can't be replayed) and returns the raw
         // token to email to the user
