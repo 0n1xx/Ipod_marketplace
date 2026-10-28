@@ -11,13 +11,13 @@
     }
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Csrf::verify($_POST['csrf_token'] ?? null)) {
-        header("Location: {$redirect}?subscribe_error=1");
+        header('Location: ' . BASE_URL . "/{$redirect}?subscribe_error=1");
         exit();
     }
 
     $email = trim($_POST['email'] ?? '');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        header("Location: {$redirect}?subscribe_error=1");
+        header('Location: ' . BASE_URL . "/{$redirect}?subscribe_error=1");
         exit();
     }
 
@@ -31,10 +31,10 @@
         Mailer::send(
             $email,
             $L['newsletterEmailSubject'],
-            '<p>' . $L['newsletterEmailBody'] . '</p>'
+            EmailTemplates::newsletterWelcome($L)
         );
     }
 
-    header("Location: {$redirect}?" . ($subscribed ? 'subscribed=1' : 'subscribe_error=1'));
+    header('Location: ' . BASE_URL . "/{$redirect}?" . ($subscribed ? 'subscribed=1' : 'subscribe_error=1'));
     exit();
 ?>

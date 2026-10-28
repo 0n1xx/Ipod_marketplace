@@ -8,7 +8,7 @@
     <?php elseif (isset($_GET['subscribe_error'])): ?>
         <div class="alert_failure"><p><?= $L['newsletterError'] ?></p></div>
     <?php endif; ?>
-    <form action="subscribe.php" method="post">
+    <form action="<?= BASE_URL ?>/subscribe.php" method="post">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
         <input type="hidden" name="redirect" value="<?= htmlspecialchars(basename($_SERVER['PHP_SELF'])) ?>">
         <input type="email" name="email" class="additional-form-input" placeholder="<?php echo $L['newsletterPlaceholder']; ?>" required>

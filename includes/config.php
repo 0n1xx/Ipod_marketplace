@@ -10,3 +10,6 @@ define('STRIPE_PUBLISHABLE_KEY', $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? '');
 
 define('RESEND_API_KEY',    $_ENV['RESEND_API_KEY']    ?? '');
 define('RESEND_FROM_EMAIL', $_ENV['RESEND_FROM_EMAIL'] ?? 'QuébecIpod <onboarding@resend.dev>');
+
+// Inbox that receives contact-form inquiries (Reply-To is the customer)
+define('CONTACT_TO_EMAIL',  $_ENV['CONTACT_TO_EMAIL']  ?? 'quebecipodsupport@gmail.com');

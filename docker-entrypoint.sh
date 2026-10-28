@@ -22,5 +22,6 @@ echo "env[STRIPE_SECRET_KEY] = \"${STRIPE_SECRET_KEY}\"" >> "$PHP_INI"
 echo "env[STRIPE_PUBLISHABLE_KEY] = \"${STRIPE_PUBLISHABLE_KEY}\"" >> "$PHP_INI"
 echo "env[RESEND_API_KEY] = \"${RESEND_API_KEY}\"" >> "$PHP_INI"
 echo "env[RESEND_FROM_EMAIL] = \"${RESEND_FROM_EMAIL}\"" >> "$PHP_INI"
+echo "env[CONTACT_TO_EMAIL] = \"${CONTACT_TO_EMAIL}\"" >> "$PHP_INI"
 
 exec apache2ctl -D FOREGROUND
