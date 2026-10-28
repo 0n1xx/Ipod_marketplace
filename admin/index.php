@@ -221,7 +221,7 @@
                             <label for="edit_description"><?= $L['adminDescLabel'] ?></label>
                             <textarea id="edit_description" name="description" rows="8"
                                       placeholder="<?= $L['adminDescPlaceholder'] ?>" required><?= htmlspecialchars($editProduct['description']) ?></textarea>
-                            <div class="form-row">
+                            <div class="form-row form-row-files">
                                 <div>
                                     <label for="product_image" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
                                     <input id="product_image" class="file-upload" type="file" name="product_image"
@@ -284,7 +284,7 @@
                         <label for="description"><?= $L['adminDescLabel'] ?></label>
                         <textarea id="description" name="description" rows="8"
                                   placeholder="<?= $L['adminDescPlaceholder'] ?>" required></textarea>
-                        <div class="form-row">
+                        <div class="form-row form-row-files">
                             <div>
                                 <label for="product_image_create" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
                                 <input id="product_image_create" class="file-upload" type="file" name="product_image"

@@ -24,9 +24,9 @@ $cartCount = Session::isLoggedIn() ? Cart::count() : 0;
     <meta name="description" content="<?php echo $pageDesc ?? ''; ?>">
     <meta name="robots" content="noindex, nofollow">
     <title><?php echo $pageTitle ?? 'QuébecIpod'; ?></title>
-    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028c">
+    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028d">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <script src="<?= $base ?>/js/custom-js.js?v=20261028c" defer></script>
+    <script src="<?= $base ?>/js/custom-js.js?v=20261028d" defer></script>
 </head>
 <body<?= $isAdminSection ? ' class="is-admin-page"' : '' ?>>
 <header>
