@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Revive the golden era of music with restored classic iPods.">
+    <title>Home — QuébecIpod</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+<a href="#main" class="sr-only">Skip to content</a>
+<header class="site-header">
+    <div class="container header-bar">
+        <a href="index.html" class="brand" aria-label="QuébecIpod home">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-text">
+                <span class="brand-name">QuébecIpod</span>
+                <span class="brand-tag">Classic audio revived</span>
+            </span>
+        </a>
+        <nav class="nav" aria-label="Main">
+            <ul>
+                <li><a href="index.html" aria-current="page">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <a href="#" class="lang-btn" lang="fr" aria-label="Passer au français">FR</a>
+            <a href="login.html" class="header-link" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>Cart</span><span class="count-badge" data-cart-count hidden>0</span></a>
+            <a href="login.html" class="header-link">Login</a>
+            <a href="register.html" class="btn btn--dark">Register</a>
+        </div>
+        <div class="header-mobile">
+            <a href="login.html" class="icon-btn" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="count-badge" data-cart-count hidden>0</span></a>
+            <button type="button" class="icon-btn burger" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" data-menu-toggle><span></span><span></span></button>
+        </div>
+    </div>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+        <div class="container">
+            <nav aria-label="Mobile">
+                <ul>
+                <li><a href="index.html" aria-current="page">Home<span class="mono">01</span></a></li>
+                <li><a href="about.html">About<span class="mono">02</span></a></li>
+                <li><a href="shop.html">Shop<span class="mono">03</span></a></li>
+                <li><a href="contact.html">Contact<span class="mono">04</span></a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-foot">
+                <a href="login.html" class="btn btn--outline">Login</a>
+                <a href="register.html" class="btn btn--dark">Register</a>
+                <a href="#" class="lang-btn" lang="fr" aria-label="Passer au français">FR</a>
+            </div>
+        </div>
+    </div>
+</header>
+<main id="main">
+    <section class="container hero">
+        <div class="hero-copy">
+            <p class="eyebrow reveal"><span class="dot"></span>Restored in Montréal · Shipped across Canada</p>
+            <h1 class="display display--xl reveal reveal-2">Bring the music back to life</h1>
+            <p class="lead reveal reveal-3">Rediscover the golden era of sound with these timeless devices.</p>
+            <div class="btn-row reveal reveal-3">
+                <a href="shop.html" class="btn btn--dark">Shop Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                <a href="about.html" class="btn btn--outline">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-stage">
+            <div class="visual">
+                <img src="images/blue.jpg" alt="Restored iPod Classic in blue" width="900" height="900" data-hero-image>
+            </div>
+            <div class="swatches" role="group" aria-label="Choose a colour">
+                <span class="eyebrow" data-hero-label>iPod Classic · Blue</span>
+                <div class="swatch-row">
+                    <button type="button" class="swatch" style="--c:#16A3D9" aria-pressed="true" aria-label="Blue" data-swatch="images/blue.jpg" data-name="Blue"></button>
+                    <button type="button" class="swatch" style="--c:#3DB53A" aria-pressed="false" aria-label="Green" data-swatch="images/green.jpg" data-name="Green"></button>
+                    <button type="button" class="swatch" style="--c:#C9CACC" aria-pressed="false" aria-label="Silver" data-swatch="images/silver.jpg" data-name="Silver"></button>
+                    <button type="button" class="swatch" style="--c:#D6262E" aria-pressed="false" aria-label="Red" data-swatch="images/red.jpg" data-name="Red"></button>
+                    <button type="button" class="swatch" style="--c:#86207F" aria-pressed="false" aria-label="Purple" data-swatch="images/purple.jpg" data-name="Purple"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ticker" aria-label="Every restoration includes">
+        <div class="ticker-track">
+            <ul>
+                <li>Detailed inspection</li><li aria-hidden="true">✦</li>
+                <li>Battery replacement</li><li aria-hidden="true">✦</li>
+                <li>Software optimization</li><li aria-hidden="true">✦</li>
+                <li>90-day warranty</li><li aria-hidden="true">✦</li>
+                <li>Tracked shipping across Canada</li><li aria-hidden="true">✦</li>
+            </ul>
+            <ul aria-hidden="true">
+                <li>Detailed inspection</li><li>✦</li>
+                <li>Battery replacement</li><li>✦</li>
+                <li>Software optimization</li><li>✦</li>
+                <li>90-day warranty</li><li>✦</li>
+                <li>Tracked shipping across Canada</li><li>✦</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="container section section--tight-bottom" aria-labelledby="classics">
+        <div class="section-head">
+            <h2 id="classics" class="display display--md">Discover our classics</h2>
+            <a href="shop.html" class="link-arrow">See the full shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="cards-3">
+            <a href="shop.html" class="model-card">
+                <img src="images/classic.jpg" alt="iPod Classic" loading="lazy" width="900" height="900">
+                <footer><h3>iPod Classic</h3><span class="mono">01</span></footer>
+            </a>
+            <a href="shop.html" class="model-card">
+                <img src="images/mini.jpg" alt="iPod Mini" loading="lazy" width="900" height="900">
+                <footer><h3>iPod Mini</h3><span class="mono">02</span></footer>
+            </a>
+            <a href="shop.html" class="model-card">
+                <img src="images/shuffle.jpg" alt="iPod Shuffle" loading="lazy" width="900" height="900">
+                <footer><h3>iPod Shuffle</h3><span class="mono">03</span></footer>
+            </a>
+        </div>
+    </section>
+
+    <section class="container section" aria-labelledby="process">
+        <div class="process">
+            <div class="process-head">
+                <p class="eyebrow">The restoration</p>
+                <h2 id="process" class="display display--md">Every iPod leaves the bench like new.</h2>
+            </div>
+            <figure class="process-photo process-photo--wide">
+                <img src="images/workshop.jpg" alt="A restoration bench with an opened iPod, a new battery and precision tools" loading="lazy" width="1680" height="944">
+            </figure>
+            <ol class="steps">
+                <li>
+                    <span class="step-num">01</span>
+                    <h3>Detailed inspection</h3>
+                    <p>We open every device and check the screen, click wheel, ports and storage before anything is replaced.</p>
+                </li>
+                <li>
+                    <span class="step-num">02</span>
+                    <h3>Battery replacement</h3>
+                    <p>A fresh battery goes into every iPod we restore — no tired cells, no surprises on day one.</p>
+                </li>
+                <li>
+                    <span class="step-num">03</span>
+                    <h3>Software optimization</h3>
+                    <p>A clean reset and software tune-up so it performs like new, backed by a 90-day warranty.</p>
+                </li>
+            </ol>
+            <figure class="process-photo process-photo--tall">
+                <img src="images/battery.jpg" alt="Gloved hands installing a new battery in an opened iPod" loading="lazy" width="1136" height="1408">
+            </figure>
+        </div>
+    </section>
+
+    <section class="city-band" aria-labelledby="city">
+        <div class="container city">
+            <div class="city-copy">
+                <p class="eyebrow">Montréal, Québec</p>
+                <h2 id="city" class="display display--lg">Made for long walks and longer playlists.</h2>
+                <p class="body">QuébecIpod was born from a passion for sound and simplicity. Today we ship restored iPods across Canada — and beyond on request.</p>
+                <div class="btn-row">
+                    <a href="shop.html" class="btn btn--blue btn--lg">Find your iPod <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                    <a href="about.html" class="btn btn--ghost-light btn--lg">Our story</a>
+                </div>
+            </div>
+            <figure class="city-photo">
+                <img src="images/montreal.jpg" alt="Hands holding a blue iPod with earbuds on a snowy Montréal street at dusk" loading="lazy" width="1136" height="1408">
+            </figure>
+        </div>
+    </section>
+
+    <section class="container section" aria-labelledby="faq-teaser">
+        <div class="split" style="padding-block: 0">
+            <div>
+                <p class="eyebrow">Good to know</p>
+                <h2 id="faq-teaser" class="display display--sm">Questions before you press play?</h2>
+                <div><a href="contact.html" class="link-arrow">All answers &amp; contact <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div>
+            </div>
+            <div class="faq">
+                <details>
+                    <summary>What’s your warranty policy?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+                    <p>All refurbished iPods come with a 90-day warranty covering parts and labor. Extended warranties are available for purchase.</p>
+                </details>
+                <details>
+                    <summary>Do you ship across Canada?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+                    <p>Yes! We ship refurbished iPods and parts across Canada with tracked shipping. International shipping is available upon request.</p>
+                </details>
+                <details>
+                    <summary>Can you customize my iPod?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+                    <p>Absolutely! We offer custom colors, storage upgrades, and special modifications. Contact us to discuss your vision.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+</main>
+<section class="newsletter" aria-labelledby="nl-title">
+    <div class="container">
+        <div>
+            <p class="eyebrow">Newsletter</p>
+            <h2 id="nl-title" class="display">Stay tuned for exclusive drops and retro revivals.</h2>
+        </div>
+        <div>
+            <form class="newsletter-form" action="subscribe.php" method="post" data-success="#nl-done">
+                <label for="nl-email">Your email</label>
+                <div class="pill-input">
+                    <input id="nl-email" type="email" name="email" required placeholder="you@example.com" autocomplete="email">
+                    <button type="submit" class="btn btn--dark">Subscribe</button>
+                </div>
+            </form>
+            <p id="nl-done" class="newsletter-success" role="status" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>You're subscribed! Welcome to the list.</p>
+        </div>
+    </div>
+</section>
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <p class="eyebrow">QuébecIpod</p>
+                <p>Preserving the joy of personal music through expert iPod restoration and authentic craftsmanship.</p>
+            </div>
+            <nav class="footer-col" aria-label="Footer">
+                <p class="eyebrow">Pages</p>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="footer-col">
+                <p class="eyebrow">Connect</p>
+                <ul>
+                    <li><a href="https://www.facebook.com/yourpage" target="_blank" rel="noopener">Facebook ↗</a></li>
+                    <li><a href="https://www.instagram.com/yourhandle" target="_blank" rel="noopener">Instagram ↗</a></li>
+                    <li><a href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="footer-wordmark" aria-hidden="true">QuébecIpod</p>
+        <div class="footer-bottom">
+            <span>Classic audio revived · Montréal, Québec</span>
+            <span>English / Français</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

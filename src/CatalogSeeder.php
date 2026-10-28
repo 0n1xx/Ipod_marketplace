@@ -1,6 +1,7 @@
 <?php
-// Idempotent catalog pack: inserts the extra iPods only when missing.
-// Safe to call from a public page — each name is checked before insert.
+// Idempotent catalog helpers used after deploy.
+// - ensureExtraProducts(): INSERT only missing names (never touches is_sold)
+// - resyncSoldFromOrders(): mark any product that appears in order_items as sold
 class CatalogSeeder {
     public static function ensureExtraProducts(PDO $pdo): int {
         $products = self::products();
@@ -8,31 +9,14 @@ class CatalogSeeder {
             'INSERT INTO products_description (name, description, price, imagePath, is_sold)
              VALUES (:name, :description, :price, :imagePath, 0)'
         );
-        // Per-name check — do not bail early if only some rows already exist
         $exists = $pdo->prepare(
-            'SELECT product_id, is_sold, imagePath FROM products_description WHERE name = :name LIMIT 1'
-        );
-        $revive = $pdo->prepare(
-            'UPDATE products_description
-             SET is_sold = 0, imagePath = :imagePath, description = :description, price = :price
-             WHERE product_id = :id'
+            'SELECT product_id FROM products_description WHERE name = :name LIMIT 1'
         );
 
         $added = 0;
         foreach ($products as $product) {
             $exists->execute([':name' => $product['name']]);
-            $row = $exists->fetch(PDO::FETCH_ASSOC);
-            if ($row) {
-                // Earlier partial seeds may have left a row sold or with a bad path
-                if ((int) $row['is_sold'] === 1 || (string) $row['imagePath'] !== $product['imagePath']) {
-                    $revive->execute([
-                        ':imagePath'   => $product['imagePath'],
-                        ':description' => $product['description'],
-                        ':price'       => $product['price'],
-                        ':id'          => (int) $row['product_id'],
-                    ]);
-                    $added++;
-                }
+            if ($exists->fetchColumn()) {
                 continue;
             }
             $insert->execute([
@@ -45,6 +29,24 @@ class CatalogSeeder {
         }
 
         return $added;
+    }
+
+    // Paid checkouts write order_items and set is_sold=1. If a later seed
+    // accidentally cleared that flag, rebuild it from the orders ledger.
+    public static function resyncSoldFromOrders(PDO $pdo): int {
+        try {
+            return (int) $pdo->exec(
+                'UPDATE products_description p
+                 SET is_sold = 1
+                 WHERE p.is_sold = 0
+                   AND EXISTS (
+                       SELECT 1 FROM order_items oi WHERE oi.product_id = p.product_id
+                   )'
+            );
+        } catch (Throwable $e) {
+            error_log('CatalogSeeder::resyncSoldFromOrders failed: ' . $e->getMessage());
+            return 0;
+        }
     }
 
     private static function products(): array {

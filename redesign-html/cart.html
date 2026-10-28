@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Review the iPods in your cart before checking out.">
+    <title>Your Cart — QuébecIpod</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+<a href="#main" class="sr-only">Skip to content</a>
+<header class="site-header">
+    <div class="container header-bar">
+        <a href="index.html" class="brand" aria-label="QuébecIpod home">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-text">
+                <span class="brand-name">QuébecIpod</span>
+                <span class="brand-tag">Classic audio revived</span>
+            </span>
+        </a>
+        <nav class="nav" aria-label="Main">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <a href="#" class="lang-btn" lang="fr" aria-label="Passer au français">FR</a>
+            <a href="cart.html" class="header-link" aria-current="page" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>Cart</span><span class="count-badge" data-cart-count>2</span></a>
+            <a href="account.html" class="account-chip"><span class="avatar" aria-hidden="true">V</span>Vlad</a>
+            <a href="index.html" class="header-link header-link--muted">Log Out</a>
+        </div>
+        <div class="header-mobile">
+            <a href="cart.html" class="icon-btn" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="count-badge" data-cart-count>2</span></a>
+            <button type="button" class="icon-btn burger" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menu" data-menu-toggle><span></span><span></span></button>
+        </div>
+    </div>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+        <div class="container">
+            <nav aria-label="Mobile">
+                <ul>
+                <li><a href="index.html">Home<span class="mono">01</span></a></li>
+                <li><a href="about.html">About<span class="mono">02</span></a></li>
+                <li><a href="shop.html">Shop<span class="mono">03</span></a></li>
+                <li><a href="contact.html">Contact<span class="mono">04</span></a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-foot">
+                <a href="account.html" class="account-chip"><span class="avatar" aria-hidden="true">V</span>Vlad</a>
+                <a href="index.html" class="btn btn--outline">Log Out</a>
+                <a href="#" class="lang-btn" lang="fr" aria-label="Passer au français">FR</a>
+            </div>
+        </div>
+    </div>
+</header>
+<main id="main">
+    <div class="container cart-page">
+        <div class="page-head" style="padding: 0">
+            <div>
+                <p class="eyebrow" data-items-label>2 items</p>
+                <h1 class="display display--lg">Your Cart</h1>
+            </div>
+            <p class="lead">Review the iPods in your cart before checking out.</p>
+        </div>
+
+        <!-- Shown when Stripe sends the visitor back with ?cancelled=1 -->
+        <p class="alert alert--error" role="status" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>Checkout was cancelled — your cart is still saved.</p>
+
+        <div class="cart-layout" data-cart-filled>
+            <ul class="cart-list" data-cart-list>
+                <li class="cart-item" data-cart-item>
+                    <div class="thumb-lg"><img src="images/blue.jpg" alt="iPod Classic · Blue"></div>
+                    <div class="info">
+                        <h2>iPod Classic · Blue</h2>
+                        <p class="eyebrow">Restored · 90-day warranty</p>
+                    </div>
+                    <p class="price">$[PRICE]</p>
+                    <button type="button" class="btn btn--ghost" data-remove>Remove</button>
+                </li>
+                <li class="cart-item" data-cart-item>
+                    <div class="thumb-lg"><img src="images/mini-g.jpg" alt="iPod Mini · Teal"></div>
+                    <div class="info">
+                        <h2>iPod Mini · Teal</h2>
+                        <p class="eyebrow">Restored · 90-day warranty</p>
+                    </div>
+                    <p class="price">$[PRICE]</p>
+                    <button type="button" class="btn btn--ghost" data-remove>Remove</button>
+                </li>
+            </ul>
+            <aside class="summary" aria-label="Order summary">
+                <h2>Summary</h2>
+                <dl>
+                    <div><dt>Items</dt><dd data-items-count>2</dd></div>
+                    <div class="total"><dt>Total</dt><dd>$[TOTAL] CAD</dd></div>
+                </dl>
+                <a href="checkout-success.html" class="btn btn--blue btn--lg btn--block">Proceed to Checkout <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                <p class="secure-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Secure payment with Stripe</p>
+            </aside>
+            <!-- Phone only: checkout bar pinned to the bottom of the screen -->
+            <div class="action-bar" aria-label="Checkout">
+                <div class="action-bar-info">
+                    <span class="eyebrow">Total · <span data-items-count>2</span> items</span>
+                    <strong>$[TOTAL] CAD</strong>
+                </div>
+                <a href="checkout-success.html" class="btn btn--blue">Checkout <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+            </div>
+        </div>
+
+        <div class="empty" data-cart-empty hidden>
+            <div class="empty-mark" aria-hidden="true"></div>
+            <p>Your cart is empty.</p>
+            <a href="shop.html" class="btn btn--dark">Back to Shop</a>
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <p class="eyebrow">QuébecIpod</p>
+                <p>Preserving the joy of personal music through expert iPod restoration and authentic craftsmanship.</p>
+            </div>
+            <nav class="footer-col" aria-label="Footer">
+                <p class="eyebrow">Pages</p>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="footer-col">
+                <p class="eyebrow">Connect</p>
+                <ul>
+                    <li><a href="https://www.facebook.com/yourpage" target="_blank" rel="noopener">Facebook ↗</a></li>
+                    <li><a href="https://www.instagram.com/yourhandle" target="_blank" rel="noopener">Instagram ↗</a></li>
+                    <li><a href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="footer-wordmark" aria-hidden="true">QuébecIpod</p>
+        <div class="footer-bottom">
+            <span>Classic audio revived · Montréal, Québec</span>
+            <span>English / Français</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

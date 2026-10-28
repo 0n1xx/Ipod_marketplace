@@ -6,8 +6,31 @@ document.addEventListener('DOMContentLoaded', function() {
     initPasswordValidation();
     initProductGallery();
     initConfirmForms();
+    initDropzones();
     initSubmitGuard();
 });
+
+// Custom file picker: show chosen filename(s) inside the dropzone label
+function initDropzones() {
+    document.querySelectorAll('[data-dropzone-input]').forEach((input) => {
+        const label = document.querySelector(`label.dropzone[for="${input.id}"]`);
+        if (!label) return;
+        const status = label.querySelector('span');
+        const fallback = status ? status.textContent : '';
+
+        input.addEventListener('change', () => {
+            if (!status) return;
+            const files = Array.from(input.files || []);
+            if (!files.length) {
+                status.textContent = fallback;
+                return;
+            }
+            status.textContent = files.length === 1
+                ? files[0].name
+                : files.length + ' files selected';
+        });
+    });
+}
 
 // Matches redesign-html: data-menu-toggle + #mobile-menu overlay
 function initMobileNav() {

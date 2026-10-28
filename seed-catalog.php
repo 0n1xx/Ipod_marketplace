@@ -17,6 +17,7 @@ try {
     $database = new Database();
     $pdo = $database->connection;
     $added = CatalogSeeder::ensureExtraProducts($pdo);
+    $resynced = CatalogSeeder::resyncSoldFromOrders($pdo);
 
     $rows = $pdo->query(
         'SELECT product_id, name, price, is_sold, imagePath
@@ -34,6 +35,7 @@ try {
     echo json_encode([
         'ok' => true,
         'added' => $added,
+        'resyncedSold' => $resynced,
         'available' => $available,
         'total' => count($rows),
         'products' => $rows,

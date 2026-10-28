@@ -6,11 +6,13 @@
     $pageDesc  = $L['shopDesc'];
 
     $database = new Database();
-    // First shop visit after deploy fills in the extra catalog rows if missing.
-    // Explicit require avoids depending on a stale Composer classmap mid-deploy.
+    // Explicit require avoids a stale Composer classmap mid-deploy.
     require_once __DIR__ . '/src/CatalogSeeder.php';
     try {
+        // Insert missing demo units only — never rewrite is_sold on existing rows
         CatalogSeeder::ensureExtraProducts($database->connection);
+        // Rebuild sold flags from paid order_items if a past seed cleared them
+        CatalogSeeder::resyncSoldFromOrders($database->connection);
     } catch (Throwable $e) {
         error_log('CatalogSeeder failed: ' . $e->getMessage());
     }
