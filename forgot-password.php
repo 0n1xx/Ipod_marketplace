@@ -48,12 +48,13 @@
 ?>
 <main id="main">
     <section class="container auth">
-        <div class="visual">
-            <img src="<?= BASE_URL ?>/images/login_ipod.png" alt="" width="900" height="900">
+        <div class="visual visual--sm">
+            <img src="<?= BASE_URL ?>/images/auth-silver.jpg" alt="Restored silver iPod Classic" width="900" height="900">
+            <p class="eyebrow visual-caption"><?= $L['forgotPasswordSubtitle'] ?></p>
         </div>
         <div class="auth-card">
             <div>
-                <h1><?= $L['forgotPasswordHeading'] ?></h1>
+                <h1 class="display"><?= $L['forgotPasswordHeading'] ?></h1>
                 <p class="sub"><?= $L['forgotPasswordSubtitle'] ?></p>
             </div>
 

@@ -33,12 +33,13 @@
 ?>
 <main id="main">
     <section class="container auth">
-        <div class="visual">
-            <img src="<?= BASE_URL ?>/images/login_ipod.png" alt="" width="900" height="900">
+        <div class="visual visual--sm">
+            <img src="<?= BASE_URL ?>/images/auth-red.jpg" alt="Restored red iPod Classic" width="900" height="900">
+            <p class="eyebrow visual-caption"><?= $L['registerSubtitle'] ?></p>
         </div>
         <div class="auth-card">
             <div>
-                <h1><?= $L['newToWebsite'] ?></h1>
+                <h1 class="display"><?= $L['newToWebsite'] ?></h1>
                 <p class="sub"><?= $L['registerSubtitle'] ?></p>
             </div>
 

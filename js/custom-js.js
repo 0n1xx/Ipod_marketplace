@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     initMobileNav();
+    initHeroSwatches();
     // Server-rendered .alert_success/.alert_failure stay hidden in CSS
     // and surface as short-lived toast notifications instead
     initToasts();
@@ -9,6 +10,37 @@ document.addEventListener('DOMContentLoaded', function() {
     initDropzones();
     initSubmitGuard();
 });
+
+// Home hero: swap product photo when a colour swatch is pressed
+function initHeroSwatches() {
+    const heroImg = document.querySelector('[data-hero-image]');
+    if (!heroImg) return;
+
+    const heroLabel = document.querySelector('[data-hero-label]');
+    const swatches = document.querySelectorAll('[data-swatch]');
+
+    swatches.forEach((sw) => {
+        const pre = new Image();
+        pre.src = sw.getAttribute('data-swatch');
+    });
+
+    swatches.forEach((sw) => {
+        sw.addEventListener('click', () => {
+            if (sw.getAttribute('aria-pressed') === 'true') return;
+            swatches.forEach((other) => {
+                other.setAttribute('aria-pressed', other === sw ? 'true' : 'false');
+            });
+            const name = sw.getAttribute('data-name') || '';
+            heroImg.classList.add('is-swapping');
+            window.setTimeout(() => {
+                heroImg.src = sw.getAttribute('data-swatch');
+                heroImg.alt = 'Restored iPod Classic in ' + name.toLowerCase();
+                if (heroLabel) heroLabel.textContent = 'iPod Classic · ' + name;
+                heroImg.classList.remove('is-swapping');
+            }, 200);
+        });
+    });
+}
 
 // Custom file picker: show chosen filename(s) inside the dropzone label
 function initDropzones() {

@@ -39,12 +39,13 @@
 ?>
 <main id="main">
     <section class="container auth">
-        <div class="visual">
-            <img src="<?= BASE_URL ?>/images/login_ipod.png" alt="" width="900" height="900">
+        <div class="visual visual--sm">
+            <img src="<?= BASE_URL ?>/images/auth-silver.jpg" alt="Restored silver iPod Classic" width="900" height="900">
+            <p class="eyebrow visual-caption"><?= $L['signInSubtitle'] ?></p>
         </div>
         <div class="auth-card">
             <div>
-                <h1><?= $L['welcomeBack'] ?></h1>
+                <h1 class="display"><?= $L['welcomeBack'] ?></h1>
                 <p class="sub"><?= $L['signInSubtitle'] ?></p>
             </div>
 
@@ -61,7 +62,8 @@
                 <div class="field">
                     <label for="name"><?= $L['loginIdentifierLabel'] ?></label>
                     <input class="input" type="text" id="name" name="name"
-                           placeholder="<?= $L['loginIdentifierPlaceholder'] ?>" required>
+                           placeholder="<?= $L['loginIdentifierPlaceholder'] ?>"
+                           autocomplete="username" required>
                 </div>
                 <div class="field">
                     <div class="field-row">
@@ -69,7 +71,8 @@
                         <a href="<?= BASE_URL ?>/forgot-password.php?lang=<?= $lang ?>"><?= $L['forgotPasswordLink'] ?></a>
                     </div>
                     <input class="input" type="password" id="password" name="password"
-                           placeholder="<?= $L['passwordPlaceholder'] ?>" required>
+                           placeholder="<?= $L['passwordPlaceholder'] ?>"
+                           autocomplete="current-password" required>
                 </div>
                 <button type="submit" class="btn btn--dark btn--lg btn--block"><?= $L['signInButton'] ?></button>
             </form>

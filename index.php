@@ -21,23 +21,40 @@
                 <a href="<?= BASE_URL ?>/about.php?lang=<?= $lang ?>" class="btn btn--outline"><?= $L['learnMore'] ?></a>
             </div>
         </div>
-        <div class="visual">
-            <img src="<?= BASE_URL ?>/images/blue.jpg" alt="Restored iPod in blue" width="900" height="900">
+        <div class="hero-stage reveal reveal-2">
+            <div class="visual">
+                <img src="<?= BASE_URL ?>/images/hero-blue.jpg" alt="Restored iPod Classic in blue" width="900" height="900" data-hero-image>
+            </div>
+            <div class="swatches" role="group" aria-label="Choose a colour">
+                <span class="eyebrow" data-hero-label>iPod Classic · Blue</span>
+                <div class="swatch-row">
+                    <button type="button" class="swatch" style="--c:#16A3D9" aria-pressed="true" aria-label="Blue" data-swatch="<?= BASE_URL ?>/images/hero-blue.jpg" data-name="Blue"></button>
+                    <button type="button" class="swatch" style="--c:#3DB53A" aria-pressed="false" aria-label="Green" data-swatch="<?= BASE_URL ?>/images/green.jpg" data-name="Green"></button>
+                    <button type="button" class="swatch" style="--c:#C9CACC" aria-pressed="false" aria-label="Silver" data-swatch="<?= BASE_URL ?>/images/auth-silver.jpg" data-name="Silver"></button>
+                    <button type="button" class="swatch" style="--c:#D6262E" aria-pressed="false" aria-label="Red" data-swatch="<?= BASE_URL ?>/images/auth-red.jpg" data-name="Red"></button>
+                    <button type="button" class="swatch" style="--c:#86207F" aria-pressed="false" aria-label="Purple" data-swatch="<?= BASE_URL ?>/images/purple.jpg" data-name="Purple"></button>
+                </div>
+            </div>
         </div>
     </section>
 
     <section class="ticker" aria-label="<?= htmlspecialchars($L['tickerLabel']) ?>">
-        <ul class="container">
-            <li><?= $L['ticker1'] ?></li>
-            <li aria-hidden="true">/</li>
-            <li><?= $L['ticker2'] ?></li>
-            <li aria-hidden="true">/</li>
-            <li><?= $L['ticker3'] ?></li>
-            <li aria-hidden="true">/</li>
-            <li><?= $L['ticker4'] ?></li>
-            <li aria-hidden="true">/</li>
-            <li><?= $L['ticker5'] ?></li>
-        </ul>
+        <div class="ticker-track">
+            <ul>
+                <li><?= $L['ticker1'] ?></li><li aria-hidden="true">✦</li>
+                <li><?= $L['ticker2'] ?></li><li aria-hidden="true">✦</li>
+                <li><?= $L['ticker3'] ?></li><li aria-hidden="true">✦</li>
+                <li><?= $L['ticker4'] ?></li><li aria-hidden="true">✦</li>
+                <li><?= $L['ticker5'] ?></li><li aria-hidden="true">✦</li>
+            </ul>
+            <ul aria-hidden="true">
+                <li><?= $L['ticker1'] ?></li><li>✦</li>
+                <li><?= $L['ticker2'] ?></li><li>✦</li>
+                <li><?= $L['ticker3'] ?></li><li>✦</li>
+                <li><?= $L['ticker4'] ?></li><li>✦</li>
+                <li><?= $L['ticker5'] ?></li><li>✦</li>
+            </ul>
+        </div>
     </section>
 
     <section class="container section section--tight-bottom" aria-labelledby="classics">
@@ -66,7 +83,7 @@
 
     <section class="container section section--tight-top">
         <div class="story">
-            <img src="<?= BASE_URL ?>/images/headphones.jpg" alt="" loading="lazy">
+            <img src="<?= BASE_URL ?>/images/story-desk.jpg" alt="" loading="lazy" width="900" height="900">
             <div class="story-copy">
                 <p class="eyebrow"><?= $L['ourStory'] ?></p>
                 <h2 class="display display--sm"><?= $L['brandStoryText'] ?></h2>
