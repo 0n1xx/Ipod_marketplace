@@ -36,6 +36,14 @@ CREATE TABLE orders (
     total_price DECIMAL(10,2) NOT NULL,
     -- Fulfilment flow: paid → shipped → delivered
     status VARCHAR(20) NOT NULL DEFAULT 'paid',
+    -- Snapshot from Stripe Checkout shipping_address_collection
+    shipping_name VARCHAR(150) NULL,
+    shipping_line1 VARCHAR(255) NULL,
+    shipping_line2 VARCHAR(255) NULL,
+    shipping_city VARCHAR(100) NULL,
+    shipping_state VARCHAR(100) NULL,
+    shipping_postal VARCHAR(30) NULL,
+    shipping_country VARCHAR(2) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

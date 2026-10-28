@@ -325,6 +325,8 @@ return [
     "orderStatus_paid"        => "Payée",
     "orderStatus_shipped"     => "Expédiée",
     "orderStatus_delivered"   => "Livrée",
+    "shippingAddressLabel"    => "Livrer à",
+    "shippingAddressMissing"  => "Aucune adresse de livraison pour cette commande",
     "adminOrdersTitle"        => "Commandes",
     "adminOrdersIntro"        => "Suivez les paiements et mettez à jour le statut d’expédition.",
     "adminOrdersEmpty"        => "Aucune commande pour le moment.",

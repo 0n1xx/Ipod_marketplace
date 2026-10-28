@@ -56,7 +56,8 @@
                 $orderId = $orderModel->createFromCart(
                     (int) Session::get('user_id'),
                     $sessionId,
-                    $paidProducts
+                    $paidProducts,
+                    Order::shippingFromStripe($stripeSession)
                 );
 
                 if ($orderId) {
@@ -141,6 +142,12 @@
                     <span><?= $L['cartTotal'] ?></span>
                     <span>$<?= number_format((float)$order['total_price'], 2) ?></span>
                 </div>
+                <?php if (Order::hasShippingAddress($order)): ?>
+                    <div class="order-address order-address--receipt">
+                        <p class="eyebrow"><?= $L['shippingAddressLabel'] ?></p>
+                        <p><?= nl2br(htmlspecialchars(Order::formatShippingAddress($order))) ?></p>
+                    </div>
+                <?php endif; ?>
             </aside>
         <?php endif; ?>
     </div>

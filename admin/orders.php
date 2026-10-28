@@ -85,6 +85,7 @@
                                     </div>
                                     <p class="kanban-card__customer"><?= htmlspecialchars($order['customer_name']) ?></p>
                                     <p class="eyebrow"><?= htmlspecialchars($order['customer_email']) ?></p>
+                                    <?php require __DIR__ . '/../templates/order-address.php'; ?>
                                     <ul class="order-items order-items--compact">
                                         <?php foreach ($order['items'] as $item): ?>
                                             <li>

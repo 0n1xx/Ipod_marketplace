@@ -80,6 +80,16 @@ class EmailTemplates {
             ? '<p>' . htmlspecialchars(sprintf($L['receiptEmailHello'], $customerName), ENT_QUOTES, 'UTF-8') . '</p>'
             : '';
 
+        $addressBlock = '';
+        $formattedAddress = Order::formatShippingAddress($order);
+        if ($formattedAddress !== '') {
+            $addressBlock = '<p style="margin-top:14px;"><strong>'
+                . htmlspecialchars($L['shippingAddressLabel'], ENT_QUOTES, 'UTF-8')
+                . ':</strong><br>'
+                . nl2br(htmlspecialchars($formattedAddress, ENT_QUOTES, 'UTF-8'))
+                . '</p>';
+        }
+
         $body = $greeting
             . '<p>' . htmlspecialchars($L['receiptEmailIntro'], ENT_QUOTES, 'UTF-8') . '</p>'
             . '<p><strong>' . htmlspecialchars($L['receiptOrderLabel'], ENT_QUOTES, 'UTF-8') . ':</strong> #'
@@ -87,6 +97,7 @@ class EmailTemplates {
             . '<br><strong>' . htmlspecialchars($L['orderStatusLabel'], ENT_QUOTES, 'UTF-8') . ':</strong> '
             . htmlspecialchars($statusLabel, ENT_QUOTES, 'UTF-8')
             . '</p>'
+            . $addressBlock
             . '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:8px;">'
             . $rows
             . '<tr>'

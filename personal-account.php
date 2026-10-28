@@ -50,6 +50,7 @@
                                     <strong>$<?= number_format((float)$order['total_price'], 2) ?></strong>
                                 </div>
                                 <?php require __DIR__ . '/templates/order-timeline.php'; ?>
+                                <?php require __DIR__ . '/templates/order-address.php'; ?>
                                 <ul class="order-items">
                                     <?php foreach ($order['items'] as $item): ?>
                                         <li>

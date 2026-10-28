@@ -327,6 +327,8 @@ return [
     "orderStatus_paid"        => "Paid",
     "orderStatus_shipped"     => "Shipped",
     "orderStatus_delivered"   => "Delivered",
+    "shippingAddressLabel"    => "Ship to",
+    "shippingAddressMissing"  => "No shipping address on this order",
     "adminOrdersTitle"        => "Orders",
     "adminOrdersIntro"        => "Track payments and update fulfilment status.",
     "adminOrdersEmpty"        => "No orders yet.",

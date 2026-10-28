@@ -59,6 +59,10 @@
             'success_url'         => $baseUrl . '/checkout-success.php?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url'          => $baseUrl . '/cart.php?cancelled=1',
             'client_reference_id' => (string) Session::get('user_id'),
+            // Collect a delivery address so admin + account can show where to ship
+            'shipping_address_collection' => [
+                'allowed_countries' => ['CA', 'US'],
+            ],
             // Snapshot of what was charged — checkout-success.php reads this
             // instead of trusting the live cart (which may have changed)
             'metadata'            => [
