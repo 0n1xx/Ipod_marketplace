@@ -60,31 +60,30 @@
     </div>
 </header>
 <main id="main">
-    <section class="container hero">
-        <div class="hero-copy">
+    <section class="container hero2">
+        <div class="hero2-copy">
             <p class="eyebrow reveal"><span class="dot"></span>Restored in Montréal · Shipped across Canada</p>
-            <h1 class="display display--xl reveal reveal-2">Bring the music back to life</h1>
-            <p class="lead reveal reveal-3">Rediscover the golden era of sound with these timeless devices.</p>
+            <h1 class="display hero2-title reveal reveal-2">Bring the music <em>back</em> to life</h1>
+            <p class="lead reveal reveal-3">Rediscover the golden era of sound with these timeless devices — each one inspected, re-powered and ready to play.</p>
             <div class="btn-row reveal reveal-3">
-                <a href="shop.html" class="btn btn--dark">Shop Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
-                <a href="about.html" class="btn btn--outline">Learn More</a>
+                <a href="shop.html" class="btn btn--dark btn--lg btn--arrow">Shop Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                <a href="about.html" class="btn btn--outline btn--lg">Learn More</a>
             </div>
+            <ul class="trust reveal reveal-4">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span><strong>90-day warranty</strong> parts &amp; labour</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 11v2"/><path d="M11 9l-2 3h4l-2 3"/></svg><span><strong>New battery</strong> in every iPod</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg><span><strong>Tracked shipping</strong> across Canada</span></li>
+            </ul>
         </div>
-        <div class="hero-stage">
-            <div class="visual">
-                <img src="images/blue.jpg" alt="Restored iPod Classic in blue" width="900" height="900" data-hero-image>
-            </div>
-            <div class="swatches" role="group" aria-label="Choose a colour">
-                <span class="eyebrow" data-hero-label>iPod Classic · Blue</span>
-                <div class="swatch-row">
-                    <button type="button" class="swatch" style="--c:#16A3D9" aria-pressed="true" aria-label="Blue" data-swatch="images/blue.jpg" data-name="Blue"></button>
-                    <button type="button" class="swatch" style="--c:#3DB53A" aria-pressed="false" aria-label="Green" data-swatch="images/green.jpg" data-name="Green"></button>
-                    <button type="button" class="swatch" style="--c:#C9CACC" aria-pressed="false" aria-label="Silver" data-swatch="images/silver.jpg" data-name="Silver"></button>
-                    <button type="button" class="swatch" style="--c:#D6262E" aria-pressed="false" aria-label="Red" data-swatch="images/red.jpg" data-name="Red"></button>
-                    <button type="button" class="swatch" style="--c:#86207F" aria-pressed="false" aria-label="Purple" data-swatch="images/purple.jpg" data-name="Purple"></button>
-                </div>
-            </div>
-        </div>
+        <figure class="hero2-media reveal reveal-2">
+            <div class="kenburns"><img src="images/hero-fan.jpg" alt="Five restored iPods in blue, green, silver, red and purple fanned out on a grey backdrop" width="1136" height="1408" fetchpriority="high"></div>
+            <figcaption class="glass-chip chip--top"><span class="pulse" aria-hidden="true"></span>Every iPod is one of a kind</figcaption>
+            <a href="shop.html" class="glass-card">
+                <span class="eyebrow">Now in the shop</span>
+                <span class="glass-card-title">Classic, Mini &amp; Shuffle</span>
+                <span class="glass-card-cta">Browse the collection <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
+            </a>
+        </figure>
     </section>
 
     <section class="ticker" aria-label="Every restoration includes">
@@ -107,53 +106,72 @@
     </section>
 
     <section class="container section section--tight-bottom" aria-labelledby="classics">
-        <div class="section-head">
-            <h2 id="classics" class="display display--md">Discover our classics</h2>
+        <div class="section-head" data-reveal>
+            <div class="section-head-copy">
+                <p class="eyebrow">The collection</p>
+                <h2 id="classics" class="display display--md">Discover our classics</h2>
+            </div>
             <a href="shop.html" class="link-arrow">See the full shop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
         </div>
         <div class="cards-3">
-            <a href="shop.html" class="model-card">
+            <a href="shop.html" class="model-card" data-reveal style="--d: 0ms">
                 <img src="images/classic.jpg" alt="iPod Classic" loading="lazy" width="900" height="900">
                 <footer><h3>iPod Classic</h3><span class="mono">01</span></footer>
             </a>
-            <a href="shop.html" class="model-card">
+            <a href="shop.html" class="model-card" data-reveal style="--d: 90ms">
                 <img src="images/mini.jpg" alt="iPod Mini" loading="lazy" width="900" height="900">
                 <footer><h3>iPod Mini</h3><span class="mono">02</span></footer>
             </a>
-            <a href="shop.html" class="model-card">
+            <a href="shop.html" class="model-card" data-reveal style="--d: 180ms">
                 <img src="images/shuffle.jpg" alt="iPod Shuffle" loading="lazy" width="900" height="900">
                 <footer><h3>iPod Shuffle</h3><span class="mono">03</span></footer>
             </a>
         </div>
     </section>
 
+    <section class="container section section--tight-bottom" aria-labelledby="colours">
+        <div class="section-head" data-reveal>
+            <div class="section-head-copy">
+                <p class="eyebrow">Shop by colour</p>
+                <h2 id="colours" class="display display--md">Pick your shade</h2>
+            </div>
+        </div>
+        <ul class="colour-row">
+            <li data-reveal style="--d: 0ms"><a href="shop.html" class="colour-tile"><img src="images/blue.jpg" alt="" loading="lazy"><span><i style="--c:#16A3D9"></i>Blue</span></a></li>
+            <li data-reveal style="--d: 70ms"><a href="shop.html" class="colour-tile"><img src="images/green.jpg" alt="" loading="lazy"><span><i style="--c:#3DB53A"></i>Green</span></a></li>
+            <li data-reveal style="--d: 140ms"><a href="shop.html" class="colour-tile"><img src="images/silver.jpg" alt="" loading="lazy"><span><i style="--c:#C9CACC"></i>Silver</span></a></li>
+            <li data-reveal style="--d: 210ms"><a href="shop.html" class="colour-tile"><img src="images/red.jpg" alt="" loading="lazy"><span><i style="--c:#D6262E"></i>Red</span></a></li>
+            <li data-reveal style="--d: 280ms"><a href="shop.html" class="colour-tile"><img src="images/purple.jpg" alt="" loading="lazy"><span><i style="--c:#86207F"></i>Purple</span></a></li>
+        </ul>
+    </section>
+
     <section class="container section" aria-labelledby="process">
         <div class="process">
-            <div class="process-head">
+            <div class="process-head" data-reveal>
                 <p class="eyebrow">The restoration</p>
                 <h2 id="process" class="display display--md">Every iPod leaves the bench like new.</h2>
             </div>
-            <figure class="process-photo process-photo--wide">
+            <figure class="process-photo process-photo--wide" data-reveal>
                 <img src="images/workshop.jpg" alt="A restoration bench with an opened iPod, a new battery and precision tools" loading="lazy" width="1680" height="944">
             </figure>
             <ol class="steps">
-                <li>
+                <li data-reveal style="--d: 0ms">
                     <span class="step-num">01</span>
                     <h3>Detailed inspection</h3>
                     <p>We open every device and check the screen, click wheel, ports and storage before anything is replaced.</p>
                 </li>
-                <li>
+                <li data-reveal style="--d: 90ms">
                     <span class="step-num">02</span>
                     <h3>Battery replacement</h3>
                     <p>A fresh battery goes into every iPod we restore — no tired cells, no surprises on day one.</p>
                 </li>
-                <li>
+                <li data-reveal style="--d: 180ms">
                     <span class="step-num">03</span>
                     <h3>Software optimization</h3>
                     <p>A clean reset and software tune-up so it performs like new, backed by a 90-day warranty.</p>
                 </li>
             </ol>
-            <figure class="process-photo process-photo--tall">
+            <figure class="process-photo process-photo--tall" data-reveal style="--d: 120ms">
                 <img src="images/battery.jpg" alt="Gloved hands installing a new battery in an opened iPod" loading="lazy" width="1136" height="1408">
             </figure>
         </div>
@@ -161,16 +179,16 @@
 
     <section class="city-band" aria-labelledby="city">
         <div class="container city">
-            <div class="city-copy">
+            <div class="city-copy" data-reveal>
                 <p class="eyebrow">Montréal, Québec</p>
                 <h2 id="city" class="display display--lg">Made for long walks and longer playlists.</h2>
                 <p class="body">QuébecIpod was born from a passion for sound and simplicity. Today we ship restored iPods across Canada — and beyond on request.</p>
                 <div class="btn-row">
-                    <a href="shop.html" class="btn btn--blue btn--lg">Find your iPod <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                    <a href="shop.html" class="btn btn--blue btn--lg btn--arrow">Find your iPod <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
                     <a href="about.html" class="btn btn--ghost-light btn--lg">Our story</a>
                 </div>
             </div>
-            <figure class="city-photo">
+            <figure class="city-photo" data-reveal style="--d: 120ms">
                 <img src="images/montreal.jpg" alt="Hands holding a blue iPod with earbuds on a snowy Montréal street at dusk" loading="lazy" width="1136" height="1408">
             </figure>
         </div>
@@ -178,12 +196,12 @@
 
     <section class="container section" aria-labelledby="faq-teaser">
         <div class="split" style="padding-block: 0">
-            <div>
+            <div data-reveal>
                 <p class="eyebrow">Good to know</p>
                 <h2 id="faq-teaser" class="display display--sm">Questions before you press play?</h2>
                 <div><a href="contact.html" class="link-arrow">All answers &amp; contact <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a></div>
             </div>
-            <div class="faq">
+            <div class="faq" data-reveal style="--d: 100ms">
                 <details>
                     <summary>What’s your warranty policy?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
                     <p>All refurbished iPods come with a 90-day warranty covering parts and labor. Extended warranties are available for purchase.</p>

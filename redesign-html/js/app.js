@@ -55,6 +55,36 @@
         });
     }
 
+    document.documentElement.classList.add('js');
+
+    /* ---- Scroll reveal ---- */
+    var revealEls = $$('[data-reveal]');
+    if (revealEls.length) {
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (en) {
+                    if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+            revealEls.forEach(function (el) { io.observe(el); });
+        } else {
+            revealEls.forEach(function (el) { el.classList.add('is-in'); });
+        }
+    }
+
+    /* ---- Show / hide password ---- */
+    $$('[data-pw-toggle]').forEach(function (btn) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.addEventListener('click', function () {
+            var input = document.getElementById(btn.getAttribute('aria-controls'));
+            if (!input) return;
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+            btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+    });
+
     /* ---- Home: hero colour picker ---- */
     var heroImg = $('[data-hero-image]');
     if (heroImg) {
@@ -149,12 +179,22 @@
         };
         var confirmInput = $('[data-confirm]');
         var match = $('[data-match]');
+        var strength = $('[data-strength]');
+        var strengthLabel = $('[data-strength-label]');
+        var names = ['Password strength', 'Very weak', 'Weak', 'Fair', 'Good', 'Strong'];
         var check = function () {
             var v = pw.value;
+            var met = 0;
             $$('[data-rule]').forEach(function (li) {
                 var ok = tests[li.getAttribute('data-rule')](v);
                 li.classList.toggle('is-met', ok);
+                if (ok) met++;
             });
+            if (strength) {
+                var level = v ? met : 0;
+                strength.setAttribute('data-level', String(level));
+                if (strengthLabel) strengthLabel.textContent = names[level];
+            }
             if (confirmInput && match) {
                 var c = confirmInput.value;
                 if (!c) { match.textContent = ''; match.className = 'match'; return; }

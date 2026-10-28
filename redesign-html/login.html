@@ -60,33 +60,51 @@
     </div>
 </header>
 <main id="main">
-    <div class="container auth">
-        <div class="visual visual--sm">
-            <img src="images/silver.jpg" alt="Restored silver iPod" width="900" height="900">
-            <p class="eyebrow visual-caption">Sign in to keep your music alive</p>
-        </div>
-        <div class="auth-card">
-            <div>
-                <h1 class="display">Welcome back</h1>
-                <p class="sub">Sign in to keep your music alive</p>
-            </div>
-            <!-- Server-side errors go here -->
-            <p class="alert alert--error" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>[ERROR MESSAGE]</p>
-            <form class="form-stack" action="login.php" method="post">
-                <div class="field">
-                    <label for="l-name">Username or Email</label>
-                    <input class="input" id="l-name" name="name" type="text" required placeholder="Your username or email" autocomplete="username">
+    <div class="container auth2">
+        <figure class="auth2-media">
+            <div class="kenburns"><img src="images/login-desk.jpg" alt="A silver iPod with white earbuds next to a cup of coffee on a wooden desk in morning light" width="1088" height="1456"></div>
+            <figcaption class="auth2-caption">
+                <p class="eyebrow">QuébecIpod</p>
+                <p class="auth2-quote">Your music, the way it used to feel.</p>
+            </figcaption>
+        </figure>
+
+        <div class="auth2-panel">
+            <div class="auth2-form">
+                <div class="auth2-head reveal">
+                    <p class="eyebrow"><span class="dot"></span>Sign in</p>
+                    <h1 class="display">Welcome back</h1>
+                    <p class="sub">Sign in to keep your music alive.</p>
                 </div>
-                <div class="field">
-                    <div class="field-row">
-                        <label for="l-pw">Password</label>
-                        <a href="forgot-password.html">Forgot your password?</a>
+
+                <!-- Server-side errors go here -->
+                <p class="alert alert--error" role="alert" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>[ERROR MESSAGE]</p>
+
+                <form class="form-stack" action="login.php" method="post">
+                    <div class="field reveal reveal-2">
+                        <label for="l-name">Username or Email</label>
+                        <div class="input-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                            <input class="input input--icon" id="l-name" name="name" type="text" required placeholder="Your username or email" autocomplete="username">
+                        </div>
                     </div>
-                    <input class="input" id="l-pw" name="password" type="password" required placeholder="Your password" autocomplete="current-password">
-                </div>
-                <button type="submit" class="btn btn--dark btn--lg btn--block">Sign in</button>
-            </form>
-            <p class="switch">Don't have an account? <a href="register.html">Register now</a></p>
+                    <div class="field reveal reveal-3">
+                        <div class="field-row">
+                            <label for="l-pw">Password</label>
+                            <a href="forgot-password.html">Forgot your password?</a>
+                        </div>
+                        <div class="input-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                            <input class="input input--icon input--toggle" id="l-pw" name="password" type="password" required placeholder="Your password" autocomplete="current-password">
+                            <button type="button" class="pw-toggle" aria-label="Show password" aria-controls="l-pw" data-pw-toggle><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="M4 4l16 16"/></svg></button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--dark btn--lg btn--block btn--arrow reveal reveal-4">Sign in <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+                </form>
+
+                <div class="auth2-divider reveal reveal-4"><span>New to QuébecIpod?</span></div>
+                <a href="register.html" class="btn btn--outline btn--lg btn--block reveal reveal-4">Create an account</a>
+            </div>
         </div>
     </div>
 </main>

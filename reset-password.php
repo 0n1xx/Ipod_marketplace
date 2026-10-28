@@ -39,14 +39,21 @@
     require_once __DIR__ . '/templates/header.php';
 ?>
 <main id="main">
-    <section class="container auth">
-        <div class="visual visual--sm" aria-hidden="true">
-            <img src="<?= BASE_URL ?>/images/auth-silver.jpg" alt="" width="900" height="900">
-        </div>
-        <div class="auth-card">
+    <div class="container auth2">
+        <figure class="auth2-media">
+            <div class="kenburns">
+                <img src="<?= BASE_URL ?>/images/login-desk.jpg" alt="<?= $L['loginDeskAlt'] ?>" width="1088" height="1456">
+            </div>
+            <figcaption class="auth2-caption">
+                <p class="eyebrow">QuébecIpod</p>
+                <p class="auth2-quote"><?= $L['loginQuote'] ?></p>
+            </figcaption>
+        </figure>
+        <div class="auth2-panel">
+            <div class="auth2-form">
             <?php if ($success): ?>
-                <div>
-                    <h1><?= $L['resetPasswordHeading'] ?></h1>
+                <div class="auth2-head reveal">
+                    <h1 class="display"><?= $L['resetPasswordHeading'] ?></h1>
                 </div>
                 <div class="alert_success"><p><?= $L['resetPasswordSuccess'] ?></p></div>
                 <div class="success-box">
@@ -54,8 +61,9 @@
                 </div>
                 <a href="<?= BASE_URL ?>/login.php?lang=<?= $lang ?>" class="btn btn--dark btn--lg btn--block"><?= $L['signInButton'] ?></a>
             <?php else: ?>
-                <div>
-                    <h1><?= $L['resetPasswordHeading'] ?></h1>
+                <div class="auth2-head reveal">
+                    <a href="<?= BASE_URL ?>/login.php?lang=<?= $lang ?>" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg><?= $L['backToLogin'] ?></a>
+                    <h1 class="display"><?= $L['resetPasswordHeading'] ?></h1>
                 </div>
                 <?php if (!empty($errors)): ?>
                     <div class="alert_failure">
@@ -69,10 +77,16 @@
                 <form class="form-stack" action="<?= BASE_URL ?>/reset-password.php" method="post">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
-                    <div class="field">
+                    <div class="field reveal reveal-2">
                         <label for="password"><?= $L['passwordLabelReg'] ?></label>
-                        <input class="input" type="password" id="password" name="password"
-                               placeholder="<?= $L['passwordPlaceholderReg'] ?>" required>
+                        <div class="input-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                            <input class="input input--icon input--toggle" type="password" id="password" name="password"
+                                   placeholder="<?= $L['passwordPlaceholderReg'] ?>" required data-password>
+                            <button type="button" class="pw-toggle" aria-label="<?= $L['showPassword'] ?>" aria-controls="password" data-pw-toggle>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="M4 4l16 16"/></svg>
+                            </button>
+                        </div>
                         <ul id="password-rules" class="rules">
                             <li data-rule="length"><?= $L['ruleLength'] ?></li>
                             <li data-rule="upper"><?= $L['ruleUpper'] ?></li>
@@ -81,21 +95,26 @@
                             <li data-rule="symbol"><?= $L['ruleSymbol'] ?></li>
                         </ul>
                     </div>
-                    <div class="field">
+                    <div class="field reveal reveal-3">
                         <label for="confirm_password"><?= $L['confirmPassword'] ?></label>
-                        <input class="input" type="password" id="confirm_password" name="confirm_password"
-                               placeholder="<?= $L['confirmPasswordPlaceholder'] ?>" required>
-                        <p id="password-match" class="match"
-                           data-match-text="<?= htmlspecialchars($L['passwordsMatch']) ?>"
-                           data-mismatch-text="<?= htmlspecialchars($L['passwordsMismatch']) ?>"></p>
+                        <div class="input-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                            <input class="input input--icon" type="password" id="confirm_password" name="confirm_password"
+                                   placeholder="<?= $L['confirmPasswordPlaceholder'] ?>" required data-confirm>
+                        </div>
+                        <p class="match" aria-live="polite" data-match
+                           data-ok="<?= htmlspecialchars($L['passwordsMatch']) ?>"
+                           data-bad="<?= htmlspecialchars($L['passwordsMismatch']) ?>"
+                           id="password-match"></p>
                     </div>
-                    <button type="submit" class="btn btn--dark btn--lg btn--block"><?= $L['resetPasswordButton'] ?></button>
+                    <button type="submit" class="btn btn--dark btn--lg btn--block reveal reveal-4"><?= $L['resetPasswordButton'] ?></button>
                 </form>
                 <?php else: ?>
                     <a href="<?= BASE_URL ?>/forgot-password.php?lang=<?= $lang ?>" class="btn btn--outline btn--block"><?= $L['forgotPasswordLink'] ?></a>
                 <?php endif; ?>
             <?php endif; ?>
+            </div>
         </div>
-    </section>
+    </div>
 </main>
 <?php require __DIR__ . '/templates/footer.php'; ?>

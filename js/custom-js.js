@@ -1,48 +1,54 @@
 document.addEventListener('DOMContentLoaded', function() {
+    document.documentElement.classList.add('js');
     initMobileNav();
-    initHeroSwatches();
-    // Server-rendered .alert_success/.alert_failure stay hidden in CSS
-    // and surface as short-lived toast notifications instead
-    initToasts();
+    initScrollReveal();
+    initPasswordToggles();
     initPasswordValidation();
+    initToasts();
     initProductGallery();
     initConfirmForms();
     initDropzones();
     initSubmitGuard();
 });
 
-// Home hero: swap product photo when a colour swatch is pressed
-function initHeroSwatches() {
-    const heroImg = document.querySelector('[data-hero-image]');
-    if (!heroImg) return;
+/* Scroll reveal: elements with [data-reveal] fade in when they enter the viewport */
+function initScrollReveal() {
+    const els = document.querySelectorAll('[data-reveal]');
+    if (!els.length) return;
 
-    const heroLabel = document.querySelector('[data-hero-label]');
-    const swatches = document.querySelectorAll('[data-swatch]');
+    if (!('IntersectionObserver' in window)) {
+        els.forEach((el) => el.classList.add('is-in'));
+        return;
+    }
 
-    swatches.forEach((sw) => {
-        const pre = new Image();
-        pre.src = sw.getAttribute('data-swatch');
-    });
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+            if (en.isIntersecting) {
+                en.target.classList.add('is-in');
+                io.unobserve(en.target);
+            }
+        });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
 
-    swatches.forEach((sw) => {
-        sw.addEventListener('click', () => {
-            if (sw.getAttribute('aria-pressed') === 'true') return;
-            swatches.forEach((other) => {
-                other.setAttribute('aria-pressed', other === sw ? 'true' : 'false');
-            });
-            const name = sw.getAttribute('data-name') || '';
-            heroImg.classList.add('is-swapping');
-            window.setTimeout(() => {
-                heroImg.src = sw.getAttribute('data-swatch');
-                heroImg.alt = 'Restored iPod Classic in ' + name.toLowerCase();
-                if (heroLabel) heroLabel.textContent = 'iPod Classic · ' + name;
-                heroImg.classList.remove('is-swapping');
-            }, 200);
+    els.forEach((el) => io.observe(el));
+}
+
+/* Show / hide password for [data-pw-toggle] buttons */
+function initPasswordToggles() {
+    document.querySelectorAll('[data-pw-toggle]').forEach((btn) => {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.getAttribute('aria-controls'));
+            if (!input) return;
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+            btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
         });
     });
 }
 
-// Custom file picker: show chosen filename(s) inside the dropzone label
+/* Custom file picker: show chosen filename(s) inside the dropzone label */
 function initDropzones() {
     document.querySelectorAll('[data-dropzone-input]').forEach((input) => {
         const label = document.querySelector(`label.dropzone[for="${input.id}"]`);
@@ -64,7 +70,7 @@ function initDropzones() {
     });
 }
 
-// Matches redesign-html: data-menu-toggle + #mobile-menu overlay
+/* Matches redesign-html: data-menu-toggle + #mobile-menu overlay */
 function initMobileNav() {
     const menuBtn = document.querySelector('[data-menu-toggle]');
     const menu = document.getElementById('mobile-menu');
@@ -104,7 +110,6 @@ function initSubmitGuard() {
     });
 }
 
-// data-confirm on a form replaces inline onsubmit="return confirm(...)"
 function initConfirmForms() {
     document.querySelectorAll('form.js-confirm').forEach((form) => {
         form.addEventListener('submit', (event) => {
@@ -123,61 +128,71 @@ function initConfirmForms() {
 
 function initProductGallery() {
     const mainImage = document.getElementById('main-product-image');
-    const thumbnails = document.querySelectorAll('.thumb[data-image]');
+    const thumbnails = document.querySelectorAll('.thumb[data-image], [data-thumb]');
     if (!mainImage || !thumbnails.length) return;
 
     thumbnails.forEach((thumb) => {
         thumb.addEventListener('click', () => {
-            mainImage.src = thumb.dataset.image;
+            const src = thumb.dataset.image || thumb.getAttribute('data-thumb');
+            if (src) mainImage.src = src;
             thumbnails.forEach((t) => t.setAttribute('aria-pressed', 'false'));
             thumb.setAttribute('aria-pressed', 'true');
         });
     });
 }
 
+/* Password rules, strength meter, and confirm match */
 function initPasswordValidation() {
-    const password = document.getElementById('password');
-    const confirmPassword = document.getElementById('confirm_password');
-    const rulesList = document.getElementById('password-rules');
-    const matchMessage = document.getElementById('password-match');
-
+    const password = document.querySelector('[data-password]') || document.getElementById('password');
+    const rulesList = document.getElementById('password-rules') || document.querySelector('[data-rule]')?.closest('ul');
     if (!password || !rulesList) return;
 
-    const rules = {
-        length: (value) => value.length >= 8,
-        upper:  (value) => /[A-Z]/.test(value),
-        lower:  (value) => /[a-z]/.test(value),
-        digit:  (value) => /\d/.test(value),
-        symbol: (value) => /[^A-Za-z0-9]/.test(value),
+    const tests = {
+        length: (v) => v.length >= 8,
+        upper:  (v) => /[A-Z]/.test(v),
+        lower:  (v) => /[a-z]/.test(v),
+        digit:  (v) => /\d/.test(v),
+        symbol: (v) => /[^A-Za-z0-9]/.test(v),
     };
 
-    password.addEventListener('input', () => {
-        const value = password.value;
-        Object.entries(rules).forEach(([rule, test]) => {
-            const item = rulesList.querySelector(`[data-rule="${rule}"]`);
-            if (item) item.classList.toggle('is-met', test(value));
+    const confirmInput = document.querySelector('[data-confirm]') || document.getElementById('confirm_password');
+    const match = document.querySelector('[data-match]') || document.getElementById('password-match');
+    const strength = document.querySelector('[data-strength]');
+    const strengthLabel = document.querySelector('[data-strength-label]');
+    const names = ['Password strength', 'Very weak', 'Weak', 'Fair', 'Good', 'Strong'];
+
+    const check = () => {
+        const v = password.value;
+        let met = 0;
+        rulesList.querySelectorAll('[data-rule]').forEach((li) => {
+            const ok = tests[li.getAttribute('data-rule')]?.(v);
+            li.classList.toggle('is-met', !!ok);
+            if (ok) met++;
         });
-        updatePasswordMatch();
-    });
 
-    if (confirmPassword) {
-        confirmPassword.addEventListener('input', updatePasswordMatch);
-    }
-
-    function updatePasswordMatch() {
-        if (!confirmPassword || !matchMessage) return;
-        if (!confirmPassword.value) {
-            matchMessage.textContent = '';
-            matchMessage.classList.remove('is-ok', 'is-bad');
-            return;
+        if (strength) {
+            const level = v ? met : 0;
+            strength.setAttribute('data-level', String(level));
+            if (strengthLabel) strengthLabel.textContent = names[level];
         }
-        const matches = password.value === confirmPassword.value;
-        matchMessage.textContent = matches
-            ? matchMessage.dataset.matchText
-            : matchMessage.dataset.mismatchText;
-        matchMessage.classList.toggle('is-ok', matches);
-        matchMessage.classList.toggle('is-bad', !matches);
-    }
+
+        if (confirmInput && match) {
+            const c = confirmInput.value;
+            if (!c) {
+                match.textContent = '';
+                match.className = 'match';
+                return;
+            }
+            const same = c === v;
+            const okText = match.getAttribute('data-ok') || match.dataset.matchText || 'Passwords match';
+            const badText = match.getAttribute('data-bad') || match.dataset.mismatchText || 'Passwords do not match';
+            match.textContent = same ? okText : badText;
+            match.className = 'match ' + (same ? 'is-ok' : 'is-bad');
+        }
+    };
+
+    password.addEventListener('input', check);
+    if (confirmInput) confirmInput.addEventListener('input', check);
 }
 
 function initToasts() {
@@ -204,6 +219,6 @@ function showToast(message, type, container) {
 
     setTimeout(() => {
         toast.classList.add('toast-hide');
-        toast.addEventListener('animationend', () => toast.remove());
+        toast.addEventListener('transitionend', () => toast.remove());
     }, 4000);
 }

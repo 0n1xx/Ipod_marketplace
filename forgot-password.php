@@ -47,15 +47,23 @@
     require_once __DIR__ . '/templates/header.php';
 ?>
 <main id="main">
-    <section class="container auth">
-        <div class="visual visual--sm" aria-hidden="true">
-            <img src="<?= BASE_URL ?>/images/auth-silver.jpg" alt="" width="900" height="900">
-        </div>
-        <div class="auth-card">
-            <div>
-                <h1 class="display"><?= $L['forgotPasswordHeading'] ?></h1>
-                <p class="sub"><?= $L['forgotPasswordSubtitle'] ?></p>
+    <div class="container auth2">
+        <figure class="auth2-media">
+            <div class="kenburns">
+                <img src="<?= BASE_URL ?>/images/login-desk.jpg" alt="<?= $L['loginDeskAlt'] ?>" width="1088" height="1456">
             </div>
+            <figcaption class="auth2-caption">
+                <p class="eyebrow">QuébecIpod</p>
+                <p class="auth2-quote"><?= $L['loginQuote'] ?></p>
+            </figcaption>
+        </figure>
+        <div class="auth2-panel">
+            <div class="auth2-form">
+                <div class="auth2-head reveal">
+                    <a href="<?= BASE_URL ?>/login.php?lang=<?= $lang ?>" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg><?= $L['backToLogin'] ?></a>
+                    <h1 class="display"><?= $L['forgotPasswordHeading'] ?></h1>
+                    <p class="sub"><?= $L['forgotPasswordSubtitle'] ?></p>
+                </div>
 
             <?php if ($submitted): ?>
                 <div class="alert_success"><p><?= $L['forgotPasswordSuccess'] ?></p></div>
@@ -72,16 +80,19 @@
                 <?php endif; ?>
                 <form class="form-stack" action="<?= BASE_URL ?>/forgot-password.php?lang=<?= $lang ?>" method="post">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                    <div class="field">
+                    <div class="field reveal reveal-2">
                         <label for="email"><?= $L['emailLabelReg'] ?></label>
-                        <input class="input" type="email" id="email" name="email"
-                               placeholder="<?= $L['emailPlaceholderReg'] ?>" required>
+                        <div class="input-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                            <input class="input input--icon" type="email" id="email" name="email"
+                                   placeholder="<?= $L['emailPlaceholderReg'] ?>" autocomplete="email" required>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn--dark btn--lg btn--block"><?= $L['sendResetLinkButton'] ?></button>
+                    <button type="submit" class="btn btn--dark btn--lg btn--block reveal reveal-3"><?= $L['sendResetLinkButton'] ?></button>
                 </form>
             <?php endif; ?>
-            <p class="switch"><a class="back-link" href="<?= BASE_URL ?>/login.php?lang=<?= $lang ?>"><?= $L['alreadyHaveAccount'] ?></a></p>
+            </div>
         </div>
-    </section>
+    </div>
 </main>
 <?php require __DIR__ . '/templates/footer.php'; ?>
