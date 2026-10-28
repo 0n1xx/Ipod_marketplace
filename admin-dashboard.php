@@ -147,10 +147,20 @@
             </div>
         <?php endif; ?>
     </section>
-    <section class="intro-shop">
+    <section class="admin-topbar">
         <div>
             <h1><?= $L['adminWelcome'] ?></h1>
             <p><?= $L['adminIntro'] ?></p>
+        </div>
+        <div class="admin-stats">
+            <div class="admin-stat">
+                <span class="admin-stat-value"><?= count($products) ?></span>
+                <span class="admin-stat-label"><?= $L['adminStatTotal'] ?></span>
+            </div>
+            <div class="admin-stat">
+                <span class="admin-stat-value"><?= count(array_filter($products, fn($p) => $p['is_sold'])) ?></span>
+                <span class="admin-stat-label"><?= $L['adminStatSold'] ?></span>
+            </div>
         </div>
     </section>
     <?php if (empty($products)): ?>
@@ -181,7 +191,7 @@
                         <form method="post" class="action-button">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                             <input type="hidden" name="toggle_sold_id" value="<?= $product['product_id'] ?>">
-                            <button type="submit" class="btn-edit">
+                            <button type="submit" class="btn-toggle">
                                 <?= $product['is_sold'] ? $L['markAvailable'] : $L['markSold'] ?>
                             </button>
                         </form>
@@ -201,36 +211,47 @@
     </section>
     <!-- Showing this form only if an edit button is clicked -->
     <?php if ($editProduct): ?>
-        <div>
-            <h2 class="intro-form-admin">
-                <?= $L['updateProduct'] ?>
-            </h2>
+        <div class="admin-section-header">
+            <h2><?= $L['updateProduct'] ?>: <?= htmlspecialchars($editProduct['name']) ?></h2>
+            <a href="admin-dashboard.php" class="admin-cancel-edit"><?= $L['adminCancelEdit'] ?></a>
         </div>
         <!-- The form with updating the information -->
-        <section class="form-details">
+        <section class="form-details admin-form-details editing">
             <form method="post" enctype="multipart/form-data">
                 <fieldset>
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                     <input type="hidden" name="update_id" value="<?= $editProduct['product_id'] ?>">
                     <input type="hidden" name="oldImage" value="<?= $editProduct['imagePath'] ?>">
-                    <label for="name"><?= $L['adminNameLabel'] ?></label>
-                    <input type="text" id="name" name="name"
-                           placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
+                    <div class="form-row">
+                        <div>
+                            <label for="name"><?= $L['adminNameLabel'] ?></label>
+                            <input type="text" id="name" name="name" value="<?= htmlspecialchars($editProduct['name']) ?>"
+                                   placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
+                        </div>
+                        <div>
+                            <label for="price"><?= $L['adminPriceLabel'] ?></label>
+                            <input type="text" id="price" name="price" value="<?= htmlspecialchars($editProduct['price']) ?>"
+                                   placeholder="<?= $L['adminPricePlaceholder'] ?>"
+                                   pattern="[0-9]+(\.\d{1,2})?$" required>
+                        </div>
+                    </div>
                     <label for="description"><?= $L['adminDescLabel'] ?></label>
                     <textarea id="description" name="description" rows="10"
-                              placeholder="<?= $L['adminDescPlaceholder'] ?>" required></textarea>
-                    <label for="price"><?= $L['adminPriceLabel'] ?></label>
-                    <input type="text" id="price" name="price"
-                           placeholder="<?= $L['adminPricePlaceholder'] ?>"
-                           pattern="[0-9]+(\.\d{1,2})?$" required>
-                    <label for="product_image" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
-                    <input id="product_image" class="file-upload" type="file" name="product_image"
-                           accept="image/jpeg,image/png,image/gif">
-                    <small><?= $L['adminImageHelp'] ?> <?= $L['adminImageHelpNotRequired'] ?> </small>
-                    <label for="extra_images" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
-                    <input id="extra_images" class="file-upload" type="file" name="extra_images[]"
-                           accept="image/jpeg,image/png,image/gif" multiple>
-                    <small><?= $L['adminGalleryHelp'] ?></small>
+                              placeholder="<?= $L['adminDescPlaceholder'] ?>" required><?= htmlspecialchars($editProduct['description']) ?></textarea>
+                    <div class="form-row">
+                        <div>
+                            <label for="product_image" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
+                            <input id="product_image" class="file-upload" type="file" name="product_image"
+                                   accept="image/jpeg,image/png,image/gif">
+                            <small><?= $L['adminImageHelp'] ?> <?= $L['adminImageHelpNotRequired'] ?> </small>
+                        </div>
+                        <div>
+                            <label for="extra_images" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
+                            <input id="extra_images" class="file-upload" type="file" name="extra_images[]"
+                                   accept="image/jpeg,image/png,image/gif" multiple>
+                            <small><?= $L['adminGalleryHelp'] ?></small>
+                        </div>
+                    </div>
                 </fieldset>
                 <div id="submit-button" class="admin-dash">
                     <button type="submit"><?= $L['updateProduct'] ?></button>
@@ -256,34 +277,44 @@
             </section>
         <?php endif; ?>
     <?php endif; ?>
-    <div>
-        <h2 class="intro-form-admin">
-            <?= $L['createNewProduct'] ?>
-        </h2>
+    <div class="admin-section-header">
+        <h2><?= $L['createNewProduct'] ?></h2>
     </div>
     <!-- The form wih creating a new product -->
-    <section class="form-details">
+    <section class="form-details admin-form-details">
         <form method="post" enctype="multipart/form-data">
             <fieldset>
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                <label for="name"><?= $L['adminNameLabel'] ?></label>
-                <input type="text" id="name" name="name"
-                       placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
+                <div class="form-row">
+                    <div>
+                        <label for="name"><?= $L['adminNameLabel'] ?></label>
+                        <input type="text" id="name" name="name"
+                               placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
+                    </div>
+                    <div>
+                        <label for="price"><?= $L['adminPriceLabel'] ?></label>
+                        <input type="text" id="price" name="price"
+                               placeholder="<?= $L['adminPricePlaceholder'] ?>"
+                               pattern="[0-9]+(\.\d{1,2})?$" required>
+                    </div>
+                </div>
                 <label for="description"><?= $L['adminDescLabel'] ?></label>
                 <textarea id="description" name="description" rows="10"
                           placeholder="<?= $L['adminDescPlaceholder'] ?>" required></textarea>
-                <label for="price"><?= $L['adminPriceLabel'] ?></label>
-                <input type="text" id="price" name="price"
-                       placeholder="<?= $L['adminPricePlaceholder'] ?>"
-                       pattern="[0-9]+(\.\d{1,2})?$" required>
-                <label for="product_image" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
-                <input id="product_image" class="file-upload" type="file" name="product_image"
-                       accept="image/jpeg,image/png,image/gif" required>
-                <small><?= $L['adminImageHelp'] ?></small>
-                <label for="extra_images_create" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
-                <input id="extra_images_create" class="file-upload" type="file" name="extra_images[]"
-                       accept="image/jpeg,image/png,image/gif" multiple>
-                <small><?= $L['adminGalleryHelp'] ?></small>
+                <div class="form-row">
+                    <div>
+                        <label for="product_image" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
+                        <input id="product_image" class="file-upload" type="file" name="product_image"
+                               accept="image/jpeg,image/png,image/gif" required>
+                        <small><?= $L['adminImageHelp'] ?></small>
+                    </div>
+                    <div>
+                        <label for="extra_images_create" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
+                        <input id="extra_images_create" class="file-upload" type="file" name="extra_images[]"
+                               accept="image/jpeg,image/png,image/gif" multiple>
+                        <small><?= $L['adminGalleryHelp'] ?></small>
+                    </div>
+                </div>
             </fieldset>
             <div id="submit-button" class="admin-dash">
                 <button type="submit"><?= $L['adminCreateButton'] ?></button>

@@ -170,8 +170,11 @@ return [
     "noSearchResults"    => "Aucun produit ne correspond à votre recherche.",
 
     // Admin page variables
-    "adminWelcome"            => "Admin – Ajouter un nouveau produit",
-    "adminIntro"              => "Remplissez le formulaire ci-dessous pour ajouter un nouveau produit à votre boutique.",
+    "adminWelcome"            => "Tableau de bord admin",
+    "adminIntro"              => "Gérez le catalogue de QuébecIpod.",
+    "adminStatTotal"          => "Produits",
+    "adminStatSold"           => "Vendus",
+    "adminCancelEdit"         => "Annuler",
     "adminNameLabel"          => "Nom du produit",
     "adminNamePlaceholder"    => "Entrez le nom du produit",
     "adminDescLabel"          => "Description",

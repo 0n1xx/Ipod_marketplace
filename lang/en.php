@@ -171,8 +171,11 @@ return [
     "noSearchResults"    => "No products match your search.",
 
     // Admin page variables
-    "adminWelcome"            => "Admin – Add a New Product",
-    "adminIntro"              => "Fill out the form below to add a new product to your store.",
+    "adminWelcome"            => "Admin Dashboard",
+    "adminIntro"              => "Manage your QuébecIpod catalog.",
+    "adminStatTotal"          => "Products",
+    "adminStatSold"           => "Sold",
+    "adminCancelEdit"         => "Cancel",
     "adminNameLabel"          => "Product Name",
     "adminNamePlaceholder"    => "Enter the product name",
     "adminDescLabel"          => "Description",
