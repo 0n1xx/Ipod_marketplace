@@ -468,14 +468,23 @@ footer{
     margin: 1.5rem auto;
 }
 
-/* Shared button base */
-.buttons a {
+/* Shared button base — also applied directly to the colour classes below so
+   a <button> using one (e.g. the cart's checkout button) is sized the same
+   as an <a> wrapped in .buttons, instead of falling back to browser defaults */
+.buttons a,
+.button-home-primary,
+.button-home-secondary,
+.button-about-primary,
+.button-about-secondary,
+.button-about-us {
+    font-family: 'Inter', sans-serif;
     text-decoration: none;
     font-size: 1.7rem;
     font-weight: 600;
     padding: 1.2rem 3.2rem;
     border-radius: 5rem;
     box-shadow: var(--shadow-sm);
+    cursor: pointer;
 }
 
 
