@@ -1,7 +1,13 @@
 <?php
-// Each iPod is a unique physical unit, so the cart is just a set of
-// product ids (no quantities). Session holds a fast cache; for logged-in
-// users we also persist to user_cart so redeploys/migrations don't wipe it.
+// Cart model for unique physical iPods (no quantities).
+//
+// Storage strategy:
+//   - Guests  → PHP session only
+//   - Users   → session cache + `user_cart` table (survives Railway redeploys
+//               that wipe ephemeral session files)
+//
+// On login, hydrateFromDbOnLogin() merges whatever was in the guest session
+// with whatever was already saved for that account, then writes the union back.
 class Cart {
     private const SESSION_KEY = 'cart_product_ids';
 
@@ -23,6 +29,8 @@ class Cart {
         self::save([]);
     }
 
+    // Logged-in users always read from DB so a new container still sees
+    // the same cart; session is kept in sync as a cheap local cache.
     public static function getIds(): array {
         if (Session::isLoggedIn()) {
             $ids = self::loadFromDb((int) Session::get('user_id'));
@@ -36,7 +44,7 @@ class Cart {
         return count(self::getIds());
     }
 
-    // Merge guest session cart into the DB cart right after login
+    // Called once right after a successful login.
     public static function hydrateFromDbOnLogin(int $userId): void {
         $sessionIds = array_values(array_map('intval', $_SESSION[self::SESSION_KEY] ?? []));
         $dbIds = self::loadFromDb($userId);
@@ -81,6 +89,8 @@ class Cart {
         }
     }
 
+    // Replace-all write: delete then re-insert keeps ordering simple and
+    // avoids orphaned rows when the user removes items mid-session.
     private static function persistToDb(int $userId, array $ids): void {
         $pdo = self::db();
         if (!$pdo) {

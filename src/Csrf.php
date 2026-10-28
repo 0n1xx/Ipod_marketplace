@@ -1,4 +1,7 @@
 <?php
+// CSRF tokens are stored in the session and embedded as hidden fields on
+// every mutating form. Verification uses hash_equals() so a crafted token
+// can't be compared with early-exit timing attacks.
 class Csrf {
     public static function token(): string {
         if (empty($_SESSION['csrf_token'])) {
@@ -12,4 +15,3 @@ class Csrf {
             && hash_equals($_SESSION['csrf_token'], $token);
     }
 }
-?>

@@ -2,6 +2,16 @@
     require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
 
+    Session::start();
+    if (!Session::isLoggedIn()) {
+        header('Location: ' . BASE_URL . '/login.php');
+        exit();
+    }
+    if (Session::get('is_admin') != 1) {
+        header('Location: ' . BASE_URL . '/shop.php');
+        exit();
+    }
+
     $pageTitle = $L['soldTitle'];
     $pageDesc  = $L['soldDesc'];
 

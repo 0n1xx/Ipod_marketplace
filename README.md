@@ -1,91 +1,48 @@
-# iPod Marketplace
+# QuébecIpod Marketplace
 
-A full-stack e-commerce web application dedicated to vintage iPods. This project demonstrates end-to-end development using PHP and MySQL, including authentication, admin CRUD functionality, image uploads, Stripe checkout, and multilingual support.
+E-commerce site for restored classic iPods — PHP, MySQL, Stripe Checkout, Cloudinary, Resend, EN/FR.
 
-**Live Demo:** [https://ipod-marketplace.up.railway.app](https://ipod-marketplace.up.railway.app)
-
-## Overview
-
-This project simulates a real-world online store where users can browse products, manage a cart, and check out, while administrators manage inventory through a secure dashboard.
-
-Built using vanilla **HTML**, **CSS**, **JavaScript**, and **PHP**, the application focuses on clean architecture, responsive design, and secure backend practices.
+**Live:** [https://ipod-marketplace.up.railway.app](https://ipod-marketplace.up.railway.app)
 
 ## Features
 
-### User
+- Shop (available) + admin-only Sold archive
+- Product pages with gallery thumbnails
+- Session cart for guests; `user_cart` table for logged-in users (survives Railway redeploys)
+- Stripe Checkout (CAD)
+- Contact + newsletter via Resend
+- Admin CRUD, sold toggle, Cloudinary uploads
+- Responsive header with burger menu (≤1100px)
 
-* Responsive product catalog with dynamic data
-* Individual product pages with gallery photos
-* Search and sort in the shop
-* Cart + Stripe Checkout
-* User authentication (register / login / password reset)
-* Multilingual support (English / French)
+## Stack
 
-### Admin
+PHP 8.1+ · MySQL (PDO) · Stripe · Cloudinary · Resend · Railway
 
-* Full CRUD operations for products
-* Image upload (Cloudinary) with gallery support
-* Sold / available status toggles
-* Secure session-based authentication
-
-### UI
-
-* Fully responsive layout (Flexbox & Grid)
-* Shared design system (tokens, toasts, focus rings)
-* Optimized for desktop, tablet, and mobile
-
-## Tech Stack
-
-* **Frontend:** HTML, CSS, JavaScript
-* **Backend:** PHP (Vanilla)
-* **Database:** MySQL (PDO, prepared statements)
-* **Payments:** Stripe Checkout
-* **Deployment:** Railway
-* **Media Storage:** Cloudinary
-
-## Project Structure
+## Layout
 
 ```
 /
-├── admin/                 # Admin portal (dashboard UI)
-│   └── index.php
-├── src/                   # Application code (not web pages)
-│   ├── Models/            # Product, Order, User, Newsletter
-│   ├── Cart.php
-│   ├── Csrf.php
-│   ├── Database.php
-│   ├── Mailer.php
-│   └── Session.php
-├── includes/              # Bootstrap, config, i18n loader
-├── templates/             # Shared header / footer
-├── lang/                  # en.php / fr.php
-├── css/  js/  images/
-├── uploads/
-├── sql/
-├── index.php              # Public pages live at the web root
-├── shop.php
-├── cart.php
-├── checkout.php
-└── ...
+├── admin/              # Admin dashboard (auth + is_admin)
+├── src/                # Cart, Csrf, Database, Mailer, Session, Models/
+├── includes/           # bootstrap, config, lang loader
+├── templates/          # header / footer / newsletter
+├── lang/               # en.php, fr.php
+├── css/style.css       # all site styles (no inline CSS in pages)
+├── js/custom-js.js     # nav, toasts, gallery, password rules, confirms
+├── sql/                # schema + migrations
+└── *.php               # public pages at web root
 ```
 
-`admin-dashboard.php` remains as a 301 redirect to `/admin/` for old links.
+Styles and behavior live in `css/` and `js/` only. HTML emails in `Mailer` / `EmailTemplates` keep inline CSS because clients strip `<style>` blocks.
 
-## Database
+## Setup
 
-All database interactions use **PDO prepared statements** to prevent SQL injection. See `sql/schema.sql` for the current schema.
-
-## Local Setup
-
-1. Install PHP 8.1+, Composer, and MySQL (or use Docker)
+1. PHP 8.1+, Composer, MySQL
 2. `composer install`
-3. Copy environment variables (MySQL, Stripe, Cloudinary, Resend) into a `.env`
-4. Import `sql/schema.sql`
-5. Serve the project document root (Apache / PHP built-in server)
+3. Copy env vars (MySQL, `STRIPE_SECRET_KEY`, Cloudinary, Resend, `CONTACT_TO_EMAIL`) into `.env`
+4. Import `sql/schema.sql` (and `sql/migrate_user_cart.sql` if upgrading an older DB)
+5. Serve the project root
 
 ## Author
 
 **Vlad Sakharov**
-Aspiring Full-Stack Developer
-
-If you found this project interesting, feel free to give it a star.

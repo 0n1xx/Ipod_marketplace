@@ -19,8 +19,7 @@
     $database = new Database();
     $db = new Product($database->connection);
 
-    // PHP groups a multi-file <input name="x[]"> as $_FILES['x']['name'][0..n],
-    // not as a list of per-file arrays; this reshapes it into the latter.
+    // PHP groups multi-file inputs as $_FILES['x']['name'][0..n]; reshape to per-file arrays
     function normalizeMultiFiles(array $filesField): array {
         $normalized = [];
         foreach ($filesField['name'] as $i => $name) {
@@ -34,7 +33,9 @@
         return $normalized;
     }
 
-    $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
+    // edit_id only selects a row for the form — no CSRF needed.
+    // Mutating actions always require a valid token.
+    $isPost = $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['edit_id']);
     if ($isPost && !Csrf::verify($_POST['csrf_token'] ?? null)) {
         $db->error[] = 'Invalid or expired form submission. Please try again.';
         $isPost = false;
@@ -54,7 +55,6 @@
 
         if ($db->update($updateId, $data)) {
             $success = 'Product updated successfully!';
-
             if (!empty($_FILES['extra_images']['name'][0])) {
                 $db->addGalleryImages($updateId, normalizeMultiFiles($_FILES['extra_images']));
             }
@@ -105,8 +105,8 @@
 
     require_once __DIR__ . '/../templates/header.php';
 ?>
-<main class="admin-page">
-    <section class="messageSuccessFail">
+<main id="main">
+    <div class="container admin-page">
         <?php if ($success): ?>
             <div class="alert_success"><p><?= htmlspecialchars($success) ?></p></div>
         <?php endif; ?>
@@ -117,198 +117,198 @@
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-    </section>
 
-    <section class="admin-topbar">
-        <div>
-            <p class="admin-eyebrow">QuébecIpod</p>
-            <h1><?= $L['adminWelcome'] ?></h1>
-            <p><?= $L['adminIntro'] ?></p>
-        </div>
-        <div class="admin-stats">
-            <div class="admin-stat">
-                <span class="admin-stat-value"><?= count($products) ?></span>
-                <span class="admin-stat-label"><?= $L['adminStatTotal'] ?></span>
+        <section class="admin-head">
+            <div>
+                <p class="eyebrow">QuébecIpod</p>
+                <h1 class="display display--md"><?= $L['adminWelcome'] ?></h1>
+                <p class="body"><?= $L['adminIntro'] ?></p>
             </div>
-            <div class="admin-stat admin-stat-available">
-                <span class="admin-stat-value"><?= $availableCount ?></span>
-                <span class="admin-stat-label"><?= $L['adminStatAvailable'] ?></span>
-            </div>
-            <div class="admin-stat admin-stat-sold">
-                <span class="admin-stat-value"><?= $soldCount ?></span>
-                <span class="admin-stat-label"><?= $L['adminStatSold'] ?></span>
-            </div>
-        </div>
-    </section>
+            <dl class="stats">
+                <div class="stat">
+                    <dt><?= $L['adminStatTotal'] ?></dt>
+                    <dd><?= count($products) ?></dd>
+                </div>
+                <div class="stat stat--blue">
+                    <dt><?= $L['adminStatAvailable'] ?></dt>
+                    <dd><?= $availableCount ?></dd>
+                </div>
+                <div class="stat">
+                    <dt><?= $L['adminStatSold'] ?></dt>
+                    <dd><?= $soldCount ?></dd>
+                </div>
+            </dl>
+        </section>
 
-    <div class="admin-layout">
-        <section class="admin-inventory" id="inventory">
-            <div class="admin-section-header">
+        <section class="panel" id="inventory">
+            <div class="panel-head">
                 <h2><?= $L['adminInventoryTitle'] ?></h2>
+                <a href="<?= BASE_URL ?>/sold.php?lang=<?= $lang ?>" class="btn btn--ghost btn--sm"><?= $L['navSold'] ?></a>
             </div>
 
             <?php if (empty($products)): ?>
-                <div class="empty-state">
+                <div class="empty">
                     <p><?= $L['productsUnavailable'] ?></p>
                 </div>
             <?php else: ?>
-                <div class="admin-product-grid">
-                    <?php foreach ($products as $product): ?>
-                        <article class="admin-product <?= $product['is_sold'] ? 'is-sold' : '' ?>">
-                            <div class="admin-product-media">
-                                <?php if ($product['is_sold']): ?>
-                                    <span class="sold-badge"><?= $L['soldBadge'] ?></span>
-                                <?php endif; ?>
-                                <img src="<?= htmlspecialchars($product['imagePath']) ?>"
-                                     alt="<?= htmlspecialchars($product['name']) ?>"
-                                     loading="lazy" decoding="async">
-                            </div>
-                            <div class="admin-product-body">
-                                <h3><?= htmlspecialchars($product['name']) ?></h3>
-                                <p class="admin-product-desc"><?= nl2br(htmlspecialchars($product['description'])) ?></p>
-                                <p class="admin-product-price">$<?= number_format((float)$product['price'], 2) ?></p>
-                            </div>
-                            <div class="update-delete">
-                                <form method="post" class="action-button">
-                                    <input type="hidden" name="edit_id" value="<?= $product['product_id'] ?>">
-                                    <button type="submit" class="btn-edit"><?= $L['updateProduct'] ?></button>
-                                </form>
-                                <form method="post" class="action-button">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                                    <input type="hidden" name="toggle_sold_id" value="<?= $product['product_id'] ?>">
-                                    <button type="submit" class="btn-toggle">
-                                        <?= $product['is_sold'] ? $L['markAvailable'] : $L['markSold'] ?>
-                                    </button>
-                                </form>
-                                <form method="post" class="action-button" onsubmit="return confirm('<?= htmlspecialchars($L['adminDeleteConfirm'], ENT_QUOTES) ?>');">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                                    <input type="hidden" name="delete_id" value="<?= $product['product_id'] ?>">
-                                    <button type="submit" class="btn-delete"><?= $L['deleteProduct'] ?></button>
-                                </form>
-                            </div>
-                        </article>
-                    <?php endforeach; ?>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><?= $L['adminNameLabel'] ?></th>
+                                <th><?= $L['adminPriceLabel'] ?></th>
+                                <th><?= $L['adminStatAvailable'] ?></th>
+                                <th class="right"><?= $L['updateProduct'] ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($products as $product): ?>
+                                <tr>
+                                    <td>
+                                        <div class="prod-cell">
+                                            <img src="<?= htmlspecialchars($product['imagePath']) ?>"
+                                                 alt="" width="56" height="56" loading="lazy">
+                                            <span><?= htmlspecialchars($product['name']) ?></span>
+                                        </div>
+                                    </td>
+                                    <td>$<?= number_format((float)$product['price'], 2) ?></td>
+                                    <td>
+                                        <span class="pill<?= $product['is_sold'] ? ' pill--sold' : '' ?>">
+                                            <?= $product['is_sold'] ? $L['soldBadge'] : $L['adminStatAvailable'] ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="row-actions">
+                                            <form method="post">
+                                                <input type="hidden" name="edit_id" value="<?= (int)$product['product_id'] ?>">
+                                                <button type="submit" class="btn btn--ghost btn--sm"><?= $L['updateProduct'] ?></button>
+                                            </form>
+                                            <form method="post">
+                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                                                <input type="hidden" name="toggle_sold_id" value="<?= (int)$product['product_id'] ?>">
+                                                <button type="submit" class="btn btn--ghost btn--sm">
+                                                    <?= $product['is_sold'] ? $L['markAvailable'] : $L['markSold'] ?>
+                                                </button>
+                                            </form>
+                                            <form method="post" class="js-confirm" data-confirm="<?= htmlspecialchars($L['adminDeleteConfirm'], ENT_QUOTES) ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                                                <input type="hidden" name="delete_id" value="<?= (int)$product['product_id'] ?>">
+                                                <button type="submit" class="btn btn--danger btn--sm"><?= $L['deleteProduct'] ?></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             <?php endif; ?>
         </section>
 
-        <aside class="admin-sidebar">
-            <?php if ($editProduct): ?>
-                <div class="admin-section-header">
-                    <h2><?= $L['updateProduct'] ?></h2>
-                    <a href="<?= BASE_URL ?>/admin/" class="admin-cancel-edit"><?= $L['adminCancelEdit'] ?></a>
+        <?php if ($editProduct): ?>
+            <section class="panel">
+                <div class="panel-head">
+                    <h2><?= $L['updateProduct'] ?> — <?= htmlspecialchars($editProduct['name']) ?></h2>
+                    <a href="<?= BASE_URL ?>/admin/" class="btn btn--ghost btn--sm"><?= $L['adminCancelEdit'] ?></a>
                 </div>
-                <section class="form-details admin-form-details editing">
-                    <p class="admin-editing-name"><?= htmlspecialchars($editProduct['name']) ?></p>
-                    <form method="post" enctype="multipart/form-data">
-                        <fieldset>
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                            <input type="hidden" name="update_id" value="<?= $editProduct['product_id'] ?>">
-                            <input type="hidden" name="oldImage" value="<?= htmlspecialchars($editProduct['imagePath']) ?>">
-                            <div class="form-row">
-                                <div>
-                                    <label for="edit_name"><?= $L['adminNameLabel'] ?></label>
-                                    <input type="text" id="edit_name" name="name" value="<?= htmlspecialchars($editProduct['name']) ?>"
-                                           placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
-                                </div>
-                                <div>
-                                    <label for="edit_price"><?= $L['adminPriceLabel'] ?></label>
-                                    <input type="text" id="edit_price" name="price" value="<?= htmlspecialchars($editProduct['price']) ?>"
-                                           placeholder="<?= $L['adminPricePlaceholder'] ?>"
-                                           pattern="[0-9]+(\.\d{1,2})?$" required>
-                                </div>
-                            </div>
-                            <label for="edit_description"><?= $L['adminDescLabel'] ?></label>
-                            <textarea id="edit_description" name="description" rows="8"
-                                      placeholder="<?= $L['adminDescPlaceholder'] ?>" required><?= htmlspecialchars($editProduct['description']) ?></textarea>
-                            <div class="form-row form-row-files">
-                                <div>
-                                    <label for="product_image" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
-                                    <input id="product_image" class="file-upload" type="file" name="product_image"
-                                           accept="image/jpeg,image/png,image/gif">
-                                    <small><?= $L['adminImageHelp'] ?> <?= $L['adminImageHelpNotRequired'] ?></small>
-                                </div>
-                                <div>
-                                    <label for="extra_images" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
-                                    <input id="extra_images" class="file-upload" type="file" name="extra_images[]"
-                                           accept="image/jpeg,image/png,image/gif" multiple>
-                                    <small><?= $L['adminGalleryHelp'] ?></small>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <div id="submit-button" class="admin-dash">
-                            <button type="submit"><?= $L['updateProduct'] ?></button>
+                <form class="form-stack" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                    <input type="hidden" name="update_id" value="<?= (int)$editProduct['product_id'] ?>">
+                    <input type="hidden" name="oldImage" value="<?= htmlspecialchars($editProduct['imagePath']) ?>">
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="edit_name"><?= $L['adminNameLabel'] ?></label>
+                            <input class="input" type="text" id="edit_name" name="name"
+                                   value="<?= htmlspecialchars($editProduct['name']) ?>"
+                                   placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
                         </div>
-                    </form>
-                </section>
+                        <div class="field">
+                            <label for="edit_price"><?= $L['adminPriceLabel'] ?></label>
+                            <input class="input" type="text" id="edit_price" name="price"
+                                   value="<?= htmlspecialchars($editProduct['price']) ?>"
+                                   placeholder="<?= $L['adminPricePlaceholder'] ?>"
+                                   pattern="[0-9]+(\.\d{1,2})?$" required>
+                        </div>
+                        <div class="field field--full">
+                            <label for="edit_description"><?= $L['adminDescLabel'] ?></label>
+                            <textarea class="input" id="edit_description" name="description" rows="6"
+                                      placeholder="<?= $L['adminDescPlaceholder'] ?>" required><?= htmlspecialchars($editProduct['description']) ?></textarea>
+                        </div>
+                        <div class="field">
+                            <label for="product_image"><?= $L['adminImageLabel'] ?></label>
+                            <input class="input" type="file" id="product_image" name="product_image"
+                                   accept="image/jpeg,image/png,image/gif">
+                            <span class="field-hint"><?= $L['adminImageHelp'] ?> <?= $L['adminImageHelpNotRequired'] ?></span>
+                        </div>
+                        <div class="field">
+                            <label for="extra_images"><?= $L['adminGalleryLabel'] ?></label>
+                            <input class="input" type="file" id="extra_images" name="extra_images[]"
+                                   accept="image/jpeg,image/png,image/gif" multiple>
+                            <span class="field-hint"><?= $L['adminGalleryHelp'] ?></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--dark btn--lg"><?= $L['updateProduct'] ?></button>
+                </form>
 
                 <?php $galleryImages = $db->getGalleryImages($editProduct['product_id']); ?>
                 <?php if (!empty($galleryImages)): ?>
-                    <section class="gallery-manage">
+                    <div class="gallery-manage">
                         <?php foreach ($galleryImages as $image): ?>
                             <div class="gallery-manage-item">
-                                <img src="<?= htmlspecialchars($image['image_url']) ?>" alt="<?= htmlspecialchars($editProduct['name']) ?>">
-                                <form method="post">
+                                <img src="<?= htmlspecialchars($image['image_url']) ?>" alt="" width="96" height="96">
+                                <form method="post" class="js-confirm" data-confirm="<?= htmlspecialchars($L['adminDeleteConfirm'], ENT_QUOTES) ?>">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                                    <input type="hidden" name="delete_image_id" value="<?= $image['id'] ?>">
-                                    <input type="hidden" name="delete_image_product_id" value="<?= $editProduct['product_id'] ?>">
-                                    <input type="hidden" name="edit_id" value="<?= $editProduct['product_id'] ?>">
-                                    <button type="submit" class="btn-delete"><?= $L['deleteProduct'] ?></button>
+                                    <input type="hidden" name="delete_image_id" value="<?= (int)$image['id'] ?>">
+                                    <input type="hidden" name="delete_image_product_id" value="<?= (int)$editProduct['product_id'] ?>">
+                                    <input type="hidden" name="edit_id" value="<?= (int)$editProduct['product_id'] ?>">
+                                    <button type="submit" class="btn btn--danger btn--sm"><?= $L['deleteProduct'] ?></button>
                                 </form>
                             </div>
                         <?php endforeach; ?>
-                    </section>
+                    </div>
                 <?php endif; ?>
-            <?php endif; ?>
+            </section>
+        <?php endif; ?>
 
-            <div class="admin-section-header">
+        <section class="panel">
+            <div class="panel-head">
                 <h2><?= $L['createNewProduct'] ?></h2>
             </div>
-            <section class="form-details admin-form-details">
-                <form method="post" enctype="multipart/form-data">
-                    <fieldset>
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                        <div class="form-row">
-                            <div>
-                                <label for="name"><?= $L['adminNameLabel'] ?></label>
-                                <input type="text" id="name" name="name"
-                                       placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
-                            </div>
-                            <div>
-                                <label for="price"><?= $L['adminPriceLabel'] ?></label>
-                                <input type="text" id="price" name="price"
-                                       placeholder="<?= $L['adminPricePlaceholder'] ?>"
-                                       pattern="[0-9]+(\.\d{1,2})?$" required>
-                            </div>
-                        </div>
-                        <label for="description"><?= $L['adminDescLabel'] ?></label>
-                        <textarea id="description" name="description" rows="8"
-                                  placeholder="<?= $L['adminDescPlaceholder'] ?>" required></textarea>
-                        <div class="form-row form-row-files">
-                            <div>
-                                <label for="product_image_create" class="custom-file-upload"><?= $L['adminImageLabel'] ?></label>
-                                <input id="product_image_create" class="file-upload" type="file" name="product_image"
-                                       accept="image/jpeg,image/png,image/gif" required>
-                                <small><?= $L['adminImageHelp'] ?></small>
-                            </div>
-                            <div>
-                                <label for="extra_images_create" class="custom-file-upload"><?= $L['adminGalleryLabel'] ?></label>
-                                <input id="extra_images_create" class="file-upload" type="file" name="extra_images[]"
-                                       accept="image/jpeg,image/png,image/gif" multiple>
-                                <small><?= $L['adminGalleryHelp'] ?></small>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <div id="submit-button" class="admin-dash">
-                        <button type="submit"><?= $L['adminCreateButton'] ?></button>
+            <form class="form-stack" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="name"><?= $L['adminNameLabel'] ?></label>
+                        <input class="input" type="text" id="name" name="name"
+                               placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
                     </div>
-                </form>
-            </section>
-        </aside>
-    </div>
-
-    <div class="log-out-button-div">
-        <a href="<?= BASE_URL ?>/logout.php" class="log-out-button"><?= $L['logOut'] ?></a>
+                    <div class="field">
+                        <label for="price"><?= $L['adminPriceLabel'] ?></label>
+                        <input class="input" type="text" id="price" name="price"
+                               placeholder="<?= $L['adminPricePlaceholder'] ?>"
+                               pattern="[0-9]+(\.\d{1,2})?$" required>
+                    </div>
+                    <div class="field field--full">
+                        <label for="description"><?= $L['adminDescLabel'] ?></label>
+                        <textarea class="input" id="description" name="description" rows="6"
+                                  placeholder="<?= $L['adminDescPlaceholder'] ?>" required></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="product_image_create"><?= $L['adminImageLabel'] ?></label>
+                        <input class="input" type="file" id="product_image_create" name="product_image"
+                               accept="image/jpeg,image/png,image/gif" required>
+                        <span class="field-hint"><?= $L['adminImageHelp'] ?></span>
+                    </div>
+                    <div class="field">
+                        <label for="extra_images_create"><?= $L['adminGalleryLabel'] ?></label>
+                        <input class="input" type="file" id="extra_images_create" name="extra_images[]"
+                               accept="image/jpeg,image/png,image/gif" multiple>
+                        <span class="field-hint"><?= $L['adminGalleryHelp'] ?></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn--blue btn--lg"><?= $L['adminCreateButton'] ?></button>
+            </form>
+        </section>
     </div>
 </main>
 <?php require __DIR__ . '/../templates/footer.php'; ?>

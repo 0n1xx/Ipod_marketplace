@@ -1,4 +1,7 @@
 <?php
+    // Stripe redirects here after a successful payment with ?session_id=...
+    // We verify the session server-side, record the order once, clear the cart,
+    // and show a receipt. Reloading this page must not create a duplicate order.
     require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
 
@@ -32,6 +35,7 @@
             $errorMessage = $L['checkoutNotPaid'];
         } elseif ((string) $stripeSession->client_reference_id !== (string) Session::get('user_id')) {
             // Stop one account from claiming another account's paid session
+            // (e.g. a leaked/shared success URL)
             $errorMessage = $L['checkoutWrongAccount'];
         } else {
             $orderModel = new Order($database->connection);
@@ -62,6 +66,7 @@
                 }
             }
 
+            // Pull line items for the receipt UI (findByStripeSession is lean)
             if ($order) {
                 $orders = $orderModel->getOrdersForUser((int) Session::get('user_id'));
                 foreach ($orders as $userOrder) {
@@ -76,44 +81,53 @@
 
     require_once __DIR__ . '/templates/header.php';
 ?>
-<main class="checkout-success-page">
-    <section class="intro-shop">
-        <div>
-            <h1><?= $L['checkoutSuccessTitle'] ?></h1>
-        </div>
-    </section>
+<main id="main">
+    <div class="container success-layout">
+        <div class="success-copy">
+            <div class="check-circle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+            </div>
+            <h1 class="display display--lg"><?= $L['checkoutSuccessTitle'] ?></h1>
 
-    <?php if ($errorMessage): ?>
-        <div class="alert_failure"><p><?= htmlspecialchars($errorMessage) ?></p></div>
-        <div class="empty-state">
-            <p><?= htmlspecialchars($errorMessage) ?></p>
-        </div>
-    <?php else: ?>
-        <div class="alert_success"><p><?= $L['checkoutSuccessText'] ?></p></div>
-        <section class="checkout-receipt">
-            <p class="checkout-receipt-lead"><?= $L['checkoutSuccessText'] ?></p>
-            <?php if (!empty($orderItems)): ?>
-                <ul class="checkout-receipt-items">
-                    <?php foreach ($orderItems as $item): ?>
-                        <li>
-                            <?php if (!empty($item['imagePath'])): ?>
-                                <img src="<?= htmlspecialchars($item['imagePath']) ?>"
-                                     alt="<?= htmlspecialchars($item['name']) ?>" loading="lazy">
-                            <?php endif; ?>
-                            <span><?= htmlspecialchars($item['name']) ?></span>
-                            <strong>$<?= number_format((float)$item['price'], 2) ?></strong>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
+            <?php if ($errorMessage): ?>
+                <div class="alert_failure"><p><?= htmlspecialchars($errorMessage) ?></p></div>
+                <p class="alert alert--error" role="status"><?= htmlspecialchars($errorMessage) ?></p>
+            <?php else: ?>
+                <div class="alert_success"><p><?= $L['checkoutSuccessText'] ?></p></div>
+                <p class="body"><?= $L['checkoutSuccessText'] ?></p>
             <?php endif; ?>
-            <?php if ($order): ?>
-                <p class="cart-total"><?= $L['cartTotal'] ?>: $<?= number_format((float)$order['total_price'], 2) ?></p>
-            <?php endif; ?>
-        </section>
-    <?php endif; ?>
 
-    <div class="buttons" style="justify-content:center; margin: 2rem 0 3rem;">
-        <a href="<?= BASE_URL ?>/shop.php" class="button-home-primary"><?= $L['backToShopButton'] ?></a>
+            <div class="btn-row">
+                <a href="<?= BASE_URL ?>/shop.php" class="btn btn--dark"><?= $L['backToShopButton'] ?></a>
+            </div>
+        </div>
+
+        <?php if (!$errorMessage && $order): ?>
+            <aside class="receipt" aria-label="Receipt">
+                <div class="receipt-head">
+                    <span>QuébecIpod</span>
+                    <span>#<?= (int)$order['id'] ?></span>
+                </div>
+                <?php if (!empty($orderItems)): ?>
+                    <ul>
+                        <?php foreach ($orderItems as $item): ?>
+                            <li>
+                                <?php if (!empty($item['imagePath'])): ?>
+                                    <img src="<?= htmlspecialchars($item['imagePath']) ?>"
+                                         alt="<?= htmlspecialchars($item['name']) ?>" loading="lazy">
+                                <?php endif; ?>
+                                <span><?= htmlspecialchars($item['name']) ?></span>
+                                <strong>$<?= number_format((float)$item['price'], 2) ?></strong>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+                <div class="receipt-total">
+                    <span><?= $L['cartTotal'] ?></span>
+                    <span>$<?= number_format((float)$order['total_price'], 2) ?></span>
+                </div>
+            </aside>
+        <?php endif; ?>
     </div>
 </main>
 <?php require_once __DIR__ . '/templates/footer.php'; ?>

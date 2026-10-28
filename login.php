@@ -4,11 +4,7 @@
 
     Session::start();
     if (Session::isLoggedIn()) {
-        if (Session::get('is_admin') == 1) {
-            header('Location: ' . BASE_URL . '/admin/');
-        } else {
-            header('Location: ' . BASE_URL . '/personal-account.php');
-        }
+        header('Location: ' . BASE_URL . (Session::get('is_admin') == 1 ? '/admin/' : '/personal-account.php'));
         exit();
     }
 
@@ -31,11 +27,7 @@
                 Session::set('username',  $logged_in_user['name']);
                 Session::set('is_admin',  $logged_in_user['is_admin']);
                 Cart::hydrateFromDbOnLogin((int) $logged_in_user['id']);
-                if ($logged_in_user['is_admin'] == 1) {
-                    header('Location: ' . BASE_URL . '/admin/');
-                } else {
-                    header('Location: ' . BASE_URL . '/personal-account.php');
-                }
+                header('Location: ' . BASE_URL . ($logged_in_user['is_admin'] == 1 ? '/admin/' : '/personal-account.php'));
                 exit();
             }
 
@@ -45,43 +37,43 @@
 
     require __DIR__ . '/templates/header.php';
 ?>
-<main>
-    <section class="messageSuccessFail">
-    <?php if (!empty($errors)): ?>
-        <div class="alert_failure">
-            <?php foreach ($errors as $err): ?>
-                <p><?= htmlspecialchars($err) ?></p>
-            <?php endforeach; ?>
+<main id="main">
+    <section class="container auth">
+        <div class="visual">
+            <img src="<?= BASE_URL ?>/images/login_ipod.png" alt="" width="900" height="900">
         </div>
-    <?php endif; ?>
-    </section>
-    <div class="login-reg-img-block">
-        <a href="<?= BASE_URL ?>/login.php" class="login-reg-img">
-            <img src="<?= BASE_URL ?>/images/login_ipod.png" alt="iPod photo">
-        </a>
-    </div>
-    <section class="form-section">
-        <div class="form-instructions form-instructions-login-reg">
-            <h3><?php echo $L['welcomeBack']; ?></h3>
-            <p><?php echo $L['signInSubtitle']; ?></p>
-        </div>
-        <div class="form-details">
-            <form action="<?= BASE_URL ?>/login.php" method="post">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                <fieldset>
-                    <label for="name"><?php echo $L['loginIdentifierLabel']; ?>:</label>
-                    <input type="text" id="name" name="name" placeholder="<?php echo $L['loginIdentifierPlaceholder']; ?>" required>
-                    <label for="password"><?php echo $L['passwordLabel']; ?>:</label>
-                    <input type="password" id="password" name="password" placeholder="<?php echo $L['passwordPlaceholder']; ?>" required>
-                </fieldset>
-                <a href="<?= BASE_URL ?>/forgot-password.php" class="forgot-password-link"><?= $L['forgotPasswordLink'] ?></a>
-                <div class="submit-button">
-                    <button type="submit"><?php echo $L['signInButton']; ?></button>
+        <div class="auth-card">
+            <div>
+                <h1><?= $L['welcomeBack'] ?></h1>
+                <p class="sub"><?= $L['signInSubtitle'] ?></p>
+            </div>
+
+            <?php if (!empty($errors)): ?>
+                <div class="alert_failure">
+                    <?php foreach ($errors as $err): ?>
+                        <p><?= htmlspecialchars($err) ?></p>
+                    <?php endforeach; ?>
                 </div>
+            <?php endif; ?>
+
+            <form class="form-stack" action="<?= BASE_URL ?>/login.php?lang=<?= $lang ?>" method="post">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                <div class="field">
+                    <label for="name"><?= $L['loginIdentifierLabel'] ?></label>
+                    <input class="input" type="text" id="name" name="name"
+                           placeholder="<?= $L['loginIdentifierPlaceholder'] ?>" required>
+                </div>
+                <div class="field">
+                    <div class="field-row">
+                        <label for="password"><?= $L['passwordLabel'] ?></label>
+                        <a href="<?= BASE_URL ?>/forgot-password.php?lang=<?= $lang ?>"><?= $L['forgotPasswordLink'] ?></a>
+                    </div>
+                    <input class="input" type="password" id="password" name="password"
+                           placeholder="<?= $L['passwordPlaceholder'] ?>" required>
+                </div>
+                <button type="submit" class="btn btn--dark btn--lg btn--block"><?= $L['signInButton'] ?></button>
             </form>
-        </div>
-        <div>
-            <a href="<?= BASE_URL ?>/register.php" class="register-log-in"><?= $L['dontHaveAccount']; ?></a>
+            <p class="switch"><?= $L['dontHaveAccount'] ?> <a href="<?= BASE_URL ?>/register.php?lang=<?= $lang ?>"><?= $L['navRegister'] ?></a></p>
         </div>
     </section>
 </main>

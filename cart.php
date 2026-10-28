@@ -25,7 +25,7 @@
 ?>
 <main id="main">
     <div class="container cart-page">
-        <div class="page-head" style="padding: 0">
+        <div class="page-head page-head--flush">
             <div>
                 <p class="eyebrow"><?= $itemCount ?> <?= $itemCount === 1 ? $L['cartItemSingular'] : $L['cartItemPlural'] ?></p>
                 <h1 class="display display--lg"><?= $L['cartHeadline'] ?></h1>

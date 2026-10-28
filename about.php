@@ -1,53 +1,61 @@
 <?php
-    // Added language file which will translate every en english or in french
     require_once __DIR__ . '/includes/bootstrap.php';
     require __DIR__ . '/includes/lang.php';
     $pageTitle = $lang === 'fr' ? 'À propos' : 'About';
     $pageDesc  = $lang === 'fr' ? 'Découvrez l\'histoire de QuébecIpod.' : 'Learn about QuébecIpod\'s story.';
-    require './templates/header.php';
+    require __DIR__ . '/templates/header.php';
 ?>
-<!-- Instead of typing all the info, the content is displayed based on the language -->
-<main>
-    <section class="about-intro-section">
+<main id="main">
+    <section class="container about-head">
+        <p class="eyebrow"><?= $L['ourStory'] ?></p>
+        <h1><?= $L['keepMusic'] ?></h1>
+    </section>
+
+    <section class="container">
+        <ol class="numbered">
+            <li><span class="num" aria-hidden="true">01</span><p><?= $L['aboutText1'] ?></p></li>
+            <li><span class="num" aria-hidden="true">02</span><p><?= $L['aboutText2'] ?></p></li>
+            <li><span class="num" aria-hidden="true">03</span><p><?= $L['aboutText3'] ?></p></li>
+            <li><span class="num" aria-hidden="true">04</span><p><?= $L['aboutText4'] ?></p></li>
+        </ol>
+    </section>
+
+    <section class="dark-band">
+        <div class="container mission">
+            <div class="mission-copy">
+                <p class="eyebrow"><?= $L['ourMission'] ?></p>
+                <h2 class="display display--sm"><?= $L['missionLine1'] ?></h2>
+                <ul class="checklist">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>
+                        <?= $L['missionLine2'] ?>
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>
+                        <?= $L['missionLine3'] ?>
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>
+                        <?= $L['missionLine4'] ?>
+                    </li>
+                </ul>
+            </div>
+            <figure class="flag">
+                <img src="<?= BASE_URL ?>/images/quebecflag.png" alt="Drapeau du Québec" width="420" height="280" loading="lazy">
+                <figcaption><?= $L['craftedQuebec'] ?></figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section class="container cta">
         <div>
-            <h1 class="main-header"><?php echo $L['ourStory']; ?></h1>
-            <p><?php echo $L['keepMusic']; ?></p>
+            <h2><?= $L['readyRestore'] ?></h2>
+            <p class="body"><?= $L['joinCustomers'] ?></p>
         </div>
-    </section>
-    <!-- Added some general text about my company -->
-    <section class="about-primary-section">
-        <div class="about-company-fact"><p><?php echo $L['aboutText1']; ?></p></div>
-        <div class="about-company-fact"><p><?php echo $L['aboutText2']; ?></p></div>
-        <div class="about-company-fact"><p><?php echo $L['aboutText3']; ?></p></div>
-        <div class="about-company-fact"><p><?php echo $L['aboutText4']; ?></p></div>
-    </section>
-    <section class="additional-company-fact">
-        <div class="additional-company-fact-text">
-            <h2><?php echo $L['ourMission']; ?></h2>
-            <p><?php echo $L['missionLine1']; ?></p>
-            <ul>
-                <li><?php echo $L['missionLine2']; ?></li>
-                <li><?php echo $L['missionLine3']; ?></li>
-                <li><?php echo $L['missionLine4']; ?></li>
-            </ul>
-        </div>
-        <div class="additional-company-fact-image-con">
-            <a href="home.php?lang=<?php echo $lang; ?>" class="logo">
-                <img src="images/quebecflag.png" alt="Drapeau du Québec">
-            </a>
-            <p><?php echo $L['craftedQuebec']; ?></p>
-        </div>
-    </section>
-    <section class="restore">
-        <div class="restore-info">
-            <h2><?php echo $L['readyRestore']; ?></h2>
-            <p><?php echo $L['joinCustomers']; ?></p>
-        </div>
-        <!-- Adds some interactive a elements -->
-        <div class="buttons">
-            <a href="team.php?lang=<?php echo $lang; ?>" class="button-about-primary"><?php echo $L['meetTeam']; ?></a>
-            <a href="contact.php?lang=<?php echo $lang; ?>" class="button-about-secondary"><?php echo $L['getInTouch']; ?></a>
+        <div class="btn-row">
+            <a href="<?= BASE_URL ?>/shop.php?lang=<?= $lang ?>" class="btn btn--dark"><?= $L['shopNow'] ?></a>
+            <a href="<?= BASE_URL ?>/contact.php?lang=<?= $lang ?>" class="btn btn--outline"><?= $L['getInTouch'] ?></a>
         </div>
     </section>
 </main>
-<?php require './templates/footer.php'; ?>
+<?php require __DIR__ . '/templates/footer.php'; ?>
