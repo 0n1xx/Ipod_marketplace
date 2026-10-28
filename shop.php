@@ -6,6 +6,8 @@
     $pageDesc  = $L['shopDesc'];
 
     $database = new Database();
+    // First shop visit after deploy fills in the extra catalog rows if missing
+    CatalogSeeder::ensureExtraProducts($database->connection);
     $db = new Product($database->connection);
 
     $searchQuery = trim($_GET['q'] ?? '');
