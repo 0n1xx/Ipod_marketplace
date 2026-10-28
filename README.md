@@ -41,7 +41,8 @@ Styles and behavior live in `css/` and `js/` only. HTML emails in `Mailer` / `Em
 2. `composer install`
 3. Copy env vars (MySQL, `STRIPE_SECRET_KEY`, Cloudinary, Resend, `CONTACT_TO_EMAIL`) into `.env`
 4. Import `sql/schema.sql` (and `sql/migrate_user_cart.sql` if upgrading an older DB)
-5. Serve the project root
+5. Optional catalog pack: `php scripts/seed_extra_products.php` or `sql/seed_extra_ipods.sql` (12 extra iPods + images under `/images/`)
+6. Serve the project root
 
 ## Author
 
