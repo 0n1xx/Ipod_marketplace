@@ -162,21 +162,36 @@ label:focus-within {
 /* ---------- Header ---------- */
 
 .site-header {
-    background: rgba(238, 238, 238, 0.92);
-    -webkit-backdrop-filter: blur(12px) saturate(1.2);
-            backdrop-filter: blur(12px) saturate(1.2);
     border-bottom: 1px solid transparent;
     position: sticky;
     top: 0;
     z-index: 20;
-    transition: border-color .25s, box-shadow .25s, background-color .25s;
+    transition: border-color .25s, box-shadow .25s;
+}
+/* Blur on a layer — not on .site-header itself — so .mobile-menu
+   (position: fixed) still uses the viewport as its containing block.
+   backdrop-filter on the header collapses the drawer to 0 height. */
+.site-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: rgba(238, 238, 238, 0.92);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            backdrop-filter: blur(12px) saturate(1.2);
+    transition: background-color .25s;
 }
 .site-header.is-scrolled {
     border-bottom-color: var(--line);
     box-shadow: 0 10px 28px -22px rgba(18, 19, 22, 0.45);
+}
+.site-header.is-scrolled::before {
     background: rgba(255, 255, 255, 0.9);
 }
 .site-header .header-bar {
+    position: relative;
+    z-index: 1;
     min-height: 76px;
     padding-block: 12px;
     display: flex;
@@ -1005,7 +1020,10 @@ select.input {
 
 .mobile-menu {
     position: fixed;
-    inset: 65px 0 0 0;
+    top: 65px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 19;
     background: var(--ground);
     border-top: 1px solid var(--line);
