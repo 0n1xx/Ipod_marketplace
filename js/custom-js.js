@@ -9,15 +9,32 @@ document.addEventListener('DOMContentLoaded', function() {
     initSubmitGuard();
 });
 
+// Matches redesign-html: data-menu-toggle + #mobile-menu overlay
 function initMobileNav() {
-    const burger = document.querySelector('.burger');
-    const nav = document.querySelector('.site-header .nav');
-    if (!burger || !nav) return;
+    const menuBtn = document.querySelector('[data-menu-toggle]');
+    const menu = document.getElementById('mobile-menu');
+    if (!menuBtn || !menu) return;
 
-    burger.addEventListener('click', () => {
-        const open = nav.classList.toggle('open');
-        burger.classList.toggle('active', open);
-        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    const setMenu = (open) => {
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
+        menu.hidden = !open;
+        document.documentElement.classList.toggle('menu-open', open);
+    };
+
+    menuBtn.addEventListener('click', () => {
+        setMenu(menuBtn.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu.hidden) {
+            setMenu(false);
+            menuBtn.focus();
+        }
+    });
+
+    window.matchMedia('(min-width: 901px)').addEventListener('change', (mq) => {
+        if (mq.matches) setMenu(false);
     });
 }
 

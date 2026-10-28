@@ -6,8 +6,14 @@
     $pageDesc  = $L['shopDesc'];
 
     $database = new Database();
-    // First shop visit after deploy fills in the extra catalog rows if missing
-    CatalogSeeder::ensureExtraProducts($database->connection);
+    // First shop visit after deploy fills in the extra catalog rows if missing.
+    // Explicit require avoids depending on a stale Composer classmap mid-deploy.
+    require_once __DIR__ . '/src/CatalogSeeder.php';
+    try {
+        CatalogSeeder::ensureExtraProducts($database->connection);
+    } catch (Throwable $e) {
+        error_log('CatalogSeeder failed: ' . $e->getMessage());
+    }
     $db = new Product($database->connection);
 
     $searchQuery = trim($_GET['q'] ?? '');
