@@ -22,6 +22,10 @@
 
     $wasCancelled = isset($_GET['cancelled']);
     $hadError = isset($_GET['error']);
+    $rawCheckoutError = Session::get('checkout_error_raw');
+    if ($rawCheckoutError !== null) {
+        Session::set('checkout_error_raw', null);
+    }
 
     require_once __DIR__ . '/templates/header.php';
 ?>
@@ -38,6 +42,9 @@
     <?php endif; ?>
     <?php if ($hadError): ?>
         <div class="alert_failure"><p><?= $L['checkoutError'] ?></p></div>
+    <?php endif; ?>
+    <?php if (!empty($rawCheckoutError)): ?>
+        <pre class="cart-error-raw"><?= htmlspecialchars($rawCheckoutError) ?></pre>
     <?php endif; ?>
 
     <?php if (empty($cartProducts)): ?>

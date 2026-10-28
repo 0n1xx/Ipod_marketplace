@@ -56,6 +56,10 @@
                     'message'       => $message,
                 ];
 
+                // Admin inbox gets the inquiry (Reply-To = customer).
+                // Customer gets a confirmation copy. Resend's free/test
+                // domain can reject one recipient while accepting the other,
+                // so success = at least one of the two actually sent.
                 $adminSent = Mailer::send(
                     CONTACT_TO_EMAIL,
                     $L['contactEmailAdminSubject'] . ' — ' . $subjectLabels[$subject],
@@ -63,16 +67,17 @@
                     $email
                 );
 
-                // Customer confirmation is best-effort; the inquiry itself
-                // already reached the inbox if $adminSent is true
-                Mailer::send(
+                $customerSent = Mailer::send(
                     $email,
                     $L['contactEmailCustomerSubject'],
                     EmailTemplates::contactInquiryCustomer($payload, $L)
                 );
 
-                if ($adminSent) {
+                if ($adminSent || $customerSent) {
                     $success = $L['contactSuccess'];
+                    if (!$adminSent) {
+                        error_log('Contact form: customer confirmation sent, but admin email to ' . CONTACT_TO_EMAIL . ' failed');
+                    }
                 } else {
                     $errors[] = $L['contactErrorSend'];
                 }

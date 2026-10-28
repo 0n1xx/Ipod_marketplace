@@ -2067,21 +2067,29 @@ body.is-admin-page{
 .cart-shell{
     width: min(78%, 72rem);
     margin: 0 auto 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.6rem;
+    box-sizing: border-box;
 }
 
 .cart-items{
     width: 100%;
-    margin: 0 0 1.6rem;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    box-sizing: border-box;
 }
 
 .cart-item{
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    width: 100%;
     padding: 1.4rem;
+    box-sizing: border-box;
     background-color: #fff;
     border: 1px solid #e6edf5;
     border-radius: 1.6rem;
@@ -2128,6 +2136,7 @@ body.is-admin-page{
     width: 100%;
     margin: 0;
     padding: 1.6rem 2rem;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2136,6 +2145,22 @@ body.is-admin-page{
     border: 1px solid #e6edf5;
     border-radius: 1.6rem;
     box-shadow: 0 0.6rem 1.6rem rgba(28, 26, 34, 0.05);
+}
+
+.cart-error-raw{
+    width: min(78%, 72rem);
+    margin: 0 auto 1.6rem;
+    padding: 1.2rem 1.4rem;
+    box-sizing: border-box;
+    border-radius: 1.2rem;
+    background: #fff5f5;
+    border: 1px solid #f5c2c7;
+    color: #b00020;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.3rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .cart-total{
@@ -2211,13 +2236,23 @@ body.is-admin-page{
 /* Mobile adaptation for cart and order history */
 @media (max-width: 768px) {
     .cart-shell,
-    .cart-items,
-    .cart-summary,
     .order-history{
         width: 100%;
         padding-left: 1.2rem;
         padding-right: 1.2rem;
         box-sizing: border-box;
+    }
+
+    .cart-items,
+    .cart-summary{
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .cart-error-raw{
+        width: 100%;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
     }
 
     .cart-item{

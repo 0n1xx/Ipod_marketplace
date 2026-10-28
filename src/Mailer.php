@@ -19,8 +19,9 @@ class Mailer {
             'subject' => $subject,
             'html'    => $html,
         ];
+        // Resend accepts string or string[]; array form is the safer shape
         if ($replyTo !== null && $replyTo !== '') {
-            $payload['reply_to'] = $replyTo;
+            $payload['reply_to'] = [$replyTo];
         }
 
         $ch = curl_init('https://api.resend.com/emails');
