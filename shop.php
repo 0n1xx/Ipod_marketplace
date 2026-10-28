@@ -9,7 +9,7 @@
 
     // Creating a connection to the database to read all products
     $database = new Database();
-    $db = new CrudProducts($database->connection);
+    $db = new Product($database->connection);
 
     // Reading the search query and sort option from the URL
     $searchQuery = trim($_GET['q'] ?? '');

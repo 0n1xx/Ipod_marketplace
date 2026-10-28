@@ -1,5 +1,5 @@
 <?php
-class CrudProducts{
+class Product{
 
     // Created two variables that I'm going to use within this class
     private $connection;

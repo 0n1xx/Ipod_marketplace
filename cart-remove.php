@@ -3,17 +3,17 @@
     Session::start();
 
     if (!Session::isLoggedIn()) {
-        header("Location: login.php");
+        header('Location: ' . BASE_URL . '/login.php');
         exit();
     }
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Csrf::verify($_POST['csrf_token'] ?? null)) {
-        header("Location: cart.php");
+        header('Location: ' . BASE_URL . '/cart.php');
         exit();
     }
 
     Cart::remove((int)($_POST['product_id'] ?? 0));
 
-    header("Location: cart.php");
+    header('Location: ' . BASE_URL . '/cart.php');
     exit();
 ?>

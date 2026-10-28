@@ -8,7 +8,7 @@
 
     Session::start();
     if (Session::isLoggedIn()) {
-        header("Location: " . (Session::get('is_admin') == 1 ? 'admin-dashboard.php' : 'personal-account.php'));
+        header("Location: " . (Session::get('is_admin') == 1 ? 'admin/' : 'personal-account.php'));
         exit();
     }
 

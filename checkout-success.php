@@ -1,20 +1,20 @@
 <?php
     require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
-    require_once __DIR__ . '/templates/header.php';
+
+    Session::start();
+    if (!Session::isLoggedIn()) {
+        header('Location: ' . BASE_URL . '/login.php');
+        exit();
+    }
 
     $pageTitle = $L['checkoutSuccessTitle'];
     $pageDesc  = $L['checkoutSuccessTitle'];
 
-    Session::start();
-    if (!Session::isLoggedIn()) {
-        header("Location: login.php");
-        exit();
-    }
-
     $sessionId = $_GET['session_id'] ?? '';
     $database = new Database();
     $order = null;
+    $orderItems = [];
     $errorMessage = null;
 
     if ($sessionId === '') {
@@ -32,30 +32,26 @@
             $errorMessage = $L['checkoutNotPaid'];
         } elseif ((string) $stripeSession->client_reference_id !== (string) Session::get('user_id')) {
             // Stop one account from claiming another account's paid session
-            // (e.g. a leaked/shared success URL)
             $errorMessage = $L['checkoutWrongAccount'];
         } else {
             $orderModel = new Order($database->connection);
-
-            // Avoid recording the same order twice if this page is reloaded
             $order = $orderModel->findByStripeSession($sessionId);
 
             if (!$order) {
-                // Use the product IDs Stripe actually charged for (stored as
-                // metadata at checkout time), not whatever is in the cart now —
-                // the cart may have changed since this session was created
-                $db = new CrudProducts($database->connection);
+                // Use the product IDs Stripe actually charged for — do NOT
+                // filter out sold items here. Payment already succeeded; a race
+                // with another buyer must not drop line items from the order.
+                $db = new Product($database->connection);
                 $productIds = array_filter(array_map(
                     'intval',
                     explode(',', $stripeSession->metadata->product_ids ?? '')
                 ));
-                $cartProducts = $db->getProductsByIds($productIds);
-                $cartProducts = array_values(array_filter($cartProducts, fn($p) => !$p['is_sold']));
+                $paidProducts = $db->getProductsByIds($productIds);
 
                 $orderId = $orderModel->createFromCart(
                     (int) Session::get('user_id'),
                     $sessionId,
-                    $cartProducts
+                    $paidProducts
                 );
 
                 if ($orderId) {
@@ -65,10 +61,22 @@
                     $errorMessage = $L['checkoutOrderSaveFailed'];
                 }
             }
+
+            if ($order) {
+                $orders = $orderModel->getOrdersForUser((int) Session::get('user_id'));
+                foreach ($orders as $userOrder) {
+                    if ((int)$userOrder['id'] === (int)$order['id']) {
+                        $orderItems = $userOrder['items'] ?? [];
+                        break;
+                    }
+                }
+            }
         }
     }
+
+    require_once __DIR__ . '/templates/header.php';
 ?>
-<main>
+<main class="checkout-success-page">
     <section class="intro-shop">
         <div>
             <h1><?= $L['checkoutSuccessTitle'] ?></h1>
@@ -77,17 +85,35 @@
 
     <?php if ($errorMessage): ?>
         <div class="alert_failure"><p><?= htmlspecialchars($errorMessage) ?></p></div>
+        <div class="empty-state">
+            <p><?= htmlspecialchars($errorMessage) ?></p>
+        </div>
     <?php else: ?>
         <div class="alert_success"><p><?= $L['checkoutSuccessText'] ?></p></div>
-        <?php if ($order): ?>
-            <section class="cart-summary">
+        <section class="checkout-receipt">
+            <p class="checkout-receipt-lead"><?= $L['checkoutSuccessText'] ?></p>
+            <?php if (!empty($orderItems)): ?>
+                <ul class="checkout-receipt-items">
+                    <?php foreach ($orderItems as $item): ?>
+                        <li>
+                            <?php if (!empty($item['imagePath'])): ?>
+                                <img src="<?= htmlspecialchars($item['imagePath']) ?>"
+                                     alt="<?= htmlspecialchars($item['name']) ?>" loading="lazy">
+                            <?php endif; ?>
+                            <span><?= htmlspecialchars($item['name']) ?></span>
+                            <strong>$<?= number_format((float)$item['price'], 2) ?></strong>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+            <?php if ($order): ?>
                 <p class="cart-total"><?= $L['cartTotal'] ?>: $<?= number_format((float)$order['total_price'], 2) ?></p>
-            </section>
-        <?php endif; ?>
+            <?php endif; ?>
+        </section>
     <?php endif; ?>
 
     <div class="buttons" style="justify-content:center; margin: 2rem 0 3rem;">
-        <a href="shop.php" class="button-home-primary"><?= $L['backToShopButton'] ?></a>
+        <a href="<?= BASE_URL ?>/shop.php" class="button-home-primary"><?= $L['backToShopButton'] ?></a>
     </div>
 </main>
 <?php require_once __DIR__ . '/templates/footer.php'; ?>

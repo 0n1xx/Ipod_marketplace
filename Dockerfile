@@ -1,7 +1,7 @@
 # Resolving Composer dependencies in a separate stage keeps Composer itself
 # (and the PHP CLI it needs) out of the final image entirely. The classmap
-# autoloader needs to scan includes/ and admin/, so the whole app is copied
-# in here (not just composer.json) before running composer install.
+# autoloader needs to scan src/, so the whole app is copied in here
+# (not just composer.json) before running composer install.
 FROM composer:2 AS vendor
 WORKDIR /app
 COPY . .

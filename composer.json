@@ -9,8 +9,7 @@
     },
     "autoload": {
         "classmap": [
-            "includes/",
-            "admin/"
+            "src/"
         ]
     }
 }

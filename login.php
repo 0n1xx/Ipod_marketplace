@@ -1,58 +1,50 @@
 <?php
-    // Requiring all needed files
     require_once __DIR__ . '/includes/bootstrap.php';
     require __DIR__ . '/includes/lang.php';
-    require __DIR__ . "/templates/header.php";
 
-    $pageTitle = $L['loginTitle'];
-    $pageDesc  = $L['loginDesc'];
-    // Starting the session
     Session::start();
-    // Checking if it is an admin, redirect to the dashboard, if not to a user profile page
     if (Session::isLoggedIn()) {
-        if (Session::get("is_admin") == 1) {
-            header("Location: admin-dashboard.php");
+        if (Session::get('is_admin') == 1) {
+            header('Location: ' . BASE_URL . '/admin/');
         } else {
-            header("Location: personal-account.php");
+            header('Location: ' . BASE_URL . '/personal-account.php');
         }
         exit();
     }
-    $isSuccess = null;
-    $error = [];
-    // Getting the data from the table below
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+    $pageTitle = $L['loginTitle'];
+    $pageDesc  = $L['loginDesc'];
+    $errors = [];
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
-            $errors = ["Invalid or expired form submission. Please try again."];
+            $errors = ['Invalid or expired form submission. Please try again.'];
         } else {
-        $database = new Database();
-        $user = new User($database->connection);
-        $name = trim($_POST["name"] ?? '');
-        $password = $_POST["password"] ?? '';
-        $logged_in_user = $user->login($name, $password);
-        /* If the login is successful, the user has to options, if it is an admin
-         * then he will be able to access the admin-dashbord,
-         * if it is a regular user, just his personal profile
-         */
-        if($logged_in_user){
-            Session::set("user_id",   $logged_in_user["id"]);
-            Session::set("username",  $logged_in_user["name"]);
-            Session::set("is_admin",  $logged_in_user["is_admin"]);
-            if ($logged_in_user["is_admin"] == 1) {
-                header("Location: admin-dashboard.php");
-            } else {
-                header("Location: personal-account.php");
+            $database = new Database();
+            $user = new User($database->connection);
+            $name = trim($_POST['name'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $logged_in_user = $user->login($name, $password);
+
+            if ($logged_in_user) {
+                Session::set('user_id',   $logged_in_user['id']);
+                Session::set('username',  $logged_in_user['name']);
+                Session::set('is_admin',  $logged_in_user['is_admin']);
+                if ($logged_in_user['is_admin'] == 1) {
+                    header('Location: ' . BASE_URL . '/admin/');
+                } else {
+                    header('Location: ' . BASE_URL . '/personal-account.php');
+                }
+                exit();
             }
-            exit();
-        }
-        // If the login is not successful, taking the error which will be displayed
-        else{
+
             $errors = $user->error;
         }
-        }
     }
+
+    require __DIR__ . '/templates/header.php';
 ?>
 <main>
-    <!-- Displaying each error that the user is facing -->
     <section class="messageSuccessFail">
     <?php if (!empty($errors)): ?>
         <div class="alert_failure">
@@ -62,10 +54,9 @@
         </div>
     <?php endif; ?>
     </section>
-    <!-- Displaying the logo of the login page -->
     <div class="login-reg-img-block">
-        <a href="login.php" class="login-reg-img">
-            <img src="images/login_ipod.png" alt="iPod photo">
+        <a href="<?= BASE_URL ?>/login.php" class="login-reg-img">
+            <img src="<?= BASE_URL ?>/images/login_ipod.png" alt="iPod photo">
         </a>
     </div>
     <section class="form-section">
@@ -73,26 +64,24 @@
             <h3><?php echo $L['welcomeBack']; ?></h3>
             <p><?php echo $L['signInSubtitle']; ?></p>
         </div>
-        <!-- A section with the form that will be used to login for users -->
         <div class="form-details">
-            <form action="login.php" method="post">
+            <form action="<?= BASE_URL ?>/login.php" method="post">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                 <fieldset>
                     <label for="name"><?php echo $L['loginIdentifierLabel']; ?>:</label>
                     <input type="text" id="name" name="name" placeholder="<?php echo $L['loginIdentifierPlaceholder']; ?>" required>
                     <label for="password"><?php echo $L['passwordLabel']; ?>:</label>
                     <input type="password" id="password" name="password" placeholder="<?php echo $L['passwordPlaceholder']; ?>" required>
-                    <a href="forgot-password.php" class="forgot-password-link"><?= $L['forgotPasswordLink'] ?></a>
+                    <a href="<?= BASE_URL ?>/forgot-password.php" class="forgot-password-link"><?= $L['forgotPasswordLink'] ?></a>
                 </fieldset>
                 <div class="submit-button">
                     <button type="submit"><?php echo $L['signInButton']; ?></button>
                 </div>
             </form>
         </div>
-        <!-- Creating a button if a user is already registered -->
         <div>
-            <a href="register.php" class="register-log-in"><?= $L['dontHaveAccount']; ?></a>
+            <a href="<?= BASE_URL ?>/register.php" class="register-log-in"><?= $L['dontHaveAccount']; ?></a>
         </div>
     </section>
 </main>
-<?php require "./templates/footer.php"; ?>
+<?php require __DIR__ . '/templates/footer.php'; ?>

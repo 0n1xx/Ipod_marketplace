@@ -5,19 +5,19 @@
     // Adding to the cart requires an account so the order can be tied to
     // someone at checkout
     if (!Session::isLoggedIn()) {
-        header("Location: login.php");
+        header('Location: ' . BASE_URL . '/login.php');
         exit();
     }
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Csrf::verify($_POST['csrf_token'] ?? null)) {
-        header("Location: shop.php");
+        header('Location: ' . BASE_URL . '/shop.php');
         exit();
     }
 
     $productId = (int)($_POST['product_id'] ?? 0);
 
     $database = new Database();
-    $db = new CrudProducts($database->connection);
+    $db = new Product($database->connection);
     $product = $db->getProductById($productId);
 
     // Only add real, still-available products — never trust the posted id alone
@@ -31,6 +31,6 @@
     if (!preg_match('/^[a-zA-Z0-9_\-]+\.php(\?[a-zA-Z0-9_=&]*)?$/', $redirect)) {
         $redirect = 'shop.php';
     }
-    header("Location: " . $redirect);
+    header('Location: ' . BASE_URL . '/' . $redirect);
     exit();
 ?>

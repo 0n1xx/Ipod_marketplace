@@ -172,9 +172,12 @@ return [
     // Admin page variables
     "adminWelcome"            => "Tableau de bord admin",
     "adminIntro"              => "Gérez le catalogue de QuébecIpod.",
+    "adminInventoryTitle"     => "Inventaire",
     "adminStatTotal"          => "Produits",
+    "adminStatAvailable"      => "Disponibles",
     "adminStatSold"           => "Vendus",
     "adminCancelEdit"         => "Annuler",
+    "adminDeleteConfirm"      => "Supprimer ce produit définitivement ?",
     "adminNameLabel"          => "Nom du produit",
     "adminNamePlaceholder"    => "Entrez le nom du produit",
     "adminDescLabel"          => "Description",

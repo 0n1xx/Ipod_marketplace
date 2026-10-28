@@ -12,7 +12,7 @@
 
     // Connecting to the database
     $database = new Database();
-    $db = new CrudProducts($database->connection);
+    $db = new Product($database->connection);
 
     // Going over all available products and stopping when the needed one is found
     $product = null;

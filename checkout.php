@@ -3,17 +3,23 @@
     Session::start();
 
     if (!Session::isLoggedIn()) {
-        header("Location: login.php");
+        header('Location: ' . BASE_URL . '/login.php');
         exit();
     }
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Csrf::verify($_POST['csrf_token'] ?? null)) {
-        header("Location: cart.php");
+        header('Location: ' . BASE_URL . '/cart.php');
+        exit();
+    }
+
+    if (STRIPE_SECRET_KEY === '') {
+        error_log('Stripe checkout failed: STRIPE_SECRET_KEY is not configured');
+        header('Location: ' . BASE_URL . '/cart.php?error=1');
         exit();
     }
 
     $database = new Database();
-    $db = new CrudProducts($database->connection);
+    $db = new Product($database->connection);
 
     // Re-check availability right before charging — a product could have
     // sold out between being added to the cart and checking out
@@ -21,12 +27,12 @@
     $cartProducts = array_values(array_filter($cartProducts, fn($p) => !$p['is_sold']));
 
     if (empty($cartProducts)) {
-        header("Location: cart.php");
+        header('Location: ' . BASE_URL . '/cart.php');
         exit();
     }
 
     $scheme  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $baseUrl = $scheme . '://' . $_SERVER['HTTP_HOST'];
+    $baseUrl = $scheme . '://' . $_SERVER['HTTP_HOST'] . BASE_URL;
 
     \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
 
@@ -57,11 +63,10 @@
             ],
         ]);
     } catch (\Stripe\Exception\ApiErrorException $e) {
-        error_log("Stripe checkout session creation failed: " . $e->getMessage());
-        header("Location: cart.php?error=1");
+        error_log('Stripe checkout session creation failed: ' . $e->getMessage());
+        header('Location: ' . BASE_URL . '/cart.php?error=1');
         exit();
     }
 
-    header("Location: " . $checkoutSession->url);
+    header('Location: ' . $checkoutSession->url);
     exit();
-?>

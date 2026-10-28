@@ -12,7 +12,7 @@
     // Checking if it is an admin, redirect to the dashboard, if not to a user profile page
     if (Session::isLoggedIn()) {
         if (Session::get("is_admin") == 1) {
-            header("Location: admin-dashboard.php");
+            header("Location: admin/");
         } else {
             header("Location: personal-account.php");
         }

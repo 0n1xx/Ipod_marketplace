@@ -3,6 +3,6 @@
     require_once __DIR__ . '/includes/bootstrap.php';
     Session::start();
     Session::destroy();
-    header("Location: login.php");
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 ?>

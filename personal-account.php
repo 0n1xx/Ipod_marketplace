@@ -2,27 +2,26 @@
     // Requiring files needed for this page
     require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
-    require_once __DIR__ . '/templates/header.php';
-    $pageTitle = $L['contactTitle'];
-    $pageDesc  = $L['contactDesc'];
 
-    // Starting a session
     Session::start();
-    // If somehow user gets here, redirect to the login page
     if (!Session::isLoggedIn()) {
-        header("Location: login.php");
+        header('Location: ' . BASE_URL . '/login.php');
         exit();
     }
-    // If this is admin, redirects to the admin page
     if (Session::get('is_admin') == 1) {
-        header("Location: admin-dashboard.php");
+        header('Location: ' . BASE_URL . '/admin/');
         exit();
     }
+
+    $pageTitle = $L['personalGreeting'];
+    $pageDesc  = $L['personalGreeting'];
     $username = Session::get('username');
 
     $database = new Database();
     $orderModel = new Order($database->connection);
     $orders = $orderModel->getOrdersForUser((int) Session::get('user_id'));
+
+    require_once __DIR__ . '/templates/header.php';
 ?>
 <main>
     <!-- The div with the personal greeting -->
