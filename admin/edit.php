@@ -141,7 +141,11 @@
                     <?php foreach ($galleryImages as $image): ?>
                         <div class="gallery-manage-item">
                             <img src="<?= htmlspecialchars($image['image_url']) ?>" alt="" width="96" height="96">
-                            <form method="post" class="js-confirm" data-confirm="<?= htmlspecialchars($L['adminDeleteConfirm'], ENT_QUOTES) ?>">
+                            <form method="post" class="js-confirm"
+                                  data-confirm="<?= htmlspecialchars($L['adminDeletePhotoConfirm'], ENT_QUOTES) ?>"
+                                  data-confirm-title="<?= htmlspecialchars($L['adminDeleteTitle'], ENT_QUOTES) ?>"
+                                  data-confirm-ok="<?= htmlspecialchars($L['deleteProduct'], ENT_QUOTES) ?>"
+                                  data-confirm-cancel="<?= htmlspecialchars($L['adminCancelEdit'], ENT_QUOTES) ?>">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                                 <input type="hidden" name="delete_image_id" value="<?= (int)$image['id'] ?>">
                                 <button type="submit" class="btn btn--danger btn--sm"><?= $L['deleteProduct'] ?></button>

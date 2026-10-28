@@ -83,6 +83,19 @@
                         <?= $L['cartSecureNote'] ?>
                     </p>
                 </aside>
+                <div class="action-bar" aria-label="<?= htmlspecialchars($L['proceedToCheckout']) ?>">
+                    <div class="action-bar-info">
+                        <span class="eyebrow"><?= $L['cartTotal'] ?> · <?= $itemCount ?> <?= $itemCount === 1 ? $L['cartItemSingular'] : $L['cartItemPlural'] ?></span>
+                        <strong>$<?= number_format((float)$total, 2) ?> CAD</strong>
+                    </div>
+                    <form method="post" action="<?= BASE_URL ?>/checkout.php">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                        <button type="submit" class="btn btn--blue">
+                            <?= $L['checkoutShort'] ?>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+                        </button>
+                    </form>
+                </div>
             </div>
         <?php endif; ?>
     </div>

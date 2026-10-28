@@ -111,19 +111,96 @@ function initSubmitGuard() {
 }
 
 function initConfirmForms() {
-    document.querySelectorAll('form.js-confirm').forEach((form) => {
+    const forms = document.querySelectorAll('form.js-confirm');
+    if (!forms.length) return;
+
+    const modal = ensureConfirmModal();
+    const titleEl = modal.querySelector('[data-confirm-title]');
+    const bodyEl = modal.querySelector('[data-confirm-body]');
+    const okBtn = modal.querySelector('[data-confirm-ok]');
+    const cancelBtn = modal.querySelector('[data-confirm-cancel]');
+    const backdrop = modal.querySelector('[data-confirm-backdrop]');
+    let pendingForm = null;
+
+    const close = () => {
+        modal.hidden = true;
+        document.documentElement.classList.remove('confirm-open');
+        pendingForm = null;
+        okBtn.disabled = false;
+        okBtn.classList.remove('is-loading');
+    };
+
+    const open = (form) => {
+        pendingForm = form;
+        titleEl.textContent = form.getAttribute('data-confirm-title') || 'Are you sure?';
+        bodyEl.textContent = form.getAttribute('data-confirm') || '';
+        okBtn.textContent = form.getAttribute('data-confirm-ok') || 'Delete';
+        cancelBtn.textContent = form.getAttribute('data-confirm-cancel') || 'Cancel';
+        modal.hidden = false;
+        document.documentElement.classList.add('confirm-open');
+        okBtn.focus();
+    };
+
+    forms.forEach((form) => {
         form.addEventListener('submit', (event) => {
-            const message = form.getAttribute('data-confirm');
-            if (message && !window.confirm(message)) {
-                event.preventDefault();
-                const button = form.querySelector('button[type="submit"]');
-                if (button) {
-                    button.disabled = false;
-                    button.classList.remove('is-loading');
-                }
+            if (form.dataset.confirmed === '1') {
+                form.dataset.confirmed = '0';
+                return;
             }
-        });
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            const button = form.querySelector('button[type="submit"]');
+            if (button) {
+                button.disabled = false;
+                button.classList.remove('is-loading');
+            }
+            open(form);
+        }, true);
     });
+
+    okBtn.addEventListener('click', () => {
+        if (!pendingForm) return;
+        const form = pendingForm;
+        form.dataset.confirmed = '1';
+        close();
+        if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+        } else {
+            form.submit();
+        }
+    });
+
+    cancelBtn.addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) close();
+    });
+}
+
+function ensureConfirmModal() {
+    let modal = document.getElementById('confirm-modal');
+    if (modal) return modal;
+
+    modal = document.createElement('div');
+    modal.id = 'confirm-modal';
+    modal.className = 'confirm-modal';
+    modal.hidden = true;
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'confirm-modal-title');
+    modal.innerHTML = `
+        <div class="confirm-modal__backdrop" data-confirm-backdrop></div>
+        <div class="confirm-modal__card">
+            <h2 id="confirm-modal-title" class="confirm-modal__title" data-confirm-title></h2>
+            <p class="confirm-modal__body" data-confirm-body></p>
+            <div class="confirm-modal__actions">
+                <button type="button" class="btn btn--outline" data-confirm-cancel>Cancel</button>
+                <button type="button" class="btn btn--danger" data-confirm-ok>Delete</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
 }
 
 function initProductGallery() {

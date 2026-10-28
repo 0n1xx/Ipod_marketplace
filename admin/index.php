@@ -38,25 +38,13 @@
             }
             $success = 'Product deleted successfully!';
         }
-    } elseif ($isPost && !empty($_FILES['product_image']['name'])) {
-        $data = [
-            'name'        => trim($_POST['name'] ?? ''),
-            'description' => trim($_POST['description'] ?? ''),
-            'price'       => trim($_POST['price'] ?? ''),
-            'imagePath'   => $_FILES['product_image'],
-        ];
-
-        $newProductId = $db->create($data);
-        if ($newProductId) {
-            $success = 'Product created successfully!';
-            if (!empty($_FILES['extra_images']['name'][0])) {
-                $db->addGalleryImages($newProductId, normalizeMultiFiles($_FILES['extra_images']));
-            }
-        }
     }
 
     if (isset($_GET['updated'])) {
         $success = 'Product updated successfully!';
+    }
+    if (isset($_GET['created'])) {
+        $success = 'Product created successfully!';
     }
 
     $products = $db->read();
@@ -103,12 +91,16 @@
         <section class="panel" id="inventory">
             <div class="panel-head">
                 <h2><?= $L['adminInventoryTitle'] ?></h2>
-                <a href="<?= BASE_URL ?>/sold.php?lang=<?= $lang ?>" class="btn btn--ghost btn--sm"><?= $L['navSold'] ?></a>
+                <div class="btn-row">
+                    <a href="<?= BASE_URL ?>/admin/create.php?lang=<?= $lang ?>" class="btn btn--blue btn--sm"><?= $L['createNewProduct'] ?></a>
+                    <a href="<?= BASE_URL ?>/sold.php?lang=<?= $lang ?>" class="btn btn--ghost btn--sm"><?= $L['navSold'] ?></a>
+                </div>
             </div>
 
             <?php if (empty($products)): ?>
                 <div class="empty">
                     <p><?= $L['productsUnavailable'] ?></p>
+                    <a href="<?= BASE_URL ?>/admin/create.php?lang=<?= $lang ?>" class="btn btn--dark"><?= $L['createNewProduct'] ?></a>
                 </div>
             <?php else: ?>
                 <div class="table-wrap">
@@ -148,7 +140,11 @@
                                                     <?= $product['is_sold'] ? $L['markAvailable'] : $L['markSold'] ?>
                                                 </button>
                                             </form>
-                                            <form method="post" class="js-confirm" data-confirm="<?= htmlspecialchars($L['adminDeleteConfirm'], ENT_QUOTES) ?>">
+                                            <form method="post" class="js-confirm"
+                                                  data-confirm="<?= htmlspecialchars($L['adminDeleteConfirm'], ENT_QUOTES) ?>"
+                                                  data-confirm-title="<?= htmlspecialchars($L['adminDeleteTitle'], ENT_QUOTES) ?>"
+                                                  data-confirm-ok="<?= htmlspecialchars($L['deleteProduct'], ENT_QUOTES) ?>"
+                                                  data-confirm-cancel="<?= htmlspecialchars($L['adminCancelEdit'], ENT_QUOTES) ?>">
                                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                                                 <input type="hidden" name="delete_id" value="<?= (int)$product['product_id'] ?>">
                                                 <button type="submit" class="btn btn--danger btn--sm"><?= $L['deleteProduct'] ?></button>
@@ -161,54 +157,6 @@
                     </table>
                 </div>
             <?php endif; ?>
-        </section>
-
-        <section class="panel" id="create">
-            <div class="panel-head">
-                <h2><?= $L['createNewProduct'] ?></h2>
-            </div>
-            <form class="form-stack" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="name"><?= $L['adminNameLabel'] ?></label>
-                        <input class="input" type="text" id="name" name="name"
-                               placeholder="<?= $L['adminNamePlaceholder'] ?>" minlength="8" required>
-                    </div>
-                    <div class="field">
-                        <label for="price"><?= $L['adminPriceLabel'] ?></label>
-                        <input class="input" type="text" id="price" name="price"
-                               placeholder="<?= $L['adminPricePlaceholder'] ?>"
-                               pattern="[0-9]+(\.\d{1,2})?$" required>
-                    </div>
-                    <div class="field field--full">
-                        <label for="description"><?= $L['adminDescLabel'] ?></label>
-                        <textarea class="input" id="description" name="description" rows="6"
-                                  placeholder="<?= $L['adminDescPlaceholder'] ?>" required></textarea>
-                    </div>
-                    <div class="field">
-                        <span class="label"><?= $L['adminImageLabel'] ?></span>
-                        <label for="product_image_create" class="dropzone">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-                            <strong><?= $L['adminImageLabel'] ?></strong>
-                            <span><?= $L['adminImageHelp'] ?></span>
-                        </label>
-                        <input class="sr-only" type="file" id="product_image_create" name="product_image"
-                               accept="image/jpeg,image/png,image/gif" required data-dropzone-input>
-                    </div>
-                    <div class="field">
-                        <span class="label"><?= $L['adminGalleryLabel'] ?></span>
-                        <label for="extra_images_create" class="dropzone">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/><path d="M3 15l4-4 4 4"/></svg>
-                            <strong><?= $L['adminGalleryLabel'] ?></strong>
-                            <span><?= $L['adminGalleryHelp'] ?></span>
-                        </label>
-                        <input class="sr-only" type="file" id="extra_images_create" name="extra_images[]"
-                               accept="image/jpeg,image/png,image/gif" multiple data-dropzone-input>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn--blue btn--lg"><?= $L['adminCreateButton'] ?></button>
-            </form>
         </section>
     </div>
 </main>
