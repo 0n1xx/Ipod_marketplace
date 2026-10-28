@@ -708,13 +708,17 @@ footer{
 .forgot-password-link{
     display: block;
     width: fit-content;
+    margin-left: auto;
     margin-top: -0.6rem;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    font-weight: 600;
     color: var(--accent);
     text-decoration: none;
+    transition: var(--transition);
 }
 
 .forgot-password-link:hover{
+    color: var(--accent-teal);
     text-decoration: underline;
 }
 
