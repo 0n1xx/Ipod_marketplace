@@ -14,6 +14,7 @@ E-commerce site for restored classic iPods — bilingual (EN/FR), Stripe Checkou
 - Auth: login / register / forgot / reset (split layouts, password strength)
 - Contact + newsletter via Resend
 - Order statuses: paid → shipped → delivered (account + admin `/admin/orders.php`)
+- Stripe shipping address on checkout → shown in account, admin kanban, receipt email
 - Receipt email via Resend after successful Stripe payment
 - Admin: inventory, create page, edit page, orders monitor, sold toggle, delete modal, Cloudinary uploads
 - Responsive UI (burger ≤900px) — styles in `css/style.css`, behavior in `js/custom-js.js`
@@ -26,17 +27,17 @@ PHP 8.1+ · MySQL (PDO) · Stripe · Cloudinary · Resend · Railway (Apache/Doc
 
 ```
 /
-├── admin/                 # Dashboard, create.php, edit.php
+├── admin/                 # index, create, edit, orders (+ /orders/ redirect)
 ├── src/                   # Cart, Csrf, Database, Mailer, Session, CatalogSeeder, Models/
 ├── includes/              # bootstrap, config, lang loader
-├── templates/             # header, footer, newsletter, product-grid
+├── templates/             # header, footer, product-grid, order-timeline/address/items
 ├── lang/                  # en.php, fr.php
-├── css/style.css          # site styles (from redesign-html)
-├── js/custom-js.js        # nav, toasts, gallery, password UI, confirm modal
+├── css/style.css          # site styles
+├── js/custom-js.js        # nav, toasts, gallery, cart fly, skeletons, confirm modal
 ├── images/                # product + marketing photography
 ├── sql/                   # schema + migrations
 ├── scripts/               # CLI catalog seed
-├── redesign-html/         # static mockups (reference only)
+├── redesign-html/         # static mockups (reference only; excluded from Docker image)
 └── *.php                  # public pages at web root
 ```
 
@@ -54,8 +55,9 @@ HTML emails keep inline CSS (`Mailer` / `EmailTemplates`) because clients strip 
 | `STRIPE_SECRET_KEY` / `STRIPE_PUBLISHABLE_KEY` | Checkout |
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Product images |
 | `RESEND_API_KEY` / `RESEND_FROM_EMAIL` / `CONTACT_TO_EMAIL` | Mail |
+| `APP_URL` (optional) | Absolute site URL for emails (defaults to the Railway live URL) |
 
-4. Import `sql/schema.sql` (and `sql/migrate_user_cart.sql` if upgrading an older DB)  
+4. Import `sql/schema.sql`. Upgrading an older DB? Also run `sql/migrate_user_cart.sql`, `sql/migrate_order_status.sql`, and `sql/migrate_order_shipping.sql` (shipping columns also auto-apply on first Order use).  
 5. Optional catalog pack: `php scripts/seed_extra_products.php` or visit `/seed-catalog.php` as admin  
 6. Serve the project root (or deploy the Dockerfile to Railway)
 
@@ -64,6 +66,7 @@ On a sparse/empty DB, `shop.php` runs `CatalogSeeder::ensureIfSparse()` once so 
 ## Admin
 
 - `/admin/` — inventory, mark sold/available, delete (modal confirm)  
+- `/admin/orders.php` — kanban: Paid → Shipped → Delivered (+ shipping address)  
 - `/admin/create.php` — new product  
 - `/admin/edit.php?id=` — edit product + gallery  
 - `/sold.php` — sold archive (admin only)  
@@ -72,7 +75,7 @@ On a sparse/empty DB, `shop.php` runs `CatalogSeeder::ensureIfSparse()` once so 
 ## Notes
 
 - Language: `?lang=en|fr` overrides the cookie and updates it  
-- Assets are cache-busted via `?v=` on `style.css` / `custom-js.js` in `templates/header.php`  
+- Assets are cache-busted via `ASSET_VERSION` in `includes/config.php`  
 - Do not commit secrets (`.env`)
 
 ## Author

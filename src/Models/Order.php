@@ -127,16 +127,32 @@ class Order {
     }
 
     public function getItemsForOrder(int $orderId): array {
+        $grouped = $this->getItemsForOrders([$orderId]);
+        return $grouped[$orderId] ?? [];
+    }
+
+    // One query for many orders — used by account history + admin kanban
+    public function getItemsForOrders(array $orderIds): array {
+        $orderIds = array_values(array_unique(array_map('intval', $orderIds)));
+        if ($orderIds === []) {
+            return [];
+        }
         try {
+            $placeholders = implode(',', array_fill(0, count($orderIds), '?'));
             $stmt = $this->connection->prepare(
-                'SELECT oi.price, pd.name, pd.imagePath
+                "SELECT oi.order_id, oi.price, pd.name, pd.imagePath
                  FROM order_items oi
                  JOIN products_description pd ON pd.product_id = oi.product_id
-                 WHERE oi.order_id = :order_id'
+                 WHERE oi.order_id IN ({$placeholders})"
             );
-            $stmt->bindValue(':order_id', $orderId, PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->execute($orderIds);
+            $grouped = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $oid = (int)$row['order_id'];
+                unset($row['order_id']);
+                $grouped[$oid][] = $row;
+            }
+            return $grouped;
         } catch (PDOException $e) {
             $this->error[] = 'Database error while fetching order items';
             return [];
@@ -228,11 +244,14 @@ class Order {
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
             $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $itemsByOrder = $this->getItemsForOrders(array_column($orders, 'id'));
 
             foreach ($orders as &$order) {
-                $order['items'] = $this->getItemsForOrder((int)$order['id']);
+                $orderId = (int)$order['id'];
+                $order['items'] = $itemsByOrder[$orderId] ?? [];
                 $order['status'] = self::normalizeStatus($order['status'] ?? 'paid');
             }
+            unset($order);
             return $orders;
         } catch (PDOException $e) {
             $this->error[] = "Database error while fetching order history";
@@ -250,10 +269,13 @@ class Order {
                  ORDER BY o.created_at DESC'
             );
             $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $itemsByOrder = $this->getItemsForOrders(array_column($orders, 'id'));
             foreach ($orders as &$order) {
-                $order['items'] = $this->getItemsForOrder((int)$order['id']);
+                $orderId = (int)$order['id'];
+                $order['items'] = $itemsByOrder[$orderId] ?? [];
                 $order['status'] = self::normalizeStatus($order['status'] ?? 'paid');
             }
+            unset($order);
             return $orders;
         } catch (PDOException $e) {
             $this->error[] = 'Database error while fetching orders';

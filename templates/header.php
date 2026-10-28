@@ -15,12 +15,6 @@ $params = $_GET;
 $params['lang'] = $newLang;
 $newUrl = '?' . http_build_query($params);
 
-if (isset($_GET['lang']) && in_array($_GET['lang'], ['en', 'fr'], true) && $_GET['lang'] !== $lang) {
-    setcookie('user_lang', $_GET['lang'], time() + (365 * 24 * 60 * 60), '/');
-    header('Location: ' . $_SERVER['PHP_SELF'] . ($params ? '?' . http_build_query($params) : ''));
-    exit();
-}
-
 $loggedIn = Session::isLoggedIn();
 $isAdmin = $loggedIn && Session::get('is_admin') == 1;
 $accountPage = null;
@@ -64,8 +58,8 @@ $mobileLinks[] = ['href' => $base . '/contact.php?lang=' . $lang, 'label' => $L[
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap">
-    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028x">
-    <script src="<?= $base ?>/js/custom-js.js?v=20261028x" defer></script>
+    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=<?= ASSET_VERSION ?>">
+    <script src="<?= $base ?>/js/custom-js.js?v=<?= ASSET_VERSION ?>" defer></script>
 </head>
 <body<?= $isAdminSection ? ' class="is-admin-page"' : '' ?>>
 <a href="#main" class="sr-only">Skip to content</a>

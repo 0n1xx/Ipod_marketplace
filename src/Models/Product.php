@@ -58,10 +58,16 @@ class Product{
 
     // Creating a private function which will be called inside the public function
     // This function allows us to check that if the name, description or a file path already exists
-    private function recordExists(string $columnName, $value): bool {
+    private function recordExists(string $columnName, $value, ?int $excludeProductId = null): bool {
         $query = "SELECT COUNT(*) FROM {$this->table_name} WHERE {$columnName} = :value";
+        if ($excludeProductId !== null) {
+            $query .= ' AND product_id != :exclude_id';
+        }
         $stmt = $this->connection->prepare($query);
-        $stmt->bindParam(':value', $value);
+        $stmt->bindValue(':value', $value);
+        if ($excludeProductId !== null) {
+            $stmt->bindValue(':exclude_id', $excludeProductId, PDO::PARAM_INT);
+        }
         $stmt->execute();
         return $stmt->fetchColumn() > 0;
     }
@@ -70,7 +76,7 @@ class Product{
      * can be verified. Each column has it own proper (in my opinion) validation
      */
 
-    public function validateData($data) {
+    public function validateData($data, ?int $excludeProductId = null) {
         $this->error = [];
         /* First of all, I'm going to check a product name
          * This project is the ability to learn new functions and just generally a good opportunity
@@ -96,7 +102,7 @@ class Product{
         if (str_word_count($data['name']) < 1){
             $this->error[] = "Name cannot be less than 1 word";
         }
-        if($this->recordExists('name', $data['name'])){
+        if ($this->recordExists('name', $data['name'], $excludeProductId)) {
             $this->error[] = "Name is already in use.";
         }
 
@@ -115,7 +121,7 @@ class Product{
         if (strlen($data['description']) > 2000){
             $this->error[] = "Description cannot be more than 2000 characters.";
         }
-        if($this->recordExists('description', $data['description'])){
+        if ($this->recordExists('description', $data['description'], $excludeProductId)) {
             $this->error[] = "Description is already in use.";
         }
         // To be honest I asked chat gpt what are the most frequent spam words and decided to check if any of them
@@ -317,7 +323,7 @@ class Product{
 
     // Creating an update function
     public function update($id, $data){
-        if (!$this->validateData($data)) {
+        if (!$this->validateData($data, (int)$id)) {
             return false;
         }
 

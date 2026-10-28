@@ -51,15 +51,7 @@
                                 </div>
                                 <?php require __DIR__ . '/templates/order-timeline.php'; ?>
                                 <?php require __DIR__ . '/templates/order-address.php'; ?>
-                                <ul class="order-items">
-                                    <?php foreach ($order['items'] as $item): ?>
-                                        <li>
-                                            <img src="<?= htmlspecialchars($item['imagePath']) ?>"
-                                                 alt="<?= htmlspecialchars($item['name']) ?>" loading="lazy" width="72" height="72">
-                                            <span><?= htmlspecialchars($item['name']) ?></span>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
+                                <?php require __DIR__ . '/templates/order-items.php'; ?>
                             </li>
                         <?php endforeach; ?>
                     </ul>

@@ -9,9 +9,6 @@
     $pageDesc  = $L['soldDesc'];
 
     $database = new Database();
-    // Sold archive always reflects DB is_sold=1; resync from order_items first
-    CatalogSeeder::resyncSoldFromOrders($database->connection);
-
     $db = new Product($database->connection);
 
     $searchQuery = trim($_GET['q'] ?? '');

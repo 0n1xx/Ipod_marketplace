@@ -11,6 +11,11 @@
 class Cart {
     private const SESSION_KEY = 'cart_product_ids';
 
+    /** @var array<int>|null Request-scoped cache for logged-in carts */
+    private static ?array $requestIds = null;
+    private static ?int $requestUserId = null;
+    private static ?PDO $pdo = null;
+
     public static function add(int $productId): void {
         $ids = self::getIds();
         if (!in_array($productId, $ids, true)) {
@@ -33,10 +38,18 @@ class Cart {
     // the same cart; session is kept in sync as a cheap local cache.
     public static function getIds(): array {
         if (Session::isLoggedIn()) {
-            $ids = self::loadFromDb((int) Session::get('user_id'));
+            $userId = (int) Session::get('user_id');
+            if (self::$requestIds !== null && self::$requestUserId === $userId) {
+                return self::$requestIds;
+            }
+            $ids = self::loadFromDb($userId);
             $_SESSION[self::SESSION_KEY] = $ids;
+            self::$requestIds = $ids;
+            self::$requestUserId = $userId;
             return $ids;
         }
+        self::$requestIds = null;
+        self::$requestUserId = null;
         return array_values(array_map('intval', $_SESSION[self::SESSION_KEY] ?? []));
     }
 
@@ -51,20 +64,28 @@ class Cart {
         $merged = array_values(array_unique(array_merge($dbIds, $sessionIds)));
         self::persistToDb($userId, $merged);
         $_SESSION[self::SESSION_KEY] = $merged;
+        self::$requestIds = $merged;
+        self::$requestUserId = $userId;
     }
 
     private static function save(array $ids): void {
         $ids = array_values(array_unique(array_map('intval', $ids)));
         $_SESSION[self::SESSION_KEY] = $ids;
+        self::$requestIds = $ids;
+        self::$requestUserId = Session::isLoggedIn() ? (int) Session::get('user_id') : null;
         if (Session::isLoggedIn()) {
             self::persistToDb((int) Session::get('user_id'), $ids);
         }
     }
 
     private static function db(): ?PDO {
+        if (self::$pdo instanceof PDO) {
+            return self::$pdo;
+        }
         try {
             $database = new Database();
-            return $database->connection;
+            self::$pdo = $database->connection;
+            return self::$pdo;
         } catch (Throwable $e) {
             error_log('Cart: could not open DB: ' . $e->getMessage());
             return null;

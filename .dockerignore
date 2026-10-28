@@ -1,0 +1,13 @@
+.git
+.idea
+.vscode
+redesign-html
+agent-transcripts
+*.md
+.env
+.env.*
+.gitignore
+.git/cursor
+**/COMMIT_EDITMSG
+**/FETCH_HEAD
+**/ORIG_HEAD

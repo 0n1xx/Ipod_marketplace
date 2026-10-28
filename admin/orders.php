@@ -86,14 +86,10 @@
                                     <p class="kanban-card__customer"><?= htmlspecialchars($order['customer_name']) ?></p>
                                     <p class="eyebrow"><?= htmlspecialchars($order['customer_email']) ?></p>
                                     <?php require __DIR__ . '/../templates/order-address.php'; ?>
-                                    <ul class="order-items order-items--compact">
-                                        <?php foreach ($order['items'] as $item): ?>
-                                            <li>
-                                                <img src="<?= htmlspecialchars($item['imagePath']) ?>" alt="" width="40" height="40" loading="lazy">
-                                                <span><?= htmlspecialchars($item['name']) ?></span>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
+                                    <?php
+                                        $orderItemsCompact = true;
+                                        require __DIR__ . '/../templates/order-items.php';
+                                    ?>
                                     <p class="mono kanban-card__date"><?= htmlspecialchars($order['created_at']) ?></p>
                                     <?php $advance = $nextStatus[$columnStatus]; ?>
                                     <?php if ($advance): ?>

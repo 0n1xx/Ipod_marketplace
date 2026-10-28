@@ -12,9 +12,6 @@
     $database = new Database();
     $db = new Product($database->connection);
 
-    // Keep sold flags aligned with paid order_items (repairs accidental clears)
-    CatalogSeeder::resyncSoldFromOrders($database->connection);
-
     $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
     if ($isPost && !Csrf::verify($_POST['csrf_token'] ?? null)) {
         $db->error[] = 'Invalid or expired form submission. Please try again.';

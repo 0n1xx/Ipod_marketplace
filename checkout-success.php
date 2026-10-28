@@ -107,10 +107,8 @@
 
             <?php if ($errorMessage): ?>
                 <div class="alert_failure"><p><?= htmlspecialchars($errorMessage) ?></p></div>
-                <p class="alert alert--error" role="status"><?= htmlspecialchars($errorMessage) ?></p>
             <?php else: ?>
                 <div class="alert_success"><p><?= $L['checkoutSuccessText'] ?></p></div>
-                <p class="body"><?= $L['checkoutSuccessText'] ?></p>
             <?php endif; ?>
 
             <div class="btn-row">
@@ -142,12 +140,10 @@
                     <span><?= $L['cartTotal'] ?></span>
                     <span>$<?= number_format((float)$order['total_price'], 2) ?></span>
                 </div>
-                <?php if (Order::hasShippingAddress($order)): ?>
-                    <div class="order-address order-address--receipt">
-                        <p class="eyebrow"><?= $L['shippingAddressLabel'] ?></p>
-                        <p><?= nl2br(htmlspecialchars(Order::formatShippingAddress($order))) ?></p>
-                    </div>
-                <?php endif; ?>
+                <?php
+                    $orderAddressClass = 'order-address--receipt';
+                    require __DIR__ . '/templates/order-address.php';
+                ?>
             </aside>
         <?php endif; ?>
     </div>

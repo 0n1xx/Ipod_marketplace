@@ -50,7 +50,7 @@ class EmailTemplates {
         $body = '<p>' . htmlspecialchars($L['newsletterEmailBody'], ENT_QUOTES, 'UTF-8') . '</p>'
             . '<p style="margin-top:18px;">' . htmlspecialchars($L['newsletterEmailExtra'], ENT_QUOTES, 'UTF-8') . '</p>'
             . '<p style="margin-top:22px;">'
-            . '<a href="https://ipod-marketplace.up.railway.app/shop.php" '
+            . '<a href="' . htmlspecialchars(APP_URL . '/shop.php', ENT_QUOTES, 'UTF-8') . '" '
             . 'style="display:inline-block;padding:12px 22px;border-radius:999px;background:#3575e2;color:#ffffff;text-decoration:none;font-weight:700;">'
             . htmlspecialchars($L['newsletterEmailCta'], ENT_QUOTES, 'UTF-8')
             . '</a></p>';
@@ -105,7 +105,7 @@ class EmailTemplates {
             . '<td style="padding:14px 0 0;text-align:right;font-weight:700;">$' . $total . ' CAD</td>'
             . '</tr></table>'
             . '<p style="margin-top:22px;">'
-            . '<a href="https://ipod-marketplace.up.railway.app/personal-account.php" '
+            . '<a href="' . htmlspecialchars(APP_URL . '/personal-account.php', ENT_QUOTES, 'UTF-8') . '" '
             . 'style="display:inline-block;padding:12px 22px;border-radius:999px;background:#3575e2;color:#ffffff;text-decoration:none;font-weight:700;">'
             . htmlspecialchars($L['receiptEmailCta'], ENT_QUOTES, 'UTF-8')
             . '</a></p>'
