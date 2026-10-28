@@ -54,8 +54,8 @@ $mobileLinks[] = ['href' => $base . '/contact.php?lang=' . $lang, 'label' => $L[
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap">
-    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028r">
-    <script src="<?= $base ?>/js/custom-js.js?v=20261028r" defer></script>
+    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028s">
+    <script src="<?= $base ?>/js/custom-js.js?v=20261028s" defer></script>
 </head>
 <body<?= $isAdminSection ? ' class="is-admin-page"' : '' ?>>
 <a href="#main" class="sr-only">Skip to content</a>
