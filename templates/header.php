@@ -39,6 +39,16 @@ $mobileLinks = [
     ['href' => $base . '/shop.php?lang=' . $lang, 'label' => $L['navShop'], 'current' => in_array($currentPage, ['shop.php', 'product.php'], true)],
 ];
 if ($isAdmin) {
+    $mobileLinks[] = [
+        'href' => $base . '/admin/?lang=' . $lang,
+        'label' => $L['adminInventoryTitle'],
+        'current' => $isAdminSection && in_array($currentPage, ['index.php', 'create.php', 'edit.php'], true),
+    ];
+    $mobileLinks[] = [
+        'href' => $base . '/admin/orders.php?lang=' . $lang,
+        'label' => $L['adminOrdersTitle'],
+        'current' => $currentPage === 'orders.php',
+    ];
     $mobileLinks[] = ['href' => $base . '/sold.php?lang=' . $lang, 'label' => $L['navSold'], 'current' => $currentPage === 'sold.php'];
 }
 $mobileLinks[] = ['href' => $base . '/contact.php?lang=' . $lang, 'label' => $L['navContact'], 'current' => $currentPage === 'contact.php'];
@@ -54,8 +64,8 @@ $mobileLinks[] = ['href' => $base . '/contact.php?lang=' . $lang, 'label' => $L[
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap">
-    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028v">
-    <script src="<?= $base ?>/js/custom-js.js?v=20261028v" defer></script>
+    <link rel="stylesheet" href="<?= $base ?>/css/style.css?v=20261028w">
+    <script src="<?= $base ?>/js/custom-js.js?v=20261028w" defer></script>
 </head>
 <body<?= $isAdminSection ? ' class="is-admin-page"' : '' ?>>
 <a href="#main" class="sr-only">Skip to content</a>
@@ -75,6 +85,8 @@ $mobileLinks[] = ['href' => $base . '/contact.php?lang=' . $lang, 'label' => $L[
                 <li><a href="<?= $base ?>/about.php?lang=<?= $lang ?>" <?= $currentPage === 'about.php' ? 'aria-current="page"' : '' ?>><?= $L['navAbout'] ?></a></li>
                 <li><a href="<?= $base ?>/shop.php?lang=<?= $lang ?>" <?= in_array($currentPage, ['shop.php', 'product.php'], true) ? 'aria-current="page"' : '' ?>><?= $L['navShop'] ?></a></li>
                 <?php if ($isAdmin): ?>
+                    <li><a href="<?= $base ?>/admin/?lang=<?= $lang ?>" <?= $isAdminSection && in_array($currentPage, ['index.php', 'create.php', 'edit.php'], true) ? 'aria-current="page"' : '' ?>><?= $L['adminInventoryTitle'] ?></a></li>
+                    <li><a href="<?= $base ?>/admin/orders.php?lang=<?= $lang ?>" <?= $currentPage === 'orders.php' ? 'aria-current="page"' : '' ?>><?= $L['adminOrdersTitle'] ?></a></li>
                     <li><a href="<?= $base ?>/sold.php?lang=<?= $lang ?>" <?= $currentPage === 'sold.php' ? 'aria-current="page"' : '' ?>><?= $L['navSold'] ?></a></li>
                 <?php endif; ?>
                 <li><a href="<?= $base ?>/contact.php?lang=<?= $lang ?>" <?= $currentPage === 'contact.php' ? 'aria-current="page"' : '' ?>><?= $L['navContact'] ?></a></li>
