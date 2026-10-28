@@ -1,22 +1,31 @@
 <?php
-// Idempotent catalog helpers used after deploy.
+// Idempotent catalog helpers used after deploy / admin seed.
 // - ensureExtraProducts(): INSERT only missing names (never touches is_sold)
 // - resyncSoldFromOrders(): mark any product that appears in order_items as sold
 class CatalogSeeder {
     public static function ensureExtraProducts(PDO $pdo): int {
         $products = self::products();
+        if ($products === []) {
+            return 0;
+        }
+
+        // One round-trip for existing names instead of N SELECTs
+        $names = array_column($products, 'name');
+        $placeholders = implode(',', array_fill(0, count($names), '?'));
+        $stmt = $pdo->prepare(
+            "SELECT name FROM products_description WHERE name IN ({$placeholders})"
+        );
+        $stmt->execute($names);
+        $existing = array_flip($stmt->fetchAll(PDO::FETCH_COLUMN));
+
         $insert = $pdo->prepare(
             'INSERT INTO products_description (name, description, price, imagePath, is_sold)
              VALUES (:name, :description, :price, :imagePath, 0)'
         );
-        $exists = $pdo->prepare(
-            'SELECT product_id FROM products_description WHERE name = :name LIMIT 1'
-        );
 
         $added = 0;
         foreach ($products as $product) {
-            $exists->execute([':name' => $product['name']]);
-            if ($exists->fetchColumn()) {
+            if (isset($existing[$product['name']])) {
                 continue;
             }
             $insert->execute([
@@ -46,6 +55,20 @@ class CatalogSeeder {
         } catch (Throwable $e) {
             error_log('CatalogSeeder::resyncSoldFromOrders failed: ' . $e->getMessage());
             return 0;
+        }
+    }
+
+    // Cheap shop bootstrap: seed only when the catalog looks empty/incomplete.
+    public static function ensureIfSparse(PDO $pdo, int $minProducts = 8): void {
+        try {
+            $count = (int) $pdo->query('SELECT COUNT(*) FROM products_description')->fetchColumn();
+            if ($count >= $minProducts) {
+                return;
+            }
+            self::ensureExtraProducts($pdo);
+            self::resyncSoldFromOrders($pdo);
+        } catch (Throwable $e) {
+            error_log('CatalogSeeder::ensureIfSparse failed: ' . $e->getMessage());
         }
     }
 

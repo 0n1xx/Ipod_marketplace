@@ -13,7 +13,6 @@
     $db = new Product($database->connection);
 
     // Keep sold flags aligned with paid order_items (repairs accidental clears)
-    require_once __DIR__ . '/../src/CatalogSeeder.php';
     CatalogSeeder::resyncSoldFromOrders($database->connection);
 
     $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';

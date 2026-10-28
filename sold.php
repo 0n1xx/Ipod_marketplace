@@ -1,24 +1,15 @@
 <?php
     require_once __DIR__ . '/includes/bootstrap.php';
     require_once __DIR__ . '/includes/lang.php';
+    require_once __DIR__ . '/admin/_helpers.php';
 
-    Session::start();
-    if (!Session::isLoggedIn()) {
-        header('Location: ' . BASE_URL . '/login.php');
-        exit();
-    }
-    if (Session::get('is_admin') != 1) {
-        header('Location: ' . BASE_URL . '/shop.php');
-        exit();
-    }
+    adminRequireAuth();
 
     $pageTitle = $L['soldTitle'];
     $pageDesc  = $L['soldDesc'];
 
     $database = new Database();
     // Sold archive always reflects DB is_sold=1; resync from order_items first
-    // so a paid unit never disappears after a bad catalog seed.
-    require_once __DIR__ . '/src/CatalogSeeder.php';
     CatalogSeeder::resyncSoldFromOrders($database->connection);
 
     $db = new Product($database->connection);
@@ -66,23 +57,10 @@
                 <a href="<?= BASE_URL ?>/shop.php?lang=<?= $lang ?>" class="btn btn--dark"><?= $L['backToShopButton'] ?></a>
             </div>
         <?php else: ?>
-            <ul class="product-grid">
-                <?php foreach ($products as $product): ?>
-                    <li class="product-card is-sold">
-                        <a href="<?= BASE_URL ?>/product.php?id=<?= (int)$product['product_id'] ?>&lang=<?= $lang ?>">
-                            <div class="tile">
-                                <span class="sold-badge"><?= $L['soldBadge'] ?></span>
-                                <img src="<?= htmlspecialchars($product['imagePath']) ?>"
-                                     alt="<?= htmlspecialchars($product['name']) ?>" loading="lazy">
-                            </div>
-                            <div class="meta">
-                                <h3><?= htmlspecialchars($product['name']) ?></h3>
-                                <p class="price"><?= $L['soldBadge'] ?></p>
-                            </div>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <?php
+                $showSoldBadge = true;
+                require __DIR__ . '/templates/product-grid.php';
+            ?>
         <?php endif; ?>
     </section>
 </main>

@@ -4,8 +4,8 @@
  * Usage (from project root, with DB env vars loaded):
  *   php scripts/seed_extra_products.php
  *
- * On Railway the same seeder also runs automatically the first time
- * someone opens shop.php after deploy.
+ * On Railway, shop.php also calls CatalogSeeder::ensureIfSparse() so an
+ * empty DB is filled on first visit; this script is for manual/CLI seeds.
  */
 require_once __DIR__ . '/../includes/bootstrap.php';
 

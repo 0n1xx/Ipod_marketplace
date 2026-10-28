@@ -6,16 +6,8 @@
     $pageDesc  = $L['shopDesc'];
 
     $database = new Database();
-    // Explicit require avoids a stale Composer classmap mid-deploy.
-    require_once __DIR__ . '/src/CatalogSeeder.php';
-    try {
-        // Insert missing demo units only — never rewrite is_sold on existing rows
-        CatalogSeeder::ensureExtraProducts($database->connection);
-        // Rebuild sold flags from paid order_items if a past seed cleared them
-        CatalogSeeder::resyncSoldFromOrders($database->connection);
-    } catch (Throwable $e) {
-        error_log('CatalogSeeder failed: ' . $e->getMessage());
-    }
+    // Only seed when the DB looks empty (avoids N inserts/checks on every visit)
+    CatalogSeeder::ensureIfSparse($database->connection);
     $db = new Product($database->connection);
 
     $searchQuery = trim($_GET['q'] ?? '');
@@ -63,22 +55,10 @@
                 <?php endif; ?>
             </div>
         <?php else: ?>
-            <ul class="product-grid">
-                <?php foreach ($products as $product): ?>
-                    <li class="product-card">
-                        <a href="<?= BASE_URL ?>/product.php?id=<?= (int)$product['product_id'] ?>&lang=<?= $lang ?>">
-                            <div class="tile">
-                                <img src="<?= htmlspecialchars($product['imagePath']) ?>"
-                                     alt="<?= htmlspecialchars($product['name']) ?>" loading="lazy">
-                            </div>
-                            <div class="meta">
-                                <h3><?= htmlspecialchars($product['name']) ?></h3>
-                                <p class="price">$<?= number_format((float)$product['price'], 2) ?></p>
-                            </div>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <?php
+                $showSoldBadge = false;
+                require __DIR__ . '/templates/product-grid.php';
+            ?>
         <?php endif; ?>
     </section>
 

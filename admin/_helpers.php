@@ -8,7 +8,11 @@ function adminRequireAuth(): void {
         exit();
     }
     if (Session::get('is_admin') != 1) {
-        header('Location: ' . BASE_URL . '/personal-account.php');
+        // Sold archive redirects to shop; other admin tools go to account
+        $fallback = str_ends_with($_SERVER['SCRIPT_NAME'] ?? '', '/sold.php')
+            ? '/shop.php'
+            : '/personal-account.php';
+        header('Location: ' . BASE_URL . $fallback);
         exit();
     }
 }

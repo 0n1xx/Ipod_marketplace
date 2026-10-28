@@ -1,17 +1,15 @@
 <?php
-// Admin-only catalog seed / debug endpoint.
+// Admin-only catalog seed / debug endpoint (JSON).
 require_once __DIR__ . '/includes/bootstrap.php';
-require_once __DIR__ . '/src/CatalogSeeder.php';
 
 Session::start();
+header('Content-Type: application/json; charset=utf-8');
+
 if (!Session::isLoggedIn() || Session::get('is_admin') != 1) {
     http_response_code(403);
-    header('Content-Type: application/json; charset=utf-8');
     echo json_encode(['ok' => false, 'error' => 'Admin only']);
     exit;
 }
-
-header('Content-Type: application/json; charset=utf-8');
 
 try {
     $database = new Database();
@@ -25,12 +23,7 @@ try {
          ORDER BY product_id'
     )->fetchAll(PDO::FETCH_ASSOC);
 
-    $available = 0;
-    foreach ($rows as $row) {
-        if ((int) $row['is_sold'] === 0) {
-            $available++;
-        }
-    }
+    $available = count(array_filter($rows, fn($row) => (int)$row['is_sold'] === 0));
 
     echo json_encode([
         'ok' => true,

@@ -24,7 +24,7 @@
                 </ul>
             </div>
         </div>
-        <p class="footer-wordmark" aria-hidden="true">QuébecIpod</p>
+        <p class="footer-wordmark" aria-hidden="true"><span>Québec</span><span>Ipod</span></p>
         <div class="footer-bottom">
             <span><?= $L['footerBottom'] ?></span>
             <span>English / Français</span>

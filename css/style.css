@@ -261,13 +261,19 @@ label:focus-within {
 }
 .footer-col a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
 .footer-wordmark {
-    font-stretch: 125%; font-weight: 800;
-    font-size: clamp(40px, 10.5vw, 172px);
-    line-height: 0.9; letter-spacing: -0.05em;
-    white-space: nowrap;
-    overflow: visible;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.18em;
+    margin: 0;
+    font-stretch: 125%;
+    font-weight: 800;
+    font-size: clamp(48px, 10vw, 160px);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
     max-width: 100%;
 }
+.footer-wordmark span { display: inline-block; }
 .footer-bottom {
     display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
     padding-top: 20px; border-top: 1px solid var(--dark-line);
@@ -1193,11 +1199,13 @@ html.menu-open { overflow: hidden; }
     .site-footer .container { padding-block: 56px 28px; gap: 40px; }
     .footer-about p:last-child { font-size: 17px; }
     .footer-wordmark {
-        font-size: clamp(28px, 8.4vw, 40px);
-        font-stretch: 112%;
-        letter-spacing: -0.04em;
-        white-space: nowrap;
-        overflow: visible;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        font-size: clamp(52px, 18vw, 84px);
+        font-stretch: 115%;
+        letter-spacing: -0.045em;
+        line-height: 0.88;
     }
     .footer-bottom { flex-direction: column; gap: 6px; }
 
