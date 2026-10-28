@@ -40,8 +40,8 @@
 ?>
 <main id="main">
     <section class="container auth">
-        <div class="visual visual--sm">
-            <img src="<?= BASE_URL ?>/images/auth-silver.jpg" alt="Restored silver iPod Classic" width="900" height="900">
+        <div class="visual visual--sm" aria-hidden="true">
+            <img src="<?= BASE_URL ?>/images/auth-silver.jpg" alt="" width="900" height="900">
         </div>
         <div class="auth-card">
             <?php if ($success): ?>

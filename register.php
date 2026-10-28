@@ -33,9 +33,8 @@
 ?>
 <main id="main">
     <section class="container auth">
-        <div class="visual visual--sm">
-            <img src="<?= BASE_URL ?>/images/auth-red.jpg" alt="Restored red iPod Classic" width="900" height="900">
-            <p class="eyebrow visual-caption"><?= $L['registerSubtitle'] ?></p>
+        <div class="visual visual--sm" aria-hidden="true">
+            <img src="<?= BASE_URL ?>/images/auth-red.jpg" alt="" width="900" height="900">
         </div>
         <div class="auth-card">
             <div>
