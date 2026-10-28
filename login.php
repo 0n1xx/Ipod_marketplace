@@ -78,8 +78,8 @@
             <form action="login.php" method="post">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                 <fieldset>
-                    <label for="name"><?php echo $L['nameLabelReg']; ?>:</label>
-                    <input type="text" id="name" name="name" placeholder="<?php echo $L['namePlaceholderReg']; ?>" required>
+                    <label for="name"><?php echo $L['loginIdentifierLabel']; ?>:</label>
+                    <input type="text" id="name" name="name" placeholder="<?php echo $L['loginIdentifierPlaceholder']; ?>" required>
                     <label for="password"><?php echo $L['passwordLabel']; ?>:</label>
                     <input type="password" id="password" name="password" placeholder="<?php echo $L['passwordPlaceholder']; ?>" required>
                     <a href="forgot-password.php" class="forgot-password-link"><?= $L['forgotPasswordLink'] ?></a>

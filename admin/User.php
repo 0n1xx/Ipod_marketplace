@@ -121,10 +121,12 @@
             }
         }
 
-        public function findByUsername($username){
+        // Looks a user up by either their username or their email, so
+        // login() can accept both without the caller caring which was typed
+        public function findByIdentifier($identifier){
             try{
-                $stmt = $this->db->prepare("SELECT * FROM users WHERE name = ?");
-                $stmt->execute([$username]);
+                $stmt = $this->db->prepare("SELECT * FROM users WHERE name = ? OR email = ?");
+                $stmt->execute([$identifier, $identifier]);
                 return $stmt->fetch(PDO::FETCH_ASSOC);
             }
             catch(PDOException $e){
@@ -133,29 +135,21 @@
         }
 
         // Function that logs in our users
-        public function login($username, $password){
+        public function login($identifier, $password){
             // Resetting error variable for each login
             $this->error = [];
-            if (empty($username) || empty($password)) {
-                $this->error[] = "Username or Password is required.";
+            if (empty($identifier) || empty($password)) {
+                $this->error[] = "Username/Email or Password is required.";
                 return false;
             }
-            $userExist = $this->db->prepare("SELECT id FROM users WHERE name = ?");
-            $userExist->execute([$username]);
-            if (!$userExist->fetch()) {
-                $this->error[] = "Username or Password is not correct.";
-                return false;
-            }
-            // find the user (Read method)
-            $user = $this->findByUsername($username);
+            $user = $this->findByIdentifier($identifier);
+            // Same error either way (unknown identifier vs. wrong password) so
+            // a login attempt can't be used to find out which accounts exist
             if ($user && password_verify($password, $user['password'])) {
-                // Password is correct
                 return $user;
             }
-            else{
-                $this->error[] = "Internal issue while logging in.";
-                return false;
-            }
+            $this->error[] = "Username/Email or Password is not correct.";
+            return false;
         }
 
         public function findByEmail($email){

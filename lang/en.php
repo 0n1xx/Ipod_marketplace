@@ -100,6 +100,8 @@ return [
     "welcomeBack"        => "Welcome back",
     "signInSubtitle"     => "Sign in to keep your music alive",
     "emailPlaceholder"   => "Your email",
+    "loginIdentifierLabel"       => "Username or Email",
+    "loginIdentifierPlaceholder" => "Your username or email",
     "passwordLabel"      => "Password",
     "passwordPlaceholder"=> "Your password",
     "signInButton"       => "Sign in",

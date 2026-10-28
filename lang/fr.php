@@ -99,6 +99,8 @@ return [
     "welcomeBack"        => "Bon retour parmi nous",
     "signInSubtitle"     => "Connectez-vous pour garder la musique vivante",
     "emailPlaceholder"   => "Votre courriel",
+    "loginIdentifierLabel"       => "Nom d'utilisateur ou courriel",
+    "loginIdentifierPlaceholder" => "Votre nom d'utilisateur ou courriel",
     "passwordLabel"      => "Mot de passe",
     "passwordPlaceholder"=> "Votre mot de passe",
     "signInButton"       => "Se connecter",
