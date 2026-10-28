@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Your QuébecIpod account and order history.">
+    <title>Your account — QuébecIpod</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+<a href="#main" class="sr-only">Skip to content</a>
+<header class="site-header">
+    <div class="container">
+        <a href="index.html" class="brand" aria-label="QuébecIpod home">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-text">
+                <span class="brand-name">QuébecIpod</span>
+                <span class="brand-tag">Classic audio revived</span>
+            </span>
+        </a>
+        <nav class="nav" aria-label="Main">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <a href="#" class="lang-btn" lang="fr" aria-label="Passer au français">FR</a>
+            <a href="cart.html" class="header-link" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span>Cart</span><span class="count-badge" data-cart-count hidden>0</span></a>
+            <a href="account.html" class="account-chip"><span class="avatar" aria-hidden="true">V</span>Vlad</a>
+            <a href="index.html" class="header-link header-link--muted">Log Out</a>
+        </div>
+    </div>
+</header>
+<main id="main">
+    <div class="container account-page">
+        <section class="account-head">
+            <div>
+                <p class="eyebrow"><span class="dot"></span>You're officially logged in</p>
+                <h1 class="display">Hi, Vlad.</h1>
+            </div>
+            <a href="index.html" class="btn btn--outline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg>Log Out</a>
+        </section>
+
+        <div class="account-layout">
+            <section class="orders" aria-labelledby="orders-h">
+                <h2 id="orders-h">Order History</h2>
+                <ul class="order-list">
+                    <li class="order-card">
+                        <div class="order-card-head"><span>[ORDER DATE]</span><strong>$[TOTAL] CAD</strong></div>
+                        <ul class="order-items">
+                            <li><img src="images/blue.jpg" alt="">iPod Classic · Blue</li>
+                            <li><img src="images/mini-g.jpg" alt="">iPod Mini · Teal</li>
+                        </ul>
+                    </li>
+                    <li class="order-card">
+                        <div class="order-card-head"><span>[ORDER DATE]</span><strong>$[TOTAL] CAD</strong></div>
+                        <ul class="order-items">
+                            <li><img src="images/red.jpg" alt="">iPod Classic · Red</li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Empty state:
+                <div class="empty"><p>You haven't placed any orders yet.</p><a href="shop.html" class="btn btn--dark">Browse the shop</a></div>
+                -->
+            </section>
+
+            <aside class="note">
+                <p class="eyebrow">A note from the workshop</p>
+                <p>Welcome back to your space! Somewhere out there, a perfectly restored iPod is waiting just for you — maybe it’s already in your hands, maybe it’s on its way. Either way, we’re so grateful you let us be the ones to make that happen.</p>
+                <p>— QuébecIpod</p>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-about">
+                <p class="eyebrow">QuébecIpod</p>
+                <p>Preserving the joy of personal music through expert iPod restoration and authentic craftsmanship.</p>
+            </div>
+            <nav class="footer-col" aria-label="Footer">
+                <p class="eyebrow">Pages</p>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="footer-col">
+                <p class="eyebrow">Connect</p>
+                <ul>
+                    <li><a href="https://www.facebook.com/yourpage" target="_blank" rel="noopener">Facebook ↗</a></li>
+                    <li><a href="https://www.instagram.com/yourhandle" target="_blank" rel="noopener">Instagram ↗</a></li>
+                    <li><a href="https://www.linkedin.com/in/yourprofile" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="footer-wordmark" aria-hidden="true">QuébecIpod</p>
+        <div class="footer-bottom">
+            <span>Classic audio revived · Montréal, Québec</span>
+            <span>English / Français</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

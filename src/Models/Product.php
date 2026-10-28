@@ -260,11 +260,18 @@ class Product{
         'price_desc' => 'price DESC',
     ];
 
-    // Reading products filtered by a name search and sorted by the given option
-    public function search(string $query = '', string $sort = 'newest'){
+    // Reading products filtered by a name search and sorted by the given option.
+    // $availability: 'available' (shop), 'sold' (archive), or 'all'
+    public function search(string $query = '', string $sort = 'newest', string $availability = 'available'){
         try{
             $orderBy = self::SORT_OPTIONS[$sort] ?? self::SORT_OPTIONS['newest'];
-            $sql = "SELECT * FROM {$this->table_name} WHERE name LIKE :query ORDER BY {$orderBy}";
+            $sql = "SELECT * FROM {$this->table_name} WHERE name LIKE :query";
+            if ($availability === 'available') {
+                $sql .= ' AND is_sold = 0';
+            } elseif ($availability === 'sold') {
+                $sql .= ' AND is_sold = 1';
+            }
+            $sql .= " ORDER BY {$orderBy}";
             $stmt = $this->connection->prepare($sql);
             $stmt->bindValue(':query', '%' . $query . '%');
             $stmt->execute();

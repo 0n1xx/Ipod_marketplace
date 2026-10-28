@@ -30,6 +30,7 @@
                 Session::set('user_id',   $logged_in_user['id']);
                 Session::set('username',  $logged_in_user['name']);
                 Session::set('is_admin',  $logged_in_user['is_admin']);
+                Cart::hydrateFromDbOnLogin((int) $logged_in_user['id']);
                 if ($logged_in_user['is_admin'] == 1) {
                     header('Location: ' . BASE_URL . '/admin/');
                 } else {

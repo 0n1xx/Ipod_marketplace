@@ -68,5 +68,15 @@ CREATE TABLE newsletter_subscribers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Table: user_cart (persists a logged-in user's cart across deploys/sessions)
+CREATE TABLE IF NOT EXISTS user_cart (
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, product_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products_description(product_id) ON DELETE CASCADE
+);
+
 -- If a user should become an admin, here is a SQL script for that
 update users set is_admin = 1 where name = 'your_user_name';

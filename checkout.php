@@ -13,9 +13,7 @@
     }
 
     if (STRIPE_SECRET_KEY === '') {
-        $msg = 'STRIPE_SECRET_KEY is not configured';
-        error_log('Stripe checkout failed: ' . $msg);
-        Session::set('checkout_error_raw', $msg);
+        error_log('Stripe checkout failed: STRIPE_SECRET_KEY is not configured');
         header('Location: ' . BASE_URL . '/cart.php?error=1');
         exit();
     }
@@ -65,15 +63,11 @@
             ],
         ]);
     } catch (\Stripe\Exception\ApiErrorException $e) {
-        $msg = $e->getMessage();
-        error_log('Stripe checkout session creation failed: ' . $msg);
-        Session::set('checkout_error_raw', $msg);
+        error_log('Stripe checkout session creation failed: ' . $e->getMessage());
         header('Location: ' . BASE_URL . '/cart.php?error=1');
         exit();
     } catch (Throwable $e) {
-        $msg = $e->getMessage();
-        error_log('Stripe checkout unexpected failure: ' . $msg);
-        Session::set('checkout_error_raw', $msg);
+        error_log('Stripe checkout unexpected failure: ' . $e->getMessage());
         header('Location: ' . BASE_URL . '/cart.php?error=1');
         exit();
     }
