@@ -11,7 +11,7 @@ E-commerce site for restored classic iPods — bilingual (EN/FR), Stripe Checkou
 - Product pages with gallery thumbnails
 - Session cart for guests; `user_cart` for logged-in users (survives Railway redeploys)
 - Stripe Checkout (CAD) with mobile sticky checkout bar
-- Auth: login / register / forgot / reset (split layouts, password strength)
+- Auth: login / register / forgot / reset (split layouts, password strength) + Google OAuth
 - Contact + newsletter via Resend
 - Order statuses: paid → shipped → delivered (account + admin `/admin/orders.php`)
 - Stripe shipping address on checkout → shown in account, admin kanban, receipt email
@@ -55,9 +55,15 @@ HTML emails keep inline CSS (`Mailer` / `EmailTemplates`) because clients strip 
 | `STRIPE_SECRET_KEY` / `STRIPE_PUBLISHABLE_KEY` | Checkout |
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Product images |
 | `RESEND_API_KEY` / `RESEND_FROM_EMAIL` / `CONTACT_TO_EMAIL` | Mail |
-| `APP_URL` (optional) | Absolute site URL for emails (defaults to the Railway live URL) |
+| `APP_URL` (optional) | Absolute site URL for emails + Google OAuth redirect (defaults to the Railway live URL) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Sign-In (button hidden if unset) |
 
-4. Import `sql/schema.sql`. Upgrading an older DB? Also run `sql/migrate_user_cart.sql`, `sql/migrate_order_status.sql`, and `sql/migrate_order_shipping.sql` (shipping columns also auto-apply on first Order use).  
+Google Cloud: create an OAuth **Web** client. Authorized redirect URI must be  
+`{APP_URL}/auth-google-callback.php`  
+(e.g. `https://ipod-marketplace.up.railway.app/auth-google-callback.php`).  
+Authorized JavaScript origins: your `APP_URL`. After you buy a custom domain, update both URIs + `APP_URL`.
+
+4. Import `sql/schema.sql`. Upgrading an older DB? Also run `sql/migrate_user_cart.sql`, `sql/migrate_order_status.sql`, `sql/migrate_order_shipping.sql`, and optionally `sql/migrate_google_oauth.sql` (`google_id` also auto-adds on first Google login).  
 5. Optional catalog pack: `php scripts/seed_extra_products.php` or visit `/seed-catalog.php` as admin  
 6. Serve the project root (or deploy the Dockerfile to Railway)
 

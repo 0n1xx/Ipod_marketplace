@@ -175,6 +175,9 @@ return [
     "signInButton"       => "Se connecter",
     "dontHaveAccount"    => "Vous n'avez pas de compte ? Inscrivez-vous maintenant !",
     "forgotPasswordLink" => "Mot de passe oublié ?",
+    "orContinueWith"     => "ou",
+    "continueWithGoogle" => "Continuer avec Google",
+    "googleAuthFailed"   => "La connexion Google a échoué. Réessayez ou utilisez courriel et mot de passe.",
 
     // Variables for the register page
     "registerTitle"         => "Inscription",

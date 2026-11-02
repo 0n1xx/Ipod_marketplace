@@ -145,7 +145,7 @@
             $user = $this->findByIdentifier($identifier);
             // Same error either way (unknown identifier vs. wrong password) so
             // a login attempt can't be used to find out which accounts exist
-            if ($user && password_verify($password, $user['password'])) {
+            if ($user && !empty($user['password']) && password_verify($password, $user['password'])) {
                 return $user;
             }
             $this->error[] = "Username/Email or Password is not correct.";
@@ -160,6 +160,106 @@
             }
             catch(PDOException $e){
                 return false;
+            }
+        }
+
+        // Adds google_id once so Google OAuth works on existing Railway DBs
+        // without a manual migration step.
+        public function ensureGoogleColumn(): void
+        {
+            static $done = false;
+            if ($done) {
+                return;
+            }
+            try {
+                $this->db->exec(
+                    'ALTER TABLE users ADD COLUMN google_id VARCHAR(64) NULL UNIQUE'
+                );
+            } catch (PDOException $e) {
+                // Column already exists — ignore duplicate-column errors
+            }
+            $done = true;
+        }
+
+        public function findByGoogleId(string $googleId)
+        {
+            $this->ensureGoogleColumn();
+            try {
+                $stmt = $this->db->prepare('SELECT * FROM users WHERE google_id = ? LIMIT 1');
+                $stmt->execute([$googleId]);
+                return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
+            } catch (PDOException $e) {
+                return false;
+            }
+        }
+
+        /**
+         * Login or register via Google profile (sub + email).
+         * Links an existing email account when found; otherwise creates a user.
+         */
+        public function findOrCreateFromGoogle(string $googleId, string $email, string $displayName = '')
+        {
+            $this->error = [];
+            $this->ensureGoogleColumn();
+
+            $existing = $this->findByGoogleId($googleId);
+            if ($existing) {
+                return $existing;
+            }
+
+            $byEmail = $this->findByEmail($email);
+            if ($byEmail) {
+                try {
+                    $stmt = $this->db->prepare('UPDATE users SET google_id = ? WHERE id = ? AND (google_id IS NULL OR google_id = ?)');
+                    $stmt->execute([$googleId, $byEmail['id'], $googleId]);
+                    $byEmail['google_id'] = $googleId;
+                    return $byEmail;
+                } catch (PDOException $e) {
+                    $this->error[] = 'Could not link Google account.';
+                    return false;
+                }
+            }
+
+            $name = $this->uniqueUsernameFromGoogle($email, $displayName);
+            $password = password_hash(bin2hex(random_bytes(32)), PASSWORD_BCRYPT);
+
+            try {
+                $stmt = $this->db->prepare(
+                    'INSERT INTO users (name, email, password, google_id) VALUES (?, ?, ?, ?)'
+                );
+                $stmt->execute([$name, $email, $password, $googleId]);
+                return $this->findByGoogleId($googleId);
+            } catch (PDOException $e) {
+                $this->error[] = 'Database error.';
+                return false;
+            }
+        }
+
+        private function uniqueUsernameFromGoogle(string $email, string $displayName): string
+        {
+            $base = '';
+            if ($displayName !== '') {
+                $base = preg_replace('/[^A-Za-z]/', '', explode(' ', trim($displayName))[0] ?? '');
+            }
+            if ($base === '') {
+                $local = explode('@', $email)[0] ?? 'user';
+                $base = preg_replace('/[^A-Za-z]/', '', $local) ?: 'user';
+            }
+            $base = substr($base, 0, 40);
+            if ($base === '') {
+                $base = 'user';
+            }
+
+            $candidate = $base;
+            $n = 0;
+            while (true) {
+                $stmt = $this->db->prepare('SELECT id FROM users WHERE name = ? LIMIT 1');
+                $stmt->execute([$candidate]);
+                if (!$stmt->fetch()) {
+                    return $candidate;
+                }
+                $n++;
+                $candidate = substr($base, 0, 40) . $n;
             }
         }
 

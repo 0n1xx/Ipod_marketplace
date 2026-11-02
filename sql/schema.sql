@@ -4,6 +4,7 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    google_id VARCHAR(64) NULL UNIQUE,
     is_admin TINYINT(1) NOT NULL DEFAULT 0
 );
 

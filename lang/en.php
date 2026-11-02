@@ -176,6 +176,9 @@ return [
     "signInButton"       => "Sign in",
     "dontHaveAccount"    => "Don't have an account? Register now!",
     "forgotPasswordLink" => "Forgot your password?",
+    "orContinueWith"     => "or",
+    "continueWithGoogle" => "Continue with Google",
+    "googleAuthFailed"   => "Google sign-in failed. Please try again or use email and password.",
 
     // Variables for the register page
     "registerTitle"         => "Register",

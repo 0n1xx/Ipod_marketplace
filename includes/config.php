@@ -14,8 +14,12 @@ define('RESEND_FROM_EMAIL', $_ENV['RESEND_FROM_EMAIL'] ?? 'QuébecIpod <onboardi
 // Inbox that receives contact-form inquiries (Reply-To is the customer)
 define('CONTACT_TO_EMAIL',  $_ENV['CONTACT_TO_EMAIL']  ?? 'quebecipodsupport@gmail.com');
 
-// Absolute site origin for emails / absolute links (override via APP_URL)
+// Absolute site origin for emails / absolute links / OAuth redirect (override via APP_URL)
 define('APP_URL', rtrim($_ENV['APP_URL'] ?? 'https://ipod-marketplace.up.railway.app', '/'));
 
+// Google OAuth (leave empty to hide the "Continue with Google" button)
+define('GOOGLE_CLIENT_ID',     $_ENV['GOOGLE_CLIENT_ID']     ?? '');
+define('GOOGLE_CLIENT_SECRET', $_ENV['GOOGLE_CLIENT_SECRET'] ?? '');
+
 // Bump when shipping CSS/JS changes so browsers pick up the new assets
-define('ASSET_VERSION', '20261028y');
+define('ASSET_VERSION', '20261102a');

@@ -621,6 +621,18 @@ label:focus-within {
 .auth2-divider { display: flex; align-items: center; gap: 16px; font-size: 14px; color: var(--muted-2); }
 .auth2-divider::before, .auth2-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
+.btn--google {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #fff;
+    color: var(--ink);
+    border: 1px solid var(--line);
+}
+.btn--google:hover { background: #f7f7f8; color: var(--ink); }
+.btn-google-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
 .input-wrap { position: relative; }
 .input-wrap > svg {
     position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
