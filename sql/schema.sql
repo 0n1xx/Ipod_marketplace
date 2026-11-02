@@ -5,6 +5,7 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     google_id VARCHAR(64) NULL UNIQUE,
+    email_confirmed TINYINT(1) NOT NULL DEFAULT 0,
     is_admin TINYINT(1) NOT NULL DEFAULT 0
 );
 
@@ -62,6 +63,17 @@ CREATE TABLE order_items (
 -- Table: password_resets (one row per "forgot password" request; a token is
 -- only usable once and expires an hour after it's requested)
 CREATE TABLE password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token_hash VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used TINYINT(1) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Table: email_confirmations (one row per confirmation email; 24h expiry)
+CREATE TABLE email_confirmations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     token_hash VARCHAR(64) NOT NULL,

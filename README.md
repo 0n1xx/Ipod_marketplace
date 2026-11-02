@@ -2,7 +2,7 @@
 
 E-commerce site for restored classic iPods — bilingual (EN/FR), Stripe Checkout, Cloudinary media, Resend mail.
 
-**Live:** [https://ipod-marketplace.up.railway.app](https://ipod-marketplace.up.railway.app)
+**Live:** [https://quebecipod.site](https://quebecipod.site)
 
 ## Features
 
@@ -11,7 +11,7 @@ E-commerce site for restored classic iPods — bilingual (EN/FR), Stripe Checkou
 - Product pages with gallery thumbnails
 - Session cart for guests; `user_cart` for logged-in users (survives Railway redeploys)
 - Stripe Checkout (CAD) with mobile sticky checkout bar
-- Auth: login / register / forgot / reset (split layouts, password strength) + Google OAuth
+- Auth: login / register / forgot / reset (split layouts, password strength) + Google OAuth + email confirmation (Resend)
 - Contact + newsletter via Resend
 - Order statuses: paid → shipped → delivered (account + admin `/admin/orders.php`)
 - Stripe shipping address on checkout → shown in account, admin kanban, receipt email
@@ -63,7 +63,7 @@ Google Cloud: create an OAuth **Web** client. Authorized redirect URI must be
 (e.g. `https://ipod-marketplace.up.railway.app/auth-google-callback.php`).  
 Authorized JavaScript origins: your `APP_URL`. After you buy a custom domain, update both URIs + `APP_URL`.
 
-4. Import `sql/schema.sql`. Upgrading an older DB? Also run `sql/migrate_user_cart.sql`, `sql/migrate_order_status.sql`, `sql/migrate_order_shipping.sql`, and optionally `sql/migrate_google_oauth.sql` (`google_id` also auto-adds on first Google login).  
+4. Import `sql/schema.sql`. Upgrading an older DB? Also run `sql/migrate_user_cart.sql`, `sql/migrate_order_status.sql`, `sql/migrate_order_shipping.sql`, `sql/migrate_google_oauth.sql`, and `sql/migrate_email_confirmation.sql` (`google_id` / `email_confirmed` also auto-add on first use).  
 5. Optional catalog pack: `php scripts/seed_extra_products.php` or visit `/seed-catalog.php` as admin  
 6. Serve the project root (or deploy the Dockerfile to Railway)
 

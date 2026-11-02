@@ -11,8 +11,15 @@
     $pageTitle = $L['loginTitle'];
     $pageDesc  = $L['loginDesc'];
     $errors = [];
+    $info = [];
     if (isset($_GET['google_error'])) {
         $errors[] = $L['googleAuthFailed'];
+    }
+    if (isset($_GET['reauth'])) {
+        $info[] = $L['reauthRequired'];
+    }
+    if (isset($_GET['confirmed'])) {
+        $info[] = $L['confirmEmailSuccess'];
     }
     $googleEnabled = GoogleAuth::isConfigured();
 
@@ -35,7 +42,23 @@
                 exit();
             }
 
-            $errors = $user->error;
+            if (in_array('EMAIL_NOT_CONFIRMED', $user->error, true)) {
+                $pending = $user->getPendingUnconfirmedUser();
+                if ($pending) {
+                    $token = $user->createEmailConfirmation((int) $pending['id']);
+                    if ($token) {
+                        $confirmUrl = APP_URL . '/confirm-email.php?token=' . urlencode($token);
+                        Mailer::send(
+                            $pending['email'],
+                            $L['confirmEmailSubject'],
+                            EmailTemplates::confirmEmail($L, $confirmUrl)
+                        );
+                    }
+                }
+                $errors = [$L['emailNotConfirmed']];
+            } else {
+                $errors = $user->error;
+            }
         }
     }
 
@@ -61,6 +84,13 @@
                     <p class="sub"><?= $L['signInSubtitle'] ?></p>
                 </div>
 
+                <?php if (!empty($info)): ?>
+                    <div class="alert_success">
+                        <?php foreach ($info as $msg): ?>
+                            <p><?= htmlspecialchars($msg) ?></p>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
                 <?php if (!empty($errors)): ?>
                     <div class="alert_failure">
                         <?php foreach ($errors as $err): ?>

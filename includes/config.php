@@ -9,13 +9,13 @@ define('STRIPE_SECRET_KEY',      $_ENV['STRIPE_SECRET_KEY']      ?? '');
 define('STRIPE_PUBLISHABLE_KEY', $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? '');
 
 define('RESEND_API_KEY',    $_ENV['RESEND_API_KEY']    ?? '');
-define('RESEND_FROM_EMAIL', $_ENV['RESEND_FROM_EMAIL'] ?? 'QuébecIpod <onboarding@resend.dev>');
+define('RESEND_FROM_EMAIL', $_ENV['RESEND_FROM_EMAIL'] ?? 'QuébecIpod <noreply@quebecipod.site>');
 
 // Inbox that receives contact-form inquiries (Reply-To is the customer)
 define('CONTACT_TO_EMAIL',  $_ENV['CONTACT_TO_EMAIL']  ?? 'quebecipodsupport@gmail.com');
 
 // Absolute site origin for emails / absolute links / OAuth redirect (override via APP_URL)
-define('APP_URL', rtrim($_ENV['APP_URL'] ?? 'https://ipod-marketplace.up.railway.app', '/'));
+define('APP_URL', rtrim($_ENV['APP_URL'] ?? 'https://quebecipod.site', '/'));
 
 // Google OAuth (leave empty to hide the "Continue with Google" button)
 define('GOOGLE_CLIENT_ID',     $_ENV['GOOGLE_CLIENT_ID']     ?? '');

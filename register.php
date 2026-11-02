@@ -26,7 +26,18 @@
             $confirm_password = $_POST['confirm_password'] ?? '';
             $result = $user->register($name, $email, $password, $confirm_password);
             $errors = $user->error;
-            $registered = $result && empty($errors);
+            $registered = is_int($result) && $result > 0 && empty($errors);
+            if ($registered) {
+                $token = $user->createEmailConfirmation($result);
+                if ($token) {
+                    $confirmUrl = APP_URL . '/confirm-email.php?token=' . urlencode($token);
+                    Mailer::send(
+                        $email,
+                        $L['confirmEmailSubject'],
+                        EmailTemplates::confirmEmail($L, $confirmUrl)
+                    );
+                }
+            }
         }
     }
 
@@ -67,9 +78,9 @@
 
                 <?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
                     <?php if ($registered): ?>
-                        <div class="alert_success"><p><?= $L['successfulRegister'] ?></p></div>
+                        <div class="alert_success"><p><?= $L['registerCheckEmail'] ?></p></div>
                         <div class="success-box">
-                            <p><?= $L['successfulRegister'] ?></p>
+                            <p><?= $L['registerCheckEmail'] ?></p>
                             <p><a href="<?= BASE_URL ?>/login.php?lang=<?= $lang ?>"><?= $L['signInButton'] ?></a></p>
                         </div>
                     <?php else: ?>

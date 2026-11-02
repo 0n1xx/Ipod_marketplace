@@ -3,6 +3,8 @@
         // Connecting to a database
         private $db;
         public $error = [];
+        private $pendingUnconfirmedUser = null;
+
         public function __construct($db_connection){
             $this->db = $db_connection;
         }
@@ -102,21 +104,132 @@
         }
 
         // Writing a function for the registration
+        // Returns new user id on success, or false on validation/DB failure.
         public function register($name, $email, $password, $confirm_password){
             // Resetting the error variable for each registration
             $this->error = [];
             if (!$this->validateUser($name, $email, $password, $confirm_password)) {
                 return false;
             }
+            $this->ensureEmailConfirmationSchema();
             try{
                 // Hashing the password
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-                $stmt = $this->db->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+                $stmt = $this->db->prepare(
+                    "INSERT INTO users (name, email, password, email_confirmed) VALUES (?, ?, ?, 0)"
+                );
                 $stmt->execute([$name, $email, $hashed_password]);
-                return "User Created";
+                return (int) $this->db->lastInsertId();
             }
             catch(PDOException $e){
                 $this->error[] = "Database error.";
+                return false;
+            }
+        }
+
+        public function isEmailConfirmed(array $user): bool {
+            return (int) ($user['email_confirmed'] ?? 0) === 1;
+        }
+
+        public function ensureEmailConfirmationSchema(): void {
+            static $done = false;
+            if ($done) {
+                return;
+            }
+            try {
+                $this->db->exec(
+                    'ALTER TABLE users ADD COLUMN email_confirmed TINYINT(1) NOT NULL DEFAULT 0'
+                );
+            } catch (PDOException $e) {
+                // Column already exists
+            }
+            try {
+                $this->db->exec(
+                    'CREATE TABLE IF NOT EXISTS email_confirmations (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        user_id INT NOT NULL,
+                        token_hash VARCHAR(64) NOT NULL,
+                        expires_at TIMESTAMP NOT NULL,
+                        used TINYINT(1) NOT NULL DEFAULT 0,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                    )'
+                );
+            } catch (PDOException $e) {
+                // Table may already exist
+            }
+            // Google accounts already verified their email with Google
+            try {
+                $this->db->exec(
+                    "UPDATE users SET email_confirmed = 1 WHERE google_id IS NOT NULL AND google_id != '' AND email_confirmed = 0"
+                );
+            } catch (PDOException $e) {
+                // ignore
+            }
+            $done = true;
+        }
+
+        public function markEmailConfirmed(int $userId): void {
+            $this->ensureEmailConfirmationSchema();
+            try {
+                $stmt = $this->db->prepare('UPDATE users SET email_confirmed = 1 WHERE id = ?');
+                $stmt->execute([$userId]);
+            } catch (PDOException $e) {
+                // ignore
+            }
+        }
+
+        public function createEmailConfirmation(int $userId): ?string {
+            $this->ensureEmailConfirmationSchema();
+            try {
+                $token = bin2hex(random_bytes(32));
+                $tokenHash = hash('sha256', $token);
+                $expiresAt = date('Y-m-d H:i:s', time() + 86400); // 24h
+
+                $stmt = $this->db->prepare(
+                    'INSERT INTO email_confirmations (user_id, token_hash, expires_at) VALUES (?, ?, ?)'
+                );
+                $stmt->execute([$userId, $tokenHash, $expiresAt]);
+                return $token;
+            } catch (PDOException $e) {
+                return null;
+            }
+        }
+
+        public function findValidEmailConfirmation(string $token): ?array {
+            $this->ensureEmailConfirmationSchema();
+            $tokenHash = hash('sha256', $token);
+            try {
+                $stmt = $this->db->prepare(
+                    'SELECT ec.id, ec.user_id, u.email
+                     FROM email_confirmations ec
+                     JOIN users u ON u.id = ec.user_id
+                     WHERE ec.token_hash = ? AND ec.used = 0 AND ec.expires_at > NOW()
+                     LIMIT 1'
+                );
+                $stmt->execute([$tokenHash]);
+                return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+            } catch (PDOException $e) {
+                return null;
+            }
+        }
+
+        public function confirmEmailWithToken(string $token): bool {
+            $row = $this->findValidEmailConfirmation($token);
+            if (!$row) {
+                $this->error[] = 'Invalid or expired confirmation link.';
+                return false;
+            }
+            try {
+                $this->db->beginTransaction();
+                $this->markEmailConfirmed((int) $row['user_id']);
+                $markUsed = $this->db->prepare('UPDATE email_confirmations SET used = 1 WHERE id = ?');
+                $markUsed->execute([(int) $row['id']]);
+                $this->db->commit();
+                return true;
+            } catch (PDOException $e) {
+                $this->db->rollBack();
+                $this->error[] = 'Database error.';
                 return false;
             }
         }
@@ -134,18 +247,30 @@
             }
         }
 
-        // Function that logs in our users
+        // If password is correct but email is not confirmed yet, login()
+        // returns false and stores the user here for a resend.
+        public function getPendingUnconfirmedUser() {
+            return $this->pendingUnconfirmedUser;
+        }
+
         public function login($identifier, $password){
             // Resetting error variable for each login
             $this->error = [];
+            $this->pendingUnconfirmedUser = null;
             if (empty($identifier) || empty($password)) {
                 $this->error[] = "Username/Email or Password is required.";
                 return false;
             }
+            $this->ensureEmailConfirmationSchema();
             $user = $this->findByIdentifier($identifier);
             // Same error either way (unknown identifier vs. wrong password) so
             // a login attempt can't be used to find out which accounts exist
             if ($user && !empty($user['password']) && password_verify($password, $user['password'])) {
+                if (!$this->isEmailConfirmed($user)) {
+                    $this->pendingUnconfirmedUser = $user;
+                    $this->error[] = 'EMAIL_NOT_CONFIRMED';
+                    return false;
+                }
                 return $user;
             }
             $this->error[] = "Username/Email or Password is not correct.";
@@ -201,18 +326,24 @@
         {
             $this->error = [];
             $this->ensureGoogleColumn();
+            $this->ensureEmailConfirmationSchema();
 
             $existing = $this->findByGoogleId($googleId);
             if ($existing) {
+                $this->markEmailConfirmed((int) $existing['id']);
+                $existing['email_confirmed'] = 1;
                 return $existing;
             }
 
             $byEmail = $this->findByEmail($email);
             if ($byEmail) {
                 try {
-                    $stmt = $this->db->prepare('UPDATE users SET google_id = ? WHERE id = ? AND (google_id IS NULL OR google_id = ?)');
+                    $stmt = $this->db->prepare(
+                        'UPDATE users SET google_id = ?, email_confirmed = 1 WHERE id = ? AND (google_id IS NULL OR google_id = ?)'
+                    );
                     $stmt->execute([$googleId, $byEmail['id'], $googleId]);
                     $byEmail['google_id'] = $googleId;
+                    $byEmail['email_confirmed'] = 1;
                     return $byEmail;
                 } catch (PDOException $e) {
                     $this->error[] = 'Could not link Google account.';
@@ -225,7 +356,7 @@
 
             try {
                 $stmt = $this->db->prepare(
-                    'INSERT INTO users (name, email, password, google_id) VALUES (?, ?, ?, ?)'
+                    'INSERT INTO users (name, email, password, google_id, email_confirmed) VALUES (?, ?, ?, ?, 1)'
                 );
                 $stmt->execute([$name, $email, $password, $googleId]);
                 return $this->findByGoogleId($googleId);

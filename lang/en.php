@@ -179,6 +179,17 @@ return [
     "orContinueWith"     => "or",
     "continueWithGoogle" => "Continue with Google",
     "googleAuthFailed"   => "Google sign-in failed. Please try again or use email and password.",
+    "emailNotConfirmed"  => "Please confirm your email before signing in. We just sent you a new confirmation link.",
+    "reauthRequired"     => "Please sign in again. Email confirmation is now required for all accounts.",
+    "registerCheckEmail" => "Account created. Check your email and confirm your address before signing in.",
+    "confirmEmailTitle"  => "Confirm email",
+    "confirmEmailDesc"   => "Confirm your QuébecIpod account email.",
+    "confirmEmailHeading"=> "Confirm your email",
+    "confirmEmailSubject"=> "Confirm your QuébecIpod email",
+    "confirmEmailBody"   => "Thanks for joining QuébecIpod. Click the button below to confirm your email and activate your account.",
+    "confirmEmailCta"    => "Confirm email",
+    "confirmEmailSuccess"=> "Email confirmed. You can sign in now.",
+    "confirmEmailInvalid"=> "This confirmation link is invalid or has expired.",
 
     // Variables for the register page
     "registerTitle"         => "Register",

@@ -113,4 +113,18 @@ class EmailTemplates {
 
         return Mailer::wrap(sprintf($L['receiptEmailSubject'], $orderId), $body);
     }
+
+    public static function confirmEmail(array $L, string $confirmUrl): string {
+        $body = '<p>' . htmlspecialchars($L['confirmEmailBody'], ENT_QUOTES, 'UTF-8') . '</p>'
+            . '<p style="margin-top:22px;">'
+            . '<a href="' . htmlspecialchars($confirmUrl, ENT_QUOTES, 'UTF-8') . '" '
+            . 'style="display:inline-block;padding:12px 22px;border-radius:999px;background:#3575e2;color:#ffffff;text-decoration:none;font-weight:700;">'
+            . htmlspecialchars($L['confirmEmailCta'], ENT_QUOTES, 'UTF-8')
+            . '</a></p>'
+            . '<p style="margin-top:18px;color:#5c5a66;word-break:break-all;">'
+            . htmlspecialchars($confirmUrl, ENT_QUOTES, 'UTF-8')
+            . '</p>';
+
+        return Mailer::wrap($L['confirmEmailSubject'], $body);
+    }
 }

@@ -178,6 +178,17 @@ return [
     "orContinueWith"     => "ou",
     "continueWithGoogle" => "Continuer avec Google",
     "googleAuthFailed"   => "La connexion Google a échoué. Réessayez ou utilisez courriel et mot de passe.",
+    "emailNotConfirmed"  => "Confirmez votre courriel avant de vous connecter. Nous venons de vous envoyer un nouveau lien.",
+    "reauthRequired"     => "Veuillez vous reconnecter. La confirmation du courriel est maintenant obligatoire.",
+    "registerCheckEmail" => "Compte créé. Vérifiez votre courriel et confirmez votre adresse avant de vous connecter.",
+    "confirmEmailTitle"  => "Confirmer le courriel",
+    "confirmEmailDesc"   => "Confirmez le courriel de votre compte QuébecIpod.",
+    "confirmEmailHeading"=> "Confirmez votre courriel",
+    "confirmEmailSubject"=> "Confirmez votre courriel QuébecIpod",
+    "confirmEmailBody"   => "Merci de rejoindre QuébecIpod. Cliquez sur le bouton ci-dessous pour confirmer votre courriel et activer votre compte.",
+    "confirmEmailCta"    => "Confirmer le courriel",
+    "confirmEmailSuccess"=> "Courriel confirmé. Vous pouvez vous connecter.",
+    "confirmEmailInvalid"=> "Ce lien de confirmation est invalide ou a expiré.",
 
     // Variables for the register page
     "registerTitle"         => "Inscription",
