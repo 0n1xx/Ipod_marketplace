@@ -5,6 +5,7 @@ return [
     "brandTag"      => "Audio classique revisité",
     "navHome"       => "Accueil",
     "navAbout"      => "À propos",
+    "navPrivacy"    => "Confidentialité",
     "navShop"       => "Boutique",
     "navSold"       => "Vendus",
     "navContact"    => "Contact",

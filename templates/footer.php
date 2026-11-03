@@ -12,6 +12,7 @@
                     <li><a href="<?= BASE_URL ?>/about.php?lang=<?= $lang ?>"><?= $L['navAbout'] ?></a></li>
                     <li><a href="<?= BASE_URL ?>/shop.php?lang=<?= $lang ?>"><?= $L['navShop'] ?></a></li>
                     <li><a href="<?= BASE_URL ?>/sold.php?lang=<?= $lang ?>"><?= $L['navSold'] ?></a></li>
+                    <li><a href="<?= BASE_URL ?>/privacy.php?lang=<?= $lang ?>"><?= $L['navPrivacy'] ?></a></li>
                     <li><a href="<?= BASE_URL ?>/contact.php?lang=<?= $lang ?>"><?= $L['navContact'] ?></a></li>
                 </ul>
             </nav>

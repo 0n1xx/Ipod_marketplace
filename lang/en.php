@@ -5,6 +5,7 @@ return [
     "brandTag"      => "Classic audio revived",
     "navHome"       => "Home",
     "navAbout"      => "About",
+    "navPrivacy"    => "Privacy",
     "navShop"       => "Shop",
     "navSold"       => "Sold",
     "navContact"    => "Contact",

@@ -45,6 +45,7 @@ if ($isAdmin) {
     ];
     $mobileLinks[] = ['href' => $base . '/sold.php?lang=' . $lang, 'label' => $L['navSold'], 'current' => $currentPage === 'sold.php'];
 }
+$mobileLinks[] = ['href' => $base . '/privacy.php?lang=' . $lang, 'label' => $L['navPrivacy'], 'current' => $currentPage === 'privacy.php'];
 $mobileLinks[] = ['href' => $base . '/contact.php?lang=' . $lang, 'label' => $L['navContact'], 'current' => $currentPage === 'contact.php'];
 ?>
 <!doctype html>
@@ -83,6 +84,7 @@ $mobileLinks[] = ['href' => $base . '/contact.php?lang=' . $lang, 'label' => $L[
                     <li><a href="<?= $base ?>/admin/orders.php?lang=<?= $lang ?>" <?= $currentPage === 'orders.php' ? 'aria-current="page"' : '' ?>><?= $L['adminOrdersTitle'] ?></a></li>
                     <li><a href="<?= $base ?>/sold.php?lang=<?= $lang ?>" <?= $currentPage === 'sold.php' ? 'aria-current="page"' : '' ?>><?= $L['navSold'] ?></a></li>
                 <?php endif; ?>
+                <li><a href="<?= $base ?>/privacy.php?lang=<?= $lang ?>" <?= $currentPage === 'privacy.php' ? 'aria-current="page"' : '' ?>><?= $L['navPrivacy'] ?></a></li>
                 <li><a href="<?= $base ?>/contact.php?lang=<?= $lang ?>" <?= $currentPage === 'contact.php' ? 'aria-current="page"' : '' ?>><?= $L['navContact'] ?></a></li>
             </ul>
         </nav>
